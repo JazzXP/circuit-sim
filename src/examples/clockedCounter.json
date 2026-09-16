@@ -1,0 +1,56 @@
+{
+	"kind": "composite",
+	"id": "CLOCKED_COUNTER",
+	"name": "Clocked Counter",
+	"inputs": [{ "id": "D", "name": "D", "direction": "input" }],
+	"outputs": [{ "id": "Q", "name": "Q", "direction": "output" }],
+	"children": [
+		{ "instanceId": "clock", "definitionId": "CLOCK" },
+		{ "instanceId": "dff1", "definitionId": "DFF_GATES" },
+		{ "instanceId": "dff2", "definitionId": "DFF_GATES" },
+		{ "instanceId": "dff3", "definitionId": "DFF_GATES" },
+		{ "instanceId": "dff4", "definitionId": "DFF_GATES" }
+	],
+	"internalWires": [
+		{
+			"id": "w1",
+			"from": { "component": "self", "pinId": "D" },
+			"to": [
+				{ "component": "dff1", "pinId": "D" },
+				{ "component": "dff2", "pinId": "D" },
+				{ "component": "dff3", "pinId": "D" },
+				{ "component": "dff4", "pinId": "D" }
+			]
+		},
+		{
+			"id": "w2",
+			"from": { "component": "clock", "pinId": "CLK" },
+			"to": [{ "component": "dff1", "pinId": "CLK" }]
+		},
+		{
+			"id": "w3",
+			"from": { "component": "dff1", "pinId": "Q" },
+			"to": [{ "component": "dff2", "pinId": "CLK" }]
+		},
+		{
+			"id": "w4",
+			"from": { "component": "dff2", "pinId": "Q" },
+			"to": [{ "component": "dff3", "pinId": "CLK" }]
+		},
+		{
+			"id": "w5",
+			"from": { "component": "dff3", "pinId": "Q" },
+			"to": [{ "component": "dff4", "pinId": "CLK" }]
+		},
+		{
+			"id": "w6",
+			"from": { "component": "dff4", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q" }]
+		},
+		{
+			"id": "w7",
+			"from": { "component": "dff4", "pinId": "Q" },
+			"to": [{ "component": "dff1", "pinId": "D" }]
+		}
+	]
+}
