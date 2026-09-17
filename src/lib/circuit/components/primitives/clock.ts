@@ -1,4 +1,5 @@
-import { LogicValue, type PrimitiveDefinition } from '#sim/model/component';
+import { LogicValue } from '#sim/model/component';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
 
 // The one deliberate exception to "primitives are pure functions of their
 // inputs" in this whole codebase: a clock is fundamentally a real-time
@@ -31,7 +32,7 @@ export const CLOCK: PrimitiveDefinition = {
 	initialState: (): ClockState => ({
 		output: LogicValue.LOW,
 		lastToggleAt: Date.now(),
-		periodMs: DEFAULT_CLOCK_PERIOD_MS
+		periodMs: DEFAULT_CLOCK_PERIOD_MS,
 	}),
 	evaluate: (inputs, prevState) => {
 		const state = prevState as ClockState;
@@ -54,5 +55,5 @@ export const CLOCK: PrimitiveDefinition = {
 		}
 
 		return { outputs: [state.output], nextState: state };
-	}
+	},
 };

@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import type { DefinitionLibrary, ComponentInstance } from '#sim/model/component';
 	import { LogicValue } from '#sim/model/component';
 	import { findInstancesByDefinition, updateInstanceStateAtPath } from '#sim/model/tree';
 	import {
 		evaluateTick,
 		evaluateAtPath,
 		instantiateAndSettle,
-		type PinChange
+		type PinChange,
 	} from '#sim/controller/engine';
 	import type { ClockState } from '#components/primitives/clock';
 	import { computeLayout } from '#render/layout';
@@ -17,8 +16,9 @@
 		screenToWorld,
 		zoomAt,
 		pan,
-		type ViewTransform
+		type ViewTransform,
 	} from '#render/viewTransform';
+	import type { ComponentInstance, DefinitionLibrary } from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
 
 	interface Props {
@@ -31,8 +31,8 @@
 	let { library, rootDefinitionId, width = 720, height = 320 }: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
-	let rootInstance = $state<ComponentInstance>(
-		instantiateAndSettle(library, rootDefinitionId, 'root')
+	let rootInstance = $derived<ComponentInstance>(
+		instantiateAndSettle(library, rootDefinitionId, 'root'),
 	);
 	let drillPath = $state<string[]>([]);
 	let clickRegions: ClickRegion[] = [];
@@ -96,7 +96,7 @@
 		for (const { path, instance } of clocks) {
 			const en = instance.pinValues['EN'];
 			next = evaluateAtPath(library, next, path, [
-				{ ref: { component: 'self', pinId: 'EN' }, value: en }
+				{ ref: { component: 'self', pinId: 'EN' }, value: en },
 			]);
 		}
 		rootInstance = next;
@@ -106,26 +106,38 @@
 		rootInstance = evaluateAtPath(library, rootInstance, path, [
 			{
 				ref: { component: 'self', pinId: 'EN' },
-				value: currentlyRunning ? LogicValue.LOW : LogicValue.HIGH
-			}
+				value: currentlyRunning ? LogicValue.LOW : LogicValue.HIGH,
+			},
 		]);
 	}
 
 	function setClockPeriod(path: readonly string[], periodMs: number) {
 		rootInstance = updateInstanceStateAtPath(rootInstance, path, (instance) => ({
 			...instance,
-			primitiveState: { ...(instance.primitiveState as ClockState), periodMs }
+			primitiveState: { ...(instance.primitiveState as ClockState), periodMs },
 		}));
 	}
 
 	onMount(() => {
 		pollHandle = setInterval(pollClocks, POLL_MS);
+		// passive:false is required here — touchstart/touchmove default to
+		// passive in most browsers, which would silently no-op preventDefault
+		// and let the page scroll/zoom underneath the gesture.
+		canvasEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+		canvasEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+		canvasEl.addEventListener('touchend', handleTouchEnd, { passive: false });
+		canvasEl.addEventListener('touchcancel', handleTouchCancel, { passive: false });
 	});
 	onDestroy(() => {
 		if (pollHandle) clearInterval(pollHandle);
-		if (!browser) return;
-		window.removeEventListener('mousemove', handleWindowMouseMove);
-		window.removeEventListener('mouseup', handleWindowMouseUp);
+		if (browser) {
+			window.removeEventListener('mousemove', handleWindowMouseMove);
+			window.removeEventListener('mouseup', handleWindowMouseUp);
+		}
+		canvasEl?.removeEventListener('touchstart', handleTouchStart);
+		canvasEl?.removeEventListener('touchmove', handleTouchMove);
+		canvasEl?.removeEventListener('touchend', handleTouchEnd);
+		canvasEl?.removeEventListener('touchcancel', handleTouchCancel);
 	});
 
 	// --- Pan & zoom ------------------------------------------------------
@@ -143,23 +155,64 @@
 	let dragStartScreen = { x: 0, y: 0 };
 	let dragStartView = DEFAULT_VIEW_TRANSFORM;
 
-	function canvasRelativePoint(e: MouseEvent): { x: number; y: number } {
+	let pinching = false;
+	let pinchStartDistance = 0;
+	let pinchStartMidpoint = { x: 0, y: 0 };
+	let pinchStartView = DEFAULT_VIEW_TRANSFORM;
+
+	function canvasRelativePoint(clientX: number, clientY: number): { x: number; y: number } {
 		const rect = canvasEl.getBoundingClientRect();
-		return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+		return { x: clientX - rect.left, y: clientY - rect.top };
+	}
+
+	function performClickAt(screenX: number, screenY: number) {
+		const world = screenToWorld(view, screenX, screenY);
+		for (const region of clickRegions) {
+			if (
+				world.x >= region.x &&
+				world.x <= region.x + region.w &&
+				world.y >= region.y &&
+				world.y <= region.y + region.h
+			) {
+				region.onClick();
+				return;
+			}
+		}
+	}
+
+	// Wheel: a real mouse wheel and a trackpad's two-finger scroll both fire
+	// plain "wheel" events, while a trackpad PINCH gesture is reported by
+	// every major browser as a wheel event with ctrlKey set — a deliberate,
+	// long-standing convention, not a requirement that Ctrl actually be held.
+	// So: ctrlKey -> zoom (pinch), otherwise -> pan (scroll). This matches
+	// the convention most modern diagram/canvas tools use.
+	function normalizedDelta(e: WheelEvent): { dx: number; dy: number } {
+		// DOM_DELTA_LINE (1) means deltas are in "lines" rather than pixels —
+		// mostly seen from some mouse wheels — so scale up to roughly match
+		// pixel-based trackpad deltas.
+		const scale = e.deltaMode === 1 ? 16 : 1;
+		return { dx: e.deltaX * scale, dy: e.deltaY * scale };
 	}
 
 	function handleWheel(e: WheelEvent) {
 		e.preventDefault();
-		const { x, y } = canvasRelativePoint(e);
-		const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
-		view = zoomAt(view, x, y, factor);
+		const { x, y } = canvasRelativePoint(e.clientX, e.clientY);
+		const { dx, dy } = normalizedDelta(e);
+		if (e.ctrlKey) {
+			const factor = Math.pow(2, -dy * 0.01);
+			view = zoomAt(view, x, y, factor);
+		} else {
+			view = pan(view, -dx, -dy);
+		}
 	}
+
+	// --- Mouse drag-to-pan / click ---
 
 	function handleMouseDown(e: MouseEvent) {
 		if (e.button !== 0) return; // left button only
 		pointerDown = true;
 		dragging = false;
-		dragStartScreen = canvasRelativePoint(e);
+		dragStartScreen = canvasRelativePoint(e.clientX, e.clientY);
 		dragStartView = view;
 		window.addEventListener('mousemove', handleWindowMouseMove);
 		window.addEventListener('mouseup', handleWindowMouseUp);
@@ -167,8 +220,7 @@
 
 	function handleWindowMouseMove(e: MouseEvent) {
 		if (!pointerDown) return;
-		const rect = canvasEl.getBoundingClientRect();
-		const current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+		const current = canvasRelativePoint(e.clientX, e.clientY);
 		const dx = current.x - dragStartScreen.x;
 		const dy = current.y - dragStartScreen.y;
 
@@ -184,25 +236,101 @@
 		window.removeEventListener('mousemove', handleWindowMouseMove);
 		window.removeEventListener('mouseup', handleWindowMouseUp);
 		if (!dragging) {
-			// A genuine click (never moved past the threshold) — run the normal
-			// hit-test against whatever's under the cursor, converting through
-			// the current pan/zoom back into the world coordinates clickRegions
-			// are defined in.
-			const rect = canvasEl.getBoundingClientRect();
-			const screenPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-			const world = screenToWorld(view, screenPoint.x, screenPoint.y);
-			for (const region of clickRegions) {
-				if (
-					world.x >= region.x &&
-					world.x <= region.x + region.w &&
-					world.y >= region.y &&
-					world.y <= region.y + region.h
-				) {
-					region.onClick();
-					break;
+			const p = canvasRelativePoint(e.clientX, e.clientY);
+			performClickAt(p.x, p.y);
+		}
+		pointerDown = false;
+		dragging = false;
+	}
+
+	// --- Touch: one finger pans/taps, two fingers pinch-zoom-and-pan ---
+	//
+	// Registered manually via addEventListener with {passive:false} rather
+	// than as Svelte template attributes — touchstart/touchmove listeners
+	// default to passive in most browsers, which would silently make
+	// preventDefault() a no-op and let the page scroll/zoom underneath us.
+
+	function touchDistance(a: Touch, b: Touch): number {
+		const pa = canvasRelativePoint(a.clientX, a.clientY);
+		const pb = canvasRelativePoint(b.clientX, b.clientY);
+		return Math.hypot(pa.x - pb.x, pa.y - pb.y);
+	}
+
+	function touchMidpoint(a: Touch, b: Touch): { x: number; y: number } {
+		const pa = canvasRelativePoint(a.clientX, a.clientY);
+		const pb = canvasRelativePoint(b.clientX, b.clientY);
+		return { x: (pa.x + pb.x) / 2, y: (pa.y + pb.y) / 2 };
+	}
+
+	function startSingleTouchPan(t: Touch) {
+		pinching = false;
+		pointerDown = true;
+		dragging = false;
+		dragStartScreen = canvasRelativePoint(t.clientX, t.clientY);
+		dragStartView = view;
+	}
+
+	function handleTouchStart(e: TouchEvent) {
+		e.preventDefault();
+		if (e.touches.length === 1) {
+			startSingleTouchPan(e.touches[0]);
+		} else if (e.touches.length === 2) {
+			pointerDown = false;
+			pinching = true;
+			pinchStartDistance = touchDistance(e.touches[0], e.touches[1]);
+			pinchStartMidpoint = touchMidpoint(e.touches[0], e.touches[1]);
+			pinchStartView = view;
+		}
+	}
+
+	function handleTouchMove(e: TouchEvent) {
+		e.preventDefault();
+		if (pinching && e.touches.length === 2) {
+			const newDistance = touchDistance(e.touches[0], e.touches[1]);
+			const newMidpoint = touchMidpoint(e.touches[0], e.touches[1]);
+			const factor = pinchStartDistance === 0 ? 1 : newDistance / pinchStartDistance;
+			const zoomed = zoomAt(pinchStartView, pinchStartMidpoint.x, pinchStartMidpoint.y, factor);
+			view = pan(
+				zoomed,
+				newMidpoint.x - pinchStartMidpoint.x,
+				newMidpoint.y - pinchStartMidpoint.y,
+			);
+		} else if (pointerDown && e.touches.length === 1) {
+			const current = canvasRelativePoint(e.touches[0].clientX, e.touches[0].clientY);
+			const dx = current.x - dragStartScreen.x;
+			const dy = current.y - dragStartScreen.y;
+			if (!dragging && Math.abs(dx) + Math.abs(dy) > DRAG_THRESHOLD) dragging = true;
+			if (dragging) view = pan(dragStartView, dx, dy);
+		}
+	}
+
+	function handleTouchEnd(e: TouchEvent) {
+		e.preventDefault();
+		if (pinching) {
+			if (e.touches.length === 1) {
+				// One finger lifted — keep going as a single-finger pan rather
+				// than ending the interaction outright.
+				startSingleTouchPan(e.touches[0]);
+			} else if (e.touches.length === 0) {
+				pinching = false;
+			}
+			return;
+		}
+		if (pointerDown) {
+			if (!dragging) {
+				const touch = e.changedTouches[0];
+				if (touch) {
+					const p = canvasRelativePoint(touch.clientX, touch.clientY);
+					performClickAt(p.x, p.y);
 				}
 			}
+			pointerDown = false;
+			dragging = false;
 		}
+	}
+
+	function handleTouchCancel() {
+		pinching = false;
 		pointerDown = false;
 		dragging = false;
 	}
@@ -230,7 +358,7 @@
 		clickRegions = renderComposite(ctx, library, instance, layout, {
 			interactive: isRoot,
 			onToggleInput: toggleRootInput,
-			onDrillInto: drillInto
+			onDrillInto: drillInto,
 		});
 		ctx.restore();
 	}
@@ -243,8 +371,11 @@
 	// loop for as long as a clock is enabled, same cost as any other
 	// animation.
 	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		rootInstance;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		drillPath;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		view;
 		draw();
 	});

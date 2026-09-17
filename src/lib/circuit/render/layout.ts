@@ -3,7 +3,8 @@
 // — no per-definition drawing code needed, unlike the earlier HTML demo
 // which hand-positioned every box for exactly one circuit.
 
-import { type DefinitionLibrary, getDefinition } from '#sim/model/component';
+import { getDefinition } from '#sim/model/component';
+import type { DefinitionLibrary } from '$lib/schemas/circuit';
 import { gateShapeFor, isCompactGate } from './gateShapes';
 import type { RoutedWire } from './routing';
 import { computeRoutes } from './routing';
@@ -39,7 +40,7 @@ export function computeLayout(
 	lib: DefinitionLibrary,
 	definitionId: string,
 	canvasWidth: number,
-	canvasHeight: number
+	canvasHeight: number,
 ): Layout {
 	const def = getDefinition(lib, definitionId);
 
@@ -115,7 +116,7 @@ export function computeLayout(
 					w,
 					h,
 					inputPos,
-					outputPos
+					outputPos,
 				};
 
 				y += h + VERTICAL_GAP;

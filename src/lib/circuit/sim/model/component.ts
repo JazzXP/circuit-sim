@@ -3,75 +3,18 @@
 // composite (built from instances of other definitions). Reuse and
 // drill-down both fall out of this definition/instance split.
 
+import type {
+	ComponentDefinition,
+	ComponentInstance,
+	DefinitionLibrary,
+} from '$lib/schemas/circuit';
+
 export enum LogicValue {
 	LOW = 0,
 	HIGH = 1,
 	HIGH_Z = 2, // tri-state / undriven — needed once you add shared buses
-	UNKNOWN = 3 // uninitialized — useful for catching "read before written" bugs
+	UNKNOWN = 3, // uninitialized — useful for catching "read before written" bugs
 }
-
-export type PinDirection = 'input' | 'output';
-
-export interface PinSpec {
-	readonly id: string;
-	readonly name: string;
-	readonly direction: PinDirection;
-	readonly width?: number;
-}
-
-export interface PrimitiveDefinition {
-	readonly kind: 'primitive';
-	readonly id: string;
-	readonly name: string;
-	readonly inputs: readonly PinSpec[];
-	readonly outputs: readonly PinSpec[];
-	readonly evaluate: (
-		inputs: readonly LogicValue[],
-		prevState: unknown
-	) => { outputs: readonly LogicValue[]; nextState: unknown };
-	readonly initialState: () => unknown;
-}
-
-export interface CompositeDefinition {
-	readonly kind: 'composite';
-	readonly id: string;
-	readonly name: string;
-	readonly inputs: readonly PinSpec[];
-	readonly outputs: readonly PinSpec[];
-	readonly children: readonly ChildSpec[];
-	readonly internalWires: readonly WireSpec[];
-}
-
-export type ComponentDefinition = PrimitiveDefinition | CompositeDefinition;
-
-export interface ChildSpec {
-	readonly instanceId: string;
-	readonly definitionId: string;
-	readonly position?: { readonly x: number; readonly y: number };
-	readonly column?: number;
-}
-
-export interface PinRef {
-	readonly component: 'self' | string; // "self" or a ChildSpec.instanceId
-	readonly pinId: string;
-}
-
-export interface WireSpec {
-	readonly id: string;
-	readonly from: PinRef;
-	readonly to: readonly PinRef[];
-}
-
-export interface ComponentInstance {
-	readonly instanceId: string;
-	readonly definitionId: string;
-	readonly pinValues: Readonly<Record<string, LogicValue>>;
-	readonly children?: Readonly<Record<string, ComponentInstance>>;
-	readonly primitiveState?: unknown;
-}
-
-export type DefinitionLibrary = Readonly<Record<string, ComponentDefinition>>;
-
 export const emptyLibrary: DefinitionLibrary = {};
 
 export function getDefinition(lib: DefinitionLibrary, id: string): ComponentDefinition {
@@ -82,7 +25,7 @@ export function getDefinition(lib: DefinitionLibrary, id: string): ComponentDefi
 
 export function registerDefinition(
 	lib: DefinitionLibrary,
-	def: ComponentDefinition
+	def: ComponentDefinition,
 ): DefinitionLibrary {
 	if (wouldCreateCycle(lib, def)) {
 		throw new Error(`Registering "${def.id}" would create a circular dependency`);
@@ -93,7 +36,7 @@ export function registerDefinition(
 function wouldCreateCycle(
 	lib: DefinitionLibrary,
 	def: ComponentDefinition,
-	seen: ReadonlySet<string> = new Set()
+	seen: ReadonlySet<string> = new Set(),
 ): boolean {
 	if (def.kind === 'primitive') return false;
 	for (const child of def.children) {
@@ -110,7 +53,7 @@ function wouldCreateCycle(
 export function instantiate(
 	lib: DefinitionLibrary,
 	definitionId: string,
-	instanceId: string
+	instanceId: string,
 ): ComponentInstance {
 	const def = getDefinition(lib, definitionId);
 
@@ -129,7 +72,7 @@ export function instantiate(
 			// voltage from power-on, no "first event" required.
 			const { outputs, nextState } = def.evaluate([], primitiveState);
 			def.outputs.forEach((pin, i) => {
-				initialPinValues[pin.id] = outputs[i];
+				initialPinValues[pin.id] = outputs?.[i] ?? 0;
 			});
 			return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
 		}
@@ -138,7 +81,7 @@ export function instantiate(
 			instanceId,
 			definitionId,
 			pinValues: initialPinValues,
-			primitiveState: def.initialState()
+			primitiveState: def.initialState(),
 		};
 	}
 

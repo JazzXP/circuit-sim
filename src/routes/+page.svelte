@@ -1,11 +1,6 @@
 <script lang="ts">
 	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
-	import {
-		emptyLibrary,
-		registerDefinition,
-		type DefinitionLibrary,
-		type CompositeDefinition
-	} from '$lib/circuit/sim/model/component';
+	import { emptyLibrary, registerDefinition } from '$lib/circuit/sim/model/component';
 	import { AND2, OR2, NOT, NAND2, DFF, CLOCK, GND, VCC } from '$lib/circuit/components/primitives';
 	import { SEVEN_SEGMENT_HEX_DECODER } from '$lib/circuit/components/composites/eeproms';
 	import { SEVEN_SEGMENT_DISPLAY } from '$lib/circuit/components/composites/displays';
@@ -14,6 +9,11 @@
 	import CLOCKED_DFF_DEMO from '../examples/clockedDff.json';
 	import CLOCKED_COUNTER from '../examples/clockedCounter.json';
 	import COUNTER_4BIT from '../examples/counter4bit.json';
+	import {
+		componentDefinitionSchema,
+		type CompositeDefinition,
+		type DefinitionLibrary,
+	} from '$lib/schemas/circuit';
 
 	let library: DefinitionLibrary = emptyLibrary;
 	for (const def of [
@@ -37,10 +37,10 @@
 		SEVEN_SEGMENT_DISPLAY,
 
 		// Demos
-		CLOCKED_DFF_DEMO,
-		DIGIT_DISPLAY_DEMO,
-		CLOCKED_COUNTER,
-		COUNTER_4BIT
+		componentDefinitionSchema.parse(CLOCKED_DFF_DEMO),
+		componentDefinitionSchema.parse(DIGIT_DISPLAY_DEMO),
+		componentDefinitionSchema.parse(CLOCKED_COUNTER),
+		componentDefinitionSchema.parse(COUNTER_4BIT),
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}

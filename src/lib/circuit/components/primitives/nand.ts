@@ -1,5 +1,6 @@
-import { LogicValue, type PrimitiveDefinition } from '../../sim/model/component.ts';
-import { bit } from '../../sim/util/bit.ts';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
+import { LogicValue } from '#sim/model/component';
+import { bit } from '#sim/util/bit';
 
 export const NAND2: PrimitiveDefinition = {
 	kind: 'primitive',
@@ -7,12 +8,12 @@ export const NAND2: PrimitiveDefinition = {
 	name: 'NAND',
 	inputs: [
 		{ id: 'A', name: 'A', direction: 'input' },
-		{ id: 'B', name: 'B', direction: 'input' }
+		{ id: 'B', name: 'B', direction: 'input' },
 	],
 	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
 	initialState: () => undefined,
 	evaluate: (inputs) => ({
 		outputs: [bit(inputs[0]) & bit(inputs[1]) ? LogicValue.LOW : LogicValue.HIGH],
-		nextState: undefined
-	})
+		nextState: undefined,
+	}),
 };

@@ -1,4 +1,5 @@
-import { LogicValue, type PinSpec, type PrimitiveDefinition } from '#sim/model/component';
+import { LogicValue } from '#sim/model/component';
+import type { PinSpec, PrimitiveDefinition } from '$lib/schemas/circuit';
 
 // EEPROMs aren't one component — each one's whole identity IS its contents
 // (a microcode ROM, a 7-segment decoder, an ALU flags table are all "an
@@ -35,13 +36,13 @@ export function createEeprom(config: EepromConfig): PrimitiveDefinition {
 	const addressPins: PinSpec[] = Array.from({ length: addressBits }, (_, i) => ({
 		id: `A${i}`,
 		name: `A${i}`,
-		direction: 'input' as const
+		direction: 'input' as const,
 	}));
 	const oePin: PinSpec = { id: 'OE_n', name: "OE'", direction: 'input' };
 	const dataPins: PinSpec[] = Array.from({ length: dataBits }, (_, i) => ({
 		id: `D${i}`,
 		name: `D${i}`,
-		direction: 'output' as const
+		direction: 'output' as const,
 	}));
 
 	return {
@@ -71,7 +72,7 @@ export function createEeprom(config: EepromConfig): PrimitiveDefinition {
 				outputs.push((value >> i) & 1 ? LogicValue.HIGH : LogicValue.LOW);
 			}
 			return { outputs, nextState: undefined };
-		}
+		},
 	};
 }
 
@@ -87,14 +88,14 @@ function buildTable(config: EepromConfig, size: number): readonly number[] {
 function validateTable(id: string, table: readonly number[], size: number, dataBits: number): void {
 	if (table.length !== size) {
 		throw new Error(
-			`EEPROM "${id}": table has ${table.length} entries, expected ${size} (2^addressBits)`
+			`EEPROM "${id}": table has ${table.length} entries, expected ${size} (2^addressBits)`,
 		);
 	}
 	const max = (1 << dataBits) - 1;
 	table.forEach((value, addr) => {
 		if (!Number.isInteger(value) || value < 0 || value > max) {
 			throw new Error(
-				`EEPROM "${id}": value ${value} at address ${addr} doesn't fit in ${dataBits} bits (0-${max})`
+				`EEPROM "${id}": value ${value} at address ${addr} doesn't fit in ${dataBits} bits (0-${max})`,
 			);
 		}
 	});

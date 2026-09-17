@@ -1,4 +1,5 @@
-import { LogicValue, type PrimitiveDefinition } from '../../sim/model/component';
+import { LogicValue } from '#sim/model/component';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
 
 // Zero-input sources — see the seeding logic in sim/model/component.ts's
 // instantiate(): these are evaluated immediately at creation time rather
@@ -11,5 +12,5 @@ export const VCC: PrimitiveDefinition = {
 	inputs: [],
 	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
 	initialState: () => undefined,
-	evaluate: () => ({ outputs: [LogicValue.HIGH], nextState: undefined })
+	evaluate: () => ({ outputs: [LogicValue.HIGH], nextState: undefined }),
 };

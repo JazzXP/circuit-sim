@@ -1,71 +1,101 @@
 import z from 'zod';
 
 const logicValueSchema = z.number().int().min(0).max(3);
-export type LogicValueS = z.infer<typeof logicValueSchema>;
-export enum LogicValue {
-	LOW = 0,
-	HIGH = 1,
-	HIGH_Z = 2, // tri-state / undriven — needed once you add shared buses
-	UNKNOWN = 3 // uninitialized — useful for catching "read before written" bugs
-}
+const pinDirectionSchema = z.enum(['input', 'output']);
+const pinSpecSchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	direction: pinDirectionSchema,
+	width: z.number().optional(),
+});
+const pinRefSchema = z.object({
+	component: z.union([z.literal('self'), z.string()]).readonly(),
+	pinId: z.string().readonly(),
+});
+const wireSpecSchema = z.object({
+	id: z.string().readonly(),
+	from: pinRefSchema,
+	to: pinRefSchema.array().readonly(),
+});
+export type WireSpec = z.infer<typeof wireSpecSchema>;
 
-export type PinDirection = 'input' | 'output';
+const primitiveDefinitionSchema = z.object({
+	kind: z.literal('primitive'),
+	id: z.string(),
+	name: z.string(),
+	inputs: pinSpecSchema.array().readonly(),
+	outputs: pinSpecSchema.array().readonly(),
 
-export interface PinSpec {
-	readonly id: string;
-	readonly name: string;
-	readonly direction: PinDirection;
-	readonly width?: number;
-}
+	evaluate: z
+		.function({
+			input: [logicValueSchema.array(), z.unknown()],
+			output: z.object({
+				outputs: logicValueSchema.array().optional().readonly(),
+				nextState: z.unknown().optional().readonly(),
+			}),
+		})
+		.readonly(),
+	initialState: z.function({ output: z.unknown().readonly().optional() }).readonly(),
+});
 
-export interface PrimitiveDefinition {
-	readonly kind: 'primitive';
-	readonly id: string;
-	readonly name: string;
-	readonly inputs: readonly PinSpec[];
-	readonly outputs: readonly PinSpec[];
-	readonly evaluate: (
-		inputs: readonly LogicValue[],
-		prevState: unknown
-	) => { outputs: readonly LogicValue[]; nextState: unknown };
-	readonly initialState: () => unknown;
-}
+const childSpecSchema = z.object({
+	instanceId: z.string().readonly(),
+	definitionId: z.string().readonly(),
+	position: z
+		.object({
+			x: z.number().readonly(),
+			y: z.number().readonly(),
+		})
+		.readonly()
+		.optional(),
+	column: z.number().readonly().optional(),
+});
 
-export interface CompositeDefinition {
-	readonly kind: 'composite';
-	readonly id: string;
-	readonly name: string;
-	readonly inputs: readonly PinSpec[];
-	readonly outputs: readonly PinSpec[];
-	readonly children: readonly ChildSpec[];
-	readonly internalWires: readonly WireSpec[];
-}
+const compositeDefinitionSchema = z.object({
+	kind: z.literal('composite'),
+	id: z.string(),
+	name: z.string(),
+	inputs: pinSpecSchema.array().readonly(),
+	outputs: pinSpecSchema.array().readonly(),
+	children: childSpecSchema.array().readonly(),
+	internalWires: wireSpecSchema.array().readonly(),
+});
 
-export type ComponentDefinition = PrimitiveDefinition | CompositeDefinition;
-
-export interface ChildSpec {
+export const componentDefinitionSchema = z.discriminatedUnion('kind', [
+	primitiveDefinitionSchema.readonly(),
+	compositeDefinitionSchema.readonly(),
+]);
+export type ComponentInstance = {
 	readonly instanceId: string;
 	readonly definitionId: string;
-	readonly position?: { readonly x: number; readonly y: number };
-}
-
-export interface PinRef {
-	readonly component: 'self' | string; // "self" or a ChildSpec.instanceId
-	readonly pinId: string;
-}
-
-export interface WireSpec {
-	readonly id: string;
-	readonly from: PinRef;
-	readonly to: readonly PinRef[];
-}
-
-export interface ComponentInstance {
-	readonly instanceId: string;
-	readonly definitionId: string;
-	readonly pinValues: Readonly<Record<string, LogicValue>>;
+	readonly pinValues: Readonly<Record<string, number>>;
 	readonly children?: Readonly<Record<string, ComponentInstance>>;
-	readonly primitiveState?: unknown;
-}
+	readonly primitiveState?: Readonly<unknown>;
+};
 
-export type DefinitionLibrary = Readonly<Record<string, ComponentDefinition>>;
+export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
+	instanceId: z.string().readonly(),
+	definitionId: z.string().readonly(),
+	pinValues: z.record(z.string(), logicValueSchema).readonly(),
+	get children() {
+		return z.record(z.string(), componentInstanceSchema).optional().readonly();
+	},
+	primitiveState: z.unknown().optional().readonly(),
+});
+
+export const definitionLibrarySchema = z.record(z.string(), componentDefinitionSchema).readonly();
+
+export type LogicValue = z.infer<typeof logicValueSchema>;
+export type PinDirection = z.infer<typeof pinDirectionSchema>;
+export type PinSpec = z.infer<typeof pinSpecSchema>;
+
+export type ChildSpec = z.infer<typeof childSpecSchema>;
+
+export type PrimitiveDefinition = z.infer<typeof primitiveDefinitionSchema>;
+export type CompositeDefinition = z.infer<typeof compositeDefinitionSchema>;
+
+export type ComponentDefinition = z.infer<typeof componentDefinitionSchema>;
+
+export type PinRef = z.infer<typeof pinRefSchema>;
+
+export type DefinitionLibrary = z.infer<typeof definitionLibrarySchema>;

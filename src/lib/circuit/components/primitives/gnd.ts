@@ -1,4 +1,5 @@
-import { LogicValue, type PrimitiveDefinition } from '../../sim/model/component';
+import { LogicValue } from '#sim/model/component';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
 
 export const GND: PrimitiveDefinition = {
 	kind: 'primitive',
@@ -7,5 +8,5 @@ export const GND: PrimitiveDefinition = {
 	inputs: [],
 	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
 	initialState: () => undefined,
-	evaluate: () => ({ outputs: [LogicValue.LOW], nextState: undefined })
+	evaluate: () => ({ outputs: [LogicValue.LOW], nextState: undefined }),
 };

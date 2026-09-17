@@ -2,17 +2,15 @@
 // evaluate* call takes an instance tree and a set of incoming changes, and
 // returns a brand new tree plus whatever changed on its own boundary.
 
-import {
-	type ComponentInstance,
-	type CompositeDefinition,
-	type PrimitiveDefinition,
-	type DefinitionLibrary,
-	type PinRef,
-	type WireSpec,
-	LogicValue,
-	getDefinition,
-	instantiate
-} from '../model/component';
+import type {
+	ComponentInstance,
+	CompositeDefinition,
+	DefinitionLibrary,
+	PinRef,
+	PrimitiveDefinition,
+	WireSpec,
+} from '$lib/schemas/circuit';
+import { LogicValue, getDefinition, instantiate } from '../model/component';
 
 export interface PinChange {
 	readonly ref: PinRef; // "self" = this instance's own boundary pin
@@ -42,7 +40,7 @@ export interface EvalResult {
 export function evaluateInstance(
 	lib: DefinitionLibrary,
 	instance: ComponentInstance,
-	inputChanges: readonly PinChange[]
+	inputChanges: readonly PinChange[],
 ): EvalResult {
 	if (inputChanges.length === 0) {
 		return { instance, outputChanges: [] };
@@ -56,7 +54,7 @@ export function evaluateInstance(
 function evaluatePrimitiveInstance(
 	def: PrimitiveDefinition,
 	instance: ComponentInstance,
-	inputChanges: readonly PinChange[]
+	inputChanges: readonly PinChange[],
 ): EvalResult {
 	const pinValues = { ...instance.pinValues };
 	for (const change of inputChanges) pinValues[change.ref.pinId] = change.value;
@@ -66,9 +64,9 @@ function evaluatePrimitiveInstance(
 
 	const outputChanges: PinChange[] = [];
 	def.outputs.forEach((pin, i) => {
-		if (pinValues[pin.id] !== outputs[i]) {
-			pinValues[pin.id] = outputs[i];
-			outputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: outputs[i] });
+		if (pinValues[pin.id] !== outputs?.[i]) {
+			pinValues[pin.id] = outputs?.[i] ?? 0;
+			outputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: outputs?.[i] ?? 0 });
 		}
 	});
 
@@ -89,7 +87,7 @@ function drainPropagationQueue(
 	def: CompositeDefinition,
 	pinValues: Record<string, LogicValue>,
 	children: Record<string, ComponentInstance>,
-	initialQueue: PinChange[]
+	initialQueue: PinChange[],
 ): { boundaryOutputChanges: PinChange[] } {
 	const sourceIndex = wiresBySource(def);
 	const boundaryOutputChanges: PinChange[] = [];
@@ -123,7 +121,7 @@ function drainPropagationQueue(
 				for (const outChange of result.outputChanges) {
 					queue.push({
 						ref: { component: dest.component, pinId: outChange.ref.pinId },
-						value: outChange.value
+						value: outChange.value,
 					});
 				}
 			}
@@ -137,10 +135,10 @@ function evaluateCompositeInstance(
 	lib: DefinitionLibrary,
 	def: CompositeDefinition,
 	instance: ComponentInstance,
-	inputChanges: readonly PinChange[]
+	inputChanges: readonly PinChange[],
 ): EvalResult {
 	const pinValues = { ...instance.pinValues };
-	const children = { ...(instance.children ?? {}) };
+	const children: Record<string, Readonly<ComponentInstance>> = { ...(instance.children ?? {}) };
 
 	const initialQueue: PinChange[] = [];
 	for (const change of inputChanges) {
@@ -153,7 +151,7 @@ function evaluateCompositeInstance(
 		def,
 		pinValues,
 		children,
-		initialQueue
+		initialQueue,
 	);
 
 	const nextInstance: ComponentInstance = { ...instance, pinValues, children };
@@ -163,7 +161,7 @@ function evaluateCompositeInstance(
 export function evaluateTick(
 	lib: DefinitionLibrary,
 	rootInstance: ComponentInstance,
-	externalChanges: readonly PinChange[]
+	externalChanges: readonly PinChange[],
 ): ComponentInstance {
 	return evaluateInstance(lib, rootInstance, externalChanges).instance;
 }
@@ -183,7 +181,7 @@ export function evaluateAtPath(
 	lib: DefinitionLibrary,
 	rootInstance: ComponentInstance,
 	path: readonly string[],
-	changes: readonly PinChange[]
+	changes: readonly PinChange[],
 ): ComponentInstance {
 	if (path.length === 0) {
 		return evaluateInstance(lib, rootInstance, changes).instance;
@@ -194,7 +192,7 @@ export function evaluateAtPath(
 export function instantiateAndSettle(
 	lib: DefinitionLibrary,
 	definitionId: string,
-	instanceId: string
+	instanceId: string,
 ): ComponentInstance {
 	return settle(lib, instantiate(lib, definitionId, instanceId));
 }
@@ -237,12 +235,12 @@ function updateAtPath(
 	lib: DefinitionLibrary,
 	instance: ComponentInstance,
 	path: readonly string[],
-	changes: readonly PinChange[]
+	changes: readonly PinChange[],
 ): ComponentInstance {
 	const def = getDefinition(lib, instance.definitionId);
 	if (def.kind !== 'composite') {
 		throw new Error(
-			`Cannot descend into "${instance.definitionId}" — it's a primitive, path should have ended here`
+			`Cannot descend into "${instance.definitionId}" — it's a primitive, path should have ended here`,
 		);
 	}
 
@@ -267,7 +265,7 @@ function updateAtPath(
 			if (updatedChild.pinValues[pin.id] !== childInstance.pinValues[pin.id]) {
 				childOutputChanges.push({
 					ref: { component: 'self', pinId: pin.id },
-					value: updatedChild.pinValues[pin.id]
+					value: updatedChild.pinValues[pin.id],
 				});
 			}
 		}
@@ -281,7 +279,7 @@ function updateAtPath(
 	const children = { ...instance.children, [headId]: updatedChild };
 	const initialQueue: PinChange[] = childOutputChanges.map((c) => ({
 		ref: { component: headId, pinId: c.ref.pinId },
-		value: c.value
+		value: c.value,
 	}));
 
 	drainPropagationQueue(lib, def, pinValues, children, initialQueue);

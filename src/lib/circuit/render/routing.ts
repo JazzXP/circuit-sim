@@ -4,7 +4,7 @@
 // definition/canvas-size as part of computeLayout — never recomputed just
 // because a pin value changed.
 
-import type { ComponentDefinition, PinRef } from '#sim/model/component';
+import type { ComponentDefinition, PinRef } from '$lib/schemas/circuit';
 import type { Point, ChildLayout } from './layout';
 
 export interface RoutedWire {
@@ -28,7 +28,7 @@ const CONGESTION_WEIGHT = 4; // extra cost per prior wire already using a cell
 function buildBlockedGrid(
 	children: Readonly<Record<string, ChildLayout>>,
 	width: number,
-	height: number
+	height: number,
 ) {
 	const cols = Math.ceil(width / CELL);
 	const rows = Math.ceil(height / CELL);
@@ -56,7 +56,7 @@ function astar(
 	blocked: boolean[][],
 	cols: number,
 	rows: number,
-	congestion: ReadonlyMap<number, number>
+	congestion: ReadonlyMap<number, number>,
 ): Point[] | null {
 	const clamp = (v: number, max: number) => Math.max(0, Math.min(max - 1, v));
 	const sr = clamp(Math.round(start.y / CELL), rows);
@@ -82,7 +82,7 @@ function astar(
 		[-1, 0, 0],
 		[1, 0, 1],
 		[0, -1, 2],
-		[0, 1, 3]
+		[0, 1, 3],
 	];
 
 	let guard = 0;
@@ -172,7 +172,7 @@ function resolveEndpoint(geometry: Geometry, ref: PinRef): { pin: Point; stub: P
 function markCongestion(
 	congestion: Map<number, number>,
 	points: readonly Point[],
-	cols: number
+	cols: number,
 ): void {
 	for (const p of points) {
 		const r = Math.round(p.y / CELL);
@@ -186,7 +186,7 @@ export function computeRoutes(
 	def: ComponentDefinition,
 	geometry: Geometry,
 	canvasWidth: number,
-	canvasHeight: number
+	canvasHeight: number,
 ): RoutedWire[] {
 	if (def.kind !== 'composite') return [];
 

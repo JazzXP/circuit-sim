@@ -1,5 +1,6 @@
-import { LogicValue, type PrimitiveDefinition } from '$lib/circuit/sim/model/component';
-import { bit } from '../../sim/util/bit.ts';
+import { LogicValue } from '#sim/model/component';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
+import { bit } from '#sim/util/bit';
 
 export const OR2: PrimitiveDefinition = {
 	kind: 'primitive',
@@ -7,12 +8,12 @@ export const OR2: PrimitiveDefinition = {
 	name: 'OR',
 	inputs: [
 		{ id: 'A', name: 'A', direction: 'input' },
-		{ id: 'B', name: 'B', direction: 'input' }
+		{ id: 'B', name: 'B', direction: 'input' },
 	],
 	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
 	initialState: () => undefined,
 	evaluate: (inputs) => ({
 		outputs: [bit(inputs[0]) | bit(inputs[1]) ? LogicValue.HIGH : LogicValue.LOW],
-		nextState: undefined
-	})
+		nextState: undefined,
+	}),
 };

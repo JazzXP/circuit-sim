@@ -1,13 +1,8 @@
-import {
-	type DefinitionLibrary,
-	type ComponentInstance,
-	LogicValue,
-	type PinRef,
-	getDefinition
-} from '#sim/model/component';
+import { LogicValue, getDefinition } from '#sim/model/component';
 import type { Layout, Point } from './layout';
 import { gateShapeFor, drawGateShape } from './gateShapes';
 import { isSevenSegmentDisplay, drawSevenSegmentDisplay } from './sevenSegment';
+import type { ComponentInstance, PinRef, DefinitionLibrary } from '$lib/schemas/circuit';
 
 export interface ClickRegion {
 	readonly x: number;
@@ -30,7 +25,7 @@ const COLOR = {
 	boxStroke: '#3c414d',
 	boxStrokeComposite: '#6ea8ff',
 	text: '#d8dae0',
-	textDim: '#8b8f99'
+	textDim: '#8b8f99',
 };
 
 function wireColor(v: LogicValue): string {
@@ -43,7 +38,7 @@ function roundRect(
 	y: number,
 	w: number,
 	h: number,
-	r: number
+	r: number,
 ) {
 	ctx.beginPath();
 	ctx.moveTo(x + r, y);
@@ -101,7 +96,7 @@ export function renderComposite(
 	lib: DefinitionLibrary,
 	instance: ComponentInstance,
 	layout: Layout,
-	options: RenderOptions
+	options: RenderOptions,
 ): ClickRegion[] {
 	const def = getDefinition(lib, instance.definitionId);
 	const clickRegions: ClickRegion[] = [];
@@ -206,7 +201,7 @@ export function renderComposite(
 				y: box.y,
 				w: box.w,
 				h: box.h,
-				onClick: () => options.onDrillInto(child.instanceId)
+				onClick: () => options.onDrillInto(child.instanceId),
 			});
 		}
 	}

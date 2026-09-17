@@ -1,4 +1,5 @@
-import { LogicValue, type PrimitiveDefinition } from '../../sim/model/component.ts';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
+import { LogicValue } from '#sim/model/component';
 
 // Rising-edge D flip-flop. State remembers the last clock level so it can
 // detect an edge rather than just reacting to CLK being HIGH.
@@ -13,11 +14,11 @@ export const DFF: PrimitiveDefinition = {
 	name: 'D flip-flop',
 	inputs: [
 		{ id: 'D', name: 'D', direction: 'input' },
-		{ id: 'CLK', name: 'CLK', direction: 'input' }
+		{ id: 'CLK', name: 'CLK', direction: 'input' },
 	],
 	outputs: [
 		{ id: 'Q', name: 'Q', direction: 'output' },
-		{ id: 'NQ', name: "Q'", direction: 'output' }
+		{ id: 'NQ', name: "Q'", direction: 'output' },
 	],
 	initialState: (): DffState => ({ lastClock: LogicValue.LOW, storedBit: LogicValue.LOW }),
 	evaluate: (inputs, prevState) => {
@@ -29,7 +30,7 @@ export const DFF: PrimitiveDefinition = {
 		const nextState: DffState = { lastClock: clk, storedBit };
 		return {
 			outputs: [storedBit, storedBit === LogicValue.HIGH ? LogicValue.LOW : LogicValue.HIGH],
-			nextState
+			nextState,
 		};
-	}
+	},
 };

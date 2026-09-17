@@ -1,8 +1,9 @@
-import { type ComponentInstance } from './component';
-
 // Walks the whole instance tree looking for every instance of a given
 // definition, returning each one's drill-path from the root. Used to find
 // every CLOCK instance anywhere in a circuit — however deeply nested —
+
+import type { ComponentInstance } from '$lib/schemas/circuit';
+
 // without the caller needing to know the circuit's shape in advance.
 export interface InstanceMatch {
 	readonly path: readonly string[];
@@ -12,7 +13,7 @@ export interface InstanceMatch {
 export function findInstancesByDefinition(
 	root: ComponentInstance,
 	definitionId: string,
-	path: readonly string[] = []
+	path: readonly string[] = [],
 ): InstanceMatch[] {
 	const matches: InstanceMatch[] = [];
 	if (root.definitionId === definitionId) {
@@ -35,7 +36,7 @@ export function findInstancesByDefinition(
 export function updateInstanceStateAtPath(
 	root: ComponentInstance,
 	path: readonly string[],
-	updater: (instance: ComponentInstance) => ComponentInstance
+	updater: (instance: ComponentInstance) => ComponentInstance,
 ): ComponentInstance {
 	if (path.length === 0) {
 		return updater(root);
