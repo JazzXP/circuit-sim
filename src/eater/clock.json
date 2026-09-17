@@ -1,0 +1,54 @@
+{
+	"kind": "composite",
+	"id": "EATER_CLOCK",
+	"name": "Counter Module",
+	"inputs": [
+		{ "id": "CLK_STEP", "name": "Clock Step", "direction": "input", "defaultValue": 0 },
+		{ "id": "HLT", "name": "Halt", "direction": "input", "defaultValue": 0 }
+	],
+	"outputs": [
+		{ "id": "CLK", "name": "CLK", "direction": "output" },
+		{ "id": "CLK_n", "name": "'CLK", "direction": "output" }
+	],
+	"children": [
+		{ "instanceId": "clock", "definitionId": "CLOCK", "column": 0 },
+		{ "instanceId": "c_or", "definitionId": "OR2", "column": 1 },
+		{ "instanceId": "h_not", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "h_and", "definitionId": "AND2", "column": 2 },
+		{ "instanceId": "c_not", "definitionId": "NOT", "column": 3 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK_STEP" },
+			"to": [{ "component": "c_or", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "HLT" },
+			"to": [{ "component": "h_not", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "h_not", "pinId": "OUT" },
+			"to": [{ "component": "h_and", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "clock", "pinId": "CLK" },
+			"to": [{ "component": "c_or", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "c_or", "pinId": "OUT" },
+			"to": [{ "component": "h_and", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "h_and", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "h_and", "pinId": "OUT" },
+			"to": [{ "component": "c_not", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "c_not", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "CLK_n" }]
+		}
+	]
+}

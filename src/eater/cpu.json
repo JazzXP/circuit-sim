@@ -1,0 +1,9 @@
+{
+	"kind": "composite",
+	"id": "EATER_CPU",
+	"name": "CPU",
+	"inputs": [],
+	"outputs": [],
+	"children": [{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 0 }],
+	"internalWires": []
+}
