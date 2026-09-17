@@ -1,15 +1,10 @@
 import { describe, beforeEach, it, expect } from 'vitest';
 
-import {
-	LogicValue,
-	type DefinitionLibrary,
-	emptyLibrary,
-	registerDefinition,
-	instantiate
-} from '#sim/model/component';
+import { LogicValue, emptyLibrary, registerDefinition, instantiate } from '#sim/model/component';
 import { evaluateTick } from '#sim/controller/engine';
 import { AND2, OR2, NOT, NAND2 } from '#components/primitives';
 import { SR_LATCH } from './sr-latch.ts';
+import type { DefinitionLibrary } from '$lib/schemas/circuit';
 
 type TestType = {
 	name: string;
@@ -29,13 +24,13 @@ describe('SR-Latch', () => {
 			name: 'S High-High No Reset',
 			pins: [
 				{ S: LogicValue.HIGH, R: LogicValue.LOW },
-				{ S: LogicValue.HIGH, R: LogicValue.HIGH }
+				{ S: LogicValue.HIGH, R: LogicValue.HIGH },
 			],
 			expected: [
 				{ Q: LogicValue.HIGH, Q_n: LogicValue.LOW },
-				{ Q: LogicValue.HIGH, Q_n: LogicValue.LOW }
-			]
-		}
+				{ Q: LogicValue.HIGH, Q_n: LogicValue.LOW },
+			],
+		},
 	];
 
 	it('Initial', () => {
@@ -50,8 +45,8 @@ describe('SR-Latch', () => {
 		const changes = pins.map((p) =>
 			Object.entries(p).map(([pinId, value]) => ({
 				ref: { component: 'self', pinId },
-				value
-			}))
+				value,
+			})),
 		);
 		let sr = srLatch;
 		changes.forEach((c, idx) => {

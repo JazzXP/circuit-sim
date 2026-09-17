@@ -22,17 +22,14 @@ export const SR_LATCH: CompositeDefinition = {
 	],
 	internalWires: [
 		{
-			id: 'w1',
 			from: { component: 'self', pinId: 'S_n' },
 			to: [{ component: 'nandA', pinId: 'A' }],
 		},
 		{
-			id: 'w2',
 			from: { component: 'self', pinId: 'R_n' },
 			to: [{ component: 'nandB', pinId: 'A' }],
 		},
 		{
-			id: 'w3',
 			from: { component: 'nandA', pinId: 'OUT' },
 			to: [
 				{ component: 'self', pinId: 'Q' },
@@ -40,7 +37,6 @@ export const SR_LATCH: CompositeDefinition = {
 			],
 		},
 		{
-			id: 'w4',
 			from: { component: 'nandB', pinId: 'OUT' },
 			to: [
 				{ component: 'self', pinId: 'Q_n' },

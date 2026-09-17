@@ -24,7 +24,6 @@ export const D_LATCH: CompositeDefinition = {
 	],
 	internalWires: [
 		{
-			id: 'w1',
 			from: { component: 'self', pinId: 'D' },
 			to: [
 				{ component: 'notD', pinId: 'A' },
@@ -33,27 +32,23 @@ export const D_LATCH: CompositeDefinition = {
 			],
 		},
 		{
-			id: 'w2',
 			from: { component: 'self', pinId: 'EN' },
 			to: [
 				{ component: 'nS', pinId: 'B' },
 				{ component: 'nR', pinId: 'B' },
 			],
 		},
-		{ id: 'w3', from: { component: 'notD', pinId: 'OUT' }, to: [{ component: 'nR', pinId: 'A' }] },
+		{ from: { component: 'notD', pinId: 'OUT' }, to: [{ component: 'nR', pinId: 'A' }] },
 		{
-			id: 'w4',
 			from: { component: 'nS', pinId: 'OUT' },
 			to: [{ component: 'latch', pinId: 'S_n' }],
 		},
 		{
-			id: 'w5',
 			from: { component: 'nR', pinId: 'OUT' },
 			to: [{ component: 'latch', pinId: 'R_n' }],
 		},
-		{ id: 'w6', from: { component: 'latch', pinId: 'Q' }, to: [{ component: 'self', pinId: 'Q' }] },
+		{ from: { component: 'latch', pinId: 'Q' }, to: [{ component: 'self', pinId: 'Q' }] },
 		{
-			id: 'w7',
 			from: { component: 'latch', pinId: 'Q_n' },
 			to: [{ component: 'self', pinId: 'Q_n' }],
 		},

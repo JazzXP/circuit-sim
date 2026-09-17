@@ -21,6 +21,7 @@ export interface RenderOptions {
 const COLOR = {
 	wireLow: '#4a4e58',
 	wireHigh: '#e0a840',
+	wireUnkown: '#aa0000',
 	boxFill: '#252932',
 	boxStroke: '#3c414d',
 	boxStrokeComposite: '#6ea8ff',
@@ -29,7 +30,14 @@ const COLOR = {
 };
 
 function wireColor(v: LogicValue): string {
-	return v === LogicValue.HIGH ? COLOR.wireHigh : COLOR.wireLow;
+	switch (v) {
+		case LogicValue.HIGH:
+			return COLOR.wireHigh;
+		case LogicValue.UNKNOWN:
+			return COLOR.wireUnkown;
+		default:
+			return COLOR.wireLow;
+	}
 }
 
 function roundRect(

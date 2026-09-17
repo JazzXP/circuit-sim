@@ -59,7 +59,7 @@ export function instantiate(
 
 	const initialPinValues: Record<string, LogicValue> = {};
 	for (const pin of [...def.inputs, ...def.outputs]) {
-		initialPinValues[pin.id] = LogicValue.UNKNOWN;
+		initialPinValues[pin.id] = pin.defaultValue ?? LogicValue.UNKNOWN;
 	}
 
 	if (def.kind === 'primitive') {

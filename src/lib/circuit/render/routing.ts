@@ -8,7 +8,7 @@ import type { ComponentDefinition, PinRef } from '$lib/schemas/circuit';
 import type { Point, ChildLayout } from './layout';
 
 export interface RoutedWire {
-	readonly wireId: string;
+	// readonly wireId: string;
 	readonly toIndex: number;
 	readonly from: PinRef;
 	readonly to: PinRef;
@@ -202,7 +202,7 @@ export function computeRoutes(
 			const routedThroughGrid = gridPath ?? [source.stub, dest.stub]; // fall back to a direct line if pathfinding fails
 			markCongestion(congestion, routedThroughGrid, cols);
 			const full = simplify([source.pin, ...routedThroughGrid, dest.pin]);
-			routes.push({ wireId: wire.id, toIndex, from: wire.from, to: toRef, points: full });
+			routes.push({ toIndex, from: wire.from, to: toRef, points: full });
 		});
 	}
 

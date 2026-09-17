@@ -1,16 +1,11 @@
 import { describe, beforeEach, it, expect } from 'vitest';
 
-import {
-	LogicValue,
-	type DefinitionLibrary,
-	emptyLibrary,
-	registerDefinition,
-	instantiate
-} from '#sim/model/component';
+import { LogicValue, emptyLibrary, registerDefinition, instantiate } from '#sim/model/component';
 import { evaluateTick } from '#sim/controller/engine';
 import { AND2, OR2, NOT, NAND2 } from '#components/primitives';
-import { SR_LATCH } from './sr-latch.ts';
+import { SR_LATCH } from './sr-latch';
 import { D_LATCH } from './d-latch';
+import type { DefinitionLibrary } from '$lib/schemas/circuit';
 
 type TestType = {
 	name: string;
@@ -30,23 +25,23 @@ describe('D-Latch', () => {
 		{
 			name: 'D High',
 			pins: { D: LogicValue.HIGH, EN: LogicValue.HIGH },
-			expected: { Q: LogicValue.HIGH, Q_n: LogicValue.LOW }
+			expected: { Q: LogicValue.HIGH, Q_n: LogicValue.LOW },
 		},
 		{
 			name: 'D Low',
 			pins: { D: LogicValue.LOW, EN: LogicValue.HIGH },
-			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH }
+			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH },
 		},
 		{
 			name: 'Disabled D High',
 			pins: { D: LogicValue.HIGH, EN: LogicValue.LOW },
-			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH }
+			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH },
 		},
 		{
 			name: 'Disabled D Low',
 			pins: { D: LogicValue.LOW, EN: LogicValue.LOW },
-			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH }
-		}
+			expected: { Q: LogicValue.LOW, Q_n: LogicValue.HIGH },
+		},
 	];
 
 	it('Initial', () => {
@@ -60,7 +55,7 @@ describe('D-Latch', () => {
 
 		const changes = Object.entries(pins).map(([pinId, value]) => ({
 			ref: { component: 'self', pinId },
-			value
+			value,
 		}));
 		const out = evaluateTick(lib, dLatch, changes);
 		Object.entries(expected).forEach(([pinId, value]) => {

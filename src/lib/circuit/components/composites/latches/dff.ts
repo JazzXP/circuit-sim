@@ -24,12 +24,10 @@ export const DFF_GATES: CompositeDefinition = {
 	],
 	internalWires: [
 		{
-			id: 'w1',
 			from: { component: 'self', pinId: 'D' },
 			to: [{ component: 'master', pinId: 'D' }],
 		},
 		{
-			id: 'w2',
 			from: { component: 'self', pinId: 'CLK' },
 			to: [
 				{ component: 'notClk', pinId: 'A' },
@@ -38,18 +36,15 @@ export const DFF_GATES: CompositeDefinition = {
 			],
 		},
 		{
-			id: 'w3',
 			from: { component: 'notClk', pinId: 'OUT' },
 			to: [{ component: 'master', pinId: 'EN' }],
 		},
 		{
-			id: 'w4',
 			from: { component: 'master', pinId: 'Q' },
 			to: [{ component: 'slave', pinId: 'D' }],
 		},
-		{ id: 'w5', from: { component: 'slave', pinId: 'Q' }, to: [{ component: 'self', pinId: 'Q' }] },
+		{ from: { component: 'slave', pinId: 'Q' }, to: [{ component: 'self', pinId: 'Q' }] },
 		{
-			id: 'w6',
 			from: { component: 'slave', pinId: 'Q_n' },
 			to: [{ component: 'self', pinId: 'NQ' }],
 		},

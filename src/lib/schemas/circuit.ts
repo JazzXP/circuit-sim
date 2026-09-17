@@ -7,13 +7,13 @@ const pinSpecSchema = z.object({
 	name: z.string(),
 	direction: pinDirectionSchema,
 	width: z.number().optional(),
+	defaultValue: logicValueSchema.optional(),
 });
 const pinRefSchema = z.object({
 	component: z.union([z.literal('self'), z.string()]).readonly(),
 	pinId: z.string().readonly(),
 });
 const wireSpecSchema = z.object({
-	id: z.string().readonly(),
 	from: pinRefSchema,
 	to: pinRefSchema.array().readonly(),
 });
