@@ -1,7 +1,7 @@
 import { describe, beforeEach, it, expect } from 'vitest';
 
-import { LogicValue, emptyLibrary, registerDefinition, instantiate } from '#sim/model/component';
-import { evaluateTick } from '#sim/controller/engine';
+import { LogicValue, emptyLibrary, registerDefinition } from '#sim/model/component';
+import { evaluateTick, instantiate } from '#sim/controller/engine';
 import { AND2, OR2, NOT, NAND2 } from '#components/primitives';
 import { SR_LATCH } from './sr-latch';
 import { D_LATCH } from './d-latch';

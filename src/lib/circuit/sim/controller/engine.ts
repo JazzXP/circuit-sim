@@ -10,7 +10,7 @@ import type {
 	PrimitiveDefinition,
 	WireSpec,
 } from '$lib/schemas/circuit';
-import { LogicValue, getDefinition, instantiate } from '../model/component';
+import { LogicValue, getDefinition } from '../model/component';
 
 export interface PinChange {
 	readonly ref: PinRef; // "self" = this instance's own boundary pin
@@ -166,35 +166,42 @@ export function evaluateTick(
 	return evaluateInstance(lib, rootInstance, externalChanges).instance;
 }
 
-// --- Targeted deep updates ---------------------------------------------
-//
-// evaluateTick can only drive the ROOT instance's own boundary pins — fine
-// for switches, since those always live at the top. A component like a
-// clock is different: it can be buried several composites deep, and needs
-// to be pulsed directly rather than through a chain of wires that don't
-// logically exist. evaluateAtPath lets a change be injected at any depth,
-// then correctly re-runs propagation through every ancestor on the way
-// back up to the root, exactly as if the change had arrived by normal wire
-// — it just skips needing an actual wire to get there.
-
-export function evaluateAtPath(
-	lib: DefinitionLibrary,
-	rootInstance: ComponentInstance,
-	path: readonly string[],
-	changes: readonly PinChange[],
-): ComponentInstance {
-	if (path.length === 0) {
-		return evaluateInstance(lib, rootInstance, changes).instance;
-	}
-	return updateAtPath(lib, rootInstance, path, changes);
-}
-
-export function instantiateAndSettle(
+export function instantiate(
 	lib: DefinitionLibrary,
 	definitionId: string,
 	instanceId: string,
 ): ComponentInstance {
-	return settle(lib, instantiate(lib, definitionId, instanceId));
+	return settle(lib, buildRawInstance(lib, definitionId, instanceId));
+}
+
+function buildRawInstance(
+	lib: DefinitionLibrary,
+	definitionId: string,
+	instanceId: string,
+): ComponentInstance {
+	const def = getDefinition(lib, definitionId);
+
+	const initialPinValues: Record<string, LogicValue> = {};
+	for (const pin of [...def.inputs, ...def.outputs]) {
+		initialPinValues[pin.id] = LogicValue.UNKNOWN;
+	}
+
+	if (def.kind === 'primitive') {
+		const primitiveState = def.initialState();
+		const defaultInputs = def.inputs.map(() => LogicValue.UNKNOWN);
+		const { outputs, nextState } = def.evaluate(defaultInputs, primitiveState);
+		def.outputs.forEach((pin, i) => {
+			initialPinValues[pin.id] = outputs?.[i] ?? 0;
+		});
+		return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
+	}
+
+	const children: Record<string, ComponentInstance> = {};
+	for (const child of def.children) {
+		children[child.instanceId] = buildRawInstance(lib, child.definitionId, child.instanceId);
+	}
+
+	return { instanceId, definitionId, pinValues: initialPinValues, children };
 }
 
 function settle(lib: DefinitionLibrary, instance: ComponentInstance): ComponentInstance {
@@ -229,6 +236,29 @@ function settle(lib: DefinitionLibrary, instance: ComponentInstance): ComponentI
 	drainPropagationQueue(lib, def, pinValues, children, initialQueue);
 
 	return { ...instance, pinValues, children };
+}
+
+// --- Targeted deep updates ---------------------------------------------
+//
+// evaluateTick can only drive the ROOT instance's own boundary pins — fine
+// for switches, since those always live at the top. A component like a
+// clock is different: it can be buried several composites deep, and needs
+// to be pulsed directly rather than through a chain of wires that don't
+// logically exist. evaluateAtPath lets a change be injected at any depth,
+// then correctly re-runs propagation through every ancestor on the way
+// back up to the root, exactly as if the change had arrived by normal wire
+// — it just skips needing an actual wire to get there.
+
+export function evaluateAtPath(
+	lib: DefinitionLibrary,
+	rootInstance: ComponentInstance,
+	path: readonly string[],
+	changes: readonly PinChange[],
+): ComponentInstance {
+	if (path.length === 0) {
+		return evaluateInstance(lib, rootInstance, changes).instance;
+	}
+	return updateAtPath(lib, rootInstance, path, changes);
 }
 
 function updateAtPath(

@@ -3,11 +3,7 @@
 // composite (built from instances of other definitions). Reuse and
 // drill-down both fall out of this definition/instance split.
 
-import type {
-	ComponentDefinition,
-	ComponentInstance,
-	DefinitionLibrary,
-} from '$lib/schemas/circuit';
+import type { ComponentDefinition, DefinitionLibrary } from '$lib/schemas/circuit';
 
 export enum LogicValue {
 	LOW = 0,
@@ -50,48 +46,48 @@ function wouldCreateCycle(
 	return false;
 }
 
-export function instantiate(
-	lib: DefinitionLibrary,
-	definitionId: string,
-	instanceId: string,
-): ComponentInstance {
-	const def = getDefinition(lib, definitionId);
-
-	const initialPinValues: Record<string, LogicValue> = {};
-	for (const pin of [...def.inputs, ...def.outputs]) {
-		initialPinValues[pin.id] = pin.defaultValue ?? LogicValue.UNKNOWN;
-	}
-
-	if (def.kind === 'primitive') {
-		const primitiveState = def.initialState();
-		if (def.inputs.length === 0) {
-			// A source with no inputs (e.g. a tied-off constant) has nothing to
-			// ever deliver it an event, so it would sit at UNKNOWN forever under
-			// the normal event-driven model. Seed it immediately instead — this
-			// matches real hardware, where a tied-off rail is just always at its
-			// voltage from power-on, no "first event" required.
-			const { outputs, nextState } = def.evaluate([], primitiveState);
-			def.outputs.forEach((pin, i) => {
-				initialPinValues[pin.id] = outputs?.[i] ?? 0;
-			});
-			return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
-		}
-
-		return {
-			instanceId,
-			definitionId,
-			pinValues: initialPinValues,
-			primitiveState: def.initialState(),
-		};
-	}
-
-	const children: Record<string, ComponentInstance> = {};
-	for (const child of def.children) {
-		children[child.instanceId] = instantiate(lib, child.definitionId, child.instanceId);
-	}
-
-	return { instanceId, definitionId, pinValues: initialPinValues, children };
-}
+// export function instantiate(
+// 	lib: DefinitionLibrary,
+// 	definitionId: string,
+// 	instanceId: string,
+// ): ComponentInstance {
+// 	const def = getDefinition(lib, definitionId);
+//
+// 	const initialPinValues: Record<string, LogicValue> = {};
+// 	for (const pin of [...def.inputs, ...def.outputs]) {
+// 		initialPinValues[pin.id] = pin.defaultValue ?? LogicValue.UNKNOWN;
+// 	}
+//
+// 	if (def.kind === 'primitive') {
+// 		const primitiveState = def.initialState();
+// 		if (def.inputs.length === 0) {
+// 			// A source with no inputs (e.g. a tied-off constant) has nothing to
+// 			// ever deliver it an event, so it would sit at UNKNOWN forever under
+// 			// the normal event-driven model. Seed it immediately instead — this
+// 			// matches real hardware, where a tied-off rail is just always at its
+// 			// voltage from power-on, no "first event" required.
+// 			const { outputs, nextState } = def.evaluate([], primitiveState);
+// 			def.outputs.forEach((pin, i) => {
+// 				initialPinValues[pin.id] = outputs?.[i] ?? 0;
+// 			});
+// 			return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
+// 		}
+//
+// 		return {
+// 			instanceId,
+// 			definitionId,
+// 			pinValues: initialPinValues,
+// 			primitiveState: def.initialState(),
+// 		};
+// 	}
+//
+// 	const children: Record<string, ComponentInstance> = {};
+// 	for (const child of def.children) {
+// 		children[child.instanceId] = instantiate(lib, child.definitionId, child.instanceId);
+// 	}
+//
+// 	return { instanceId, definitionId, pinValues: initialPinValues, children };
+// }
 
 // Drill-down navigation as a plain readonly stack.
 export interface DrillPathEntry {

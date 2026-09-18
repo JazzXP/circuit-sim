@@ -1,5 +1,5 @@
-import { LogicValue, emptyLibrary, registerDefinition, instantiate } from './model/component';
-import { evaluateTick, evaluateAtPath, type PinChange } from './controller/engine';
+import { LogicValue, emptyLibrary, registerDefinition } from './model/component';
+import { evaluateTick, evaluateAtPath, instantiate, type PinChange } from './controller/engine';
 import { findInstancesByDefinition } from './model/tree';
 import { displayValue as L } from './util/bit';
 import { AND2, OR2, NOT, NAND2, DFF, CLOCK } from '#components/primitives';

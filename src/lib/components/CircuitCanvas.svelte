@@ -5,7 +5,7 @@
 	import {
 		evaluateTick,
 		evaluateAtPath,
-		instantiateAndSettle,
+		instantiate,
 		type PinChange,
 	} from '#sim/controller/engine';
 	import type { ClockState } from '#components/primitives/clock';
@@ -31,9 +31,7 @@
 	let { library, rootDefinitionId, width = 720, height = 320 }: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
-	let rootInstance = $derived<ComponentInstance>(
-		instantiateAndSettle(library, rootDefinitionId, 'root'),
-	);
+	let rootInstance = $derived<ComponentInstance>(instantiate(library, rootDefinitionId, 'root'));
 	let drillPath = $state<string[]>([]);
 	let clickRegions: ClickRegion[] = [];
 	let view = $state<ViewTransform>(DEFAULT_VIEW_TRANSFORM);
