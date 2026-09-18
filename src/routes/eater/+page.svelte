@@ -1,7 +1,17 @@
 <script lang="ts">
 	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
 	import { emptyLibrary, registerDefinition } from '$lib/circuit/sim/model/component';
-	import { AND2, OR2, NOT, NAND2, DFF, CLOCK, GND, VCC } from '$lib/circuit/components/primitives';
+	import {
+		AND2,
+		OR2,
+		NOT,
+		NAND2,
+		DFF,
+		CLOCK,
+		GND,
+		VCC,
+		BUS,
+	} from '$lib/circuit/components/primitives';
 	import { SEVEN_SEGMENT_HEX_DECODER } from '$lib/circuit/components/composites/eeproms';
 	import { SEVEN_SEGMENT_DISPLAY } from '$lib/circuit/components/composites/displays';
 	import { SR_LATCH, D_LATCH, DFF_GATES } from '$lib/circuit/components/composites/latches';
@@ -25,6 +35,7 @@
 		DFF,
 		VCC,
 		CLOCK,
+		BUS,
 
 		// Latches
 		SR_LATCH,

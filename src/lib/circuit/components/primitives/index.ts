@@ -7,3 +7,4 @@ export * from './clock';
 export * from './eeprom';
 export * from './vcc';
 export * from './gnd';
+export * from './bus';

@@ -4,6 +4,43 @@
 	"name": "CPU",
 	"inputs": [],
 	"outputs": [],
-	"children": [{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 0 }],
-	"internalWires": []
+	"children": [
+		{ "instanceId": "bus1", "definitionId": "BUS", "column": 0 },
+		{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 1 },
+		{ "instanceId": "bus2", "definitionId": "BUS", "column": 2 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "bus1", "pinId": "A_OUT" },
+			"to": [{ "component": "bus2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "B_OUT" },
+			"to": [{ "component": "bus2", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "C_OUT" },
+			"to": [{ "component": "bus2", "pinId": "C" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "D_OUT" },
+			"to": [{ "component": "bus2", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "E_OUT" },
+			"to": [{ "component": "bus2", "pinId": "E" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "F_OUT" },
+			"to": [{ "component": "bus2", "pinId": "F" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "G_OUT" },
+			"to": [{ "component": "bus2", "pinId": "G" }]
+		},
+		{
+			"from": { "component": "bus1", "pinId": "H_OUT" },
+			"to": [{ "component": "bus2", "pinId": "H" }]
+		}
+	]
 }
