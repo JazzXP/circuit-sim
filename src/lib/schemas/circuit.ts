@@ -36,6 +36,10 @@ const primitiveDefinitionSchema = z.object({
 		})
 		.readonly(),
 	initialState: z.function({ output: z.unknown().readonly().optional() }).readonly(),
+	checkState: z
+		.function({ input: [logicValueSchema.array()], output: z.string().or(z.null()) })
+		.readonly()
+		.optional(),
 });
 
 const childSpecSchema = z.object({
@@ -49,6 +53,7 @@ const childSpecSchema = z.object({
 		.readonly()
 		.optional(),
 	column: z.number().readonly().optional(),
+	name: z.string().optional(),
 });
 
 const compositeDefinitionSchema = z.object({
@@ -59,6 +64,12 @@ const compositeDefinitionSchema = z.object({
 	outputs: pinSpecSchema.array().readonly(),
 	children: childSpecSchema.array().readonly(),
 	internalWires: wireSpecSchema.array().readonly(),
+});
+
+export const busConfigSchema = z.object({
+	id: z.string().readonly(),
+	name: z.string().readonly(),
+	driverCount: z.number().readonly(),
 });
 
 export const componentDefinitionSchema = z.discriminatedUnion('kind', [
@@ -99,3 +110,5 @@ export type ComponentDefinition = z.infer<typeof componentDefinitionSchema>;
 export type PinRef = z.infer<typeof pinRefSchema>;
 
 export type DefinitionLibrary = z.infer<typeof definitionLibrarySchema>;
+
+export type BusConfig = z.infer<typeof busConfigSchema>;

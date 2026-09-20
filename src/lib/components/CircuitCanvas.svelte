@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { LogicValue } from '#sim/model/component';
 	import { findInstancesByDefinition, updateInstanceStateAtPath } from '#sim/model/tree';
+	import { findStateProblems } from '#sim/model/diagnostics';
 	import {
 		evaluateTick,
 		evaluateAtPath,
@@ -18,7 +18,8 @@
 		pan,
 		type ViewTransform,
 	} from '#render/viewTransform';
-	import type { ComponentInstance, DefinitionLibrary } from '$lib/schemas/circuit';
+	import { LogicValue } from '#circuit/sim/model/component';
+	import type { DefinitionLibrary, ComponentInstance } from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
 
 	interface Props {
@@ -31,7 +32,25 @@
 	let { library, rootDefinitionId, width = 720, height = 320 }: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
-	let rootInstance = $derived<ComponentInstance>(instantiate(library, rootDefinitionId, 'root'));
+	let rootInstance = $state<ComponentInstance>(instantiate(library, rootDefinitionId, 'root'));
+	let errorMessage = $state<string | null>(checkForProblems(rootInstance));
+
+	function describeError(e: unknown): string {
+		return e instanceof Error ? e.message : String(e);
+	}
+
+	// Runs AFTER a full evaluateTick/evaluateAtPath call has already
+	// returned — i.e. on an already-settled instance — never mid-
+	// propagation. See sim/model/diagnostics.ts for why that distinction
+	// matters: checking during propagation would flag entirely normal,
+	// unavoidable transient states as if they were real wiring bugs.
+	function checkForProblems(instance: ComponentInstance): string | null {
+		const problems = findStateProblems(library, instance);
+		if (problems.length === 0) return null;
+		return problems
+			.map((p) => (p.path.length > 0 ? `${p.path.join('.')}: ${p.message}` : p.message))
+			.join('; ');
+	}
 	let drillPath = $state<string[]>([]);
 	let clickRegions: ClickRegion[] = [];
 	let view = $state<ViewTransform>(DEFAULT_VIEW_TRANSFORM);
@@ -51,7 +70,17 @@
 		const current = rootInstance.pinValues[pinId];
 		const next = current === LogicValue.HIGH ? LogicValue.LOW : LogicValue.HIGH;
 		const change: PinChange = { ref: { component: 'self', pinId }, value: next };
-		rootInstance = evaluateTick(library, rootInstance, [change]);
+		try {
+			// evaluateTick's own functional design means a thrown error here
+			// (e.g. an unstable feedback loop hitting the propagation-step
+			// limit) never partially mutates rootInstance — it just never gets
+			// reassigned, so the circuit stays at its last valid state.
+			const settled = evaluateTick(library, rootInstance, [change]);
+			rootInstance = settled;
+			errorMessage = checkForProblems(settled);
+		} catch (e) {
+			errorMessage = describeError(e);
+		}
 	}
 
 	// Drilling into a different level resets the view — the old pan/zoom was
@@ -59,6 +88,7 @@
 	// to a different composite's content.
 	function resetView() {
 		view = DEFAULT_VIEW_TRANSFORM;
+		errorMessage = checkForProblems(rootInstance);
 	}
 
 	function drillInto(childId: string) {
@@ -91,22 +121,34 @@
 	function pollClocks() {
 		if (clocks.length === 0) return;
 		let next = rootInstance;
-		for (const { path, instance } of clocks) {
-			const en = instance.pinValues['EN'];
-			next = evaluateAtPath(library, next, path, [
-				{ ref: { component: 'self', pinId: 'EN' }, value: en },
-			]);
+		try {
+			for (const { path, instance } of clocks) {
+				const en = instance.pinValues['EN'];
+				next = evaluateAtPath(library, next, path, [
+					{ ref: { component: 'self', pinId: 'EN' }, value: en },
+				]);
+			}
+			rootInstance = next;
+			errorMessage = checkForProblems(next);
+		} catch (e) {
+			errorMessage = describeError(e);
+			// rootInstance intentionally left at its last valid state.
 		}
-		rootInstance = next;
 	}
 
 	function toggleClockRunning(path: readonly string[], currentlyRunning: boolean) {
-		rootInstance = evaluateAtPath(library, rootInstance, path, [
-			{
-				ref: { component: 'self', pinId: 'EN' },
-				value: currentlyRunning ? LogicValue.LOW : LogicValue.HIGH,
-			},
-		]);
+		try {
+			const settled = evaluateAtPath(library, rootInstance, path, [
+				{
+					ref: { component: 'self', pinId: 'EN' },
+					value: currentlyRunning ? LogicValue.LOW : LogicValue.HIGH,
+				},
+			]);
+			rootInstance = settled;
+			errorMessage = checkForProblems(settled);
+		} catch (e) {
+			errorMessage = describeError(e);
+		}
 	}
 
 	function setClockPeriod(path: readonly string[], periodMs: number) {
@@ -408,6 +450,10 @@
 		</div>
 	</div>
 
+	{#if errorMessage}
+		<div class="error-banner">⚠ {errorMessage}</div>
+	{/if}
+
 	<canvas
 		bind:this={canvasEl}
 		{width}
@@ -518,6 +564,14 @@
 		min-width: 38px;
 		text-align: center;
 		font-variant-numeric: tabular-nums;
+	}
+	.error-banner {
+		background: #3a1f24;
+		border: 1px solid #7a3540;
+		color: #f4a8b0;
+		border-radius: 6px;
+		padding: 8px 12px;
+		font-size: 12px;
 	}
 	.clocks {
 		display: flex;

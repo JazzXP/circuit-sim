@@ -1,48 +1,62 @@
 <script lang="ts">
-	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
 	import { emptyLibrary, registerDefinition } from '$lib/circuit/sim/model/component';
-	import { AND2, OR2, NOT, NAND2, DFF, CLOCK, GND, VCC } from '$lib/circuit/components/primitives';
-	import { SEVEN_SEGMENT_HEX_DECODER } from '$lib/circuit/components/composites/eeproms';
-	import { SEVEN_SEGMENT_DISPLAY } from '$lib/circuit/components/composites/displays';
-	import { SR_LATCH, D_LATCH, DFF_GATES } from '$lib/circuit/components/composites/latches';
-	import DIGIT_DISPLAY_DEMO from '../examples/digitDisplay.json';
-	import CLOCKED_DFF_DEMO from '../examples/clockedDff.json';
-	import CLOCKED_COUNTER from '../examples/clockedCounter.json';
-	import COUNTER_4BIT from '../examples/counter4bit.json';
 	import {
-		componentDefinitionSchema,
-		type CompositeDefinition,
-		type DefinitionLibrary,
-	} from '$lib/schemas/circuit';
-
-	let library: DefinitionLibrary = emptyLibrary;
-	for (const def of [
-		// Primitives
 		AND2,
 		OR2,
 		NOT,
 		NAND2,
-		GND,
 		DFF,
-		VCC,
 		CLOCK,
+		VCC,
+		GND,
+		TRI_BUFFER,
+		createBus,
+	} from '$lib/circuit/components/primitives';
+	import { SR_LATCH, D_LATCH, DFF_GATES } from '$lib/circuit/components/composites/latches';
+	import { componentDefinitionSchema, type DefinitionLibrary } from '$lib/schemas/circuit';
+	import { SEVEN_SEGMENT_HEX_DECODER } from '#circuit/components/composites/eeproms/index';
+	import { SEVEN_SEGMENT_DISPLAY } from '#circuit/components/composites/displays/index';
+	import COUNTER_4BIT from '../examples/counter4bit.json';
+	import CLOCKED_DFF_DEMO from '../examples/clockedDff.json';
+	import DIGIT_DISPLAY_DEMO from '../examples/digitDisplay.json';
+	import CLOCKED_COUNTER from '../examples/clockedCounter.json';
+	import SHARED_BUS_DEMO from '../examples/sharedBus.json';
+	import { CHIP_74LS173 } from '#circuit/components/composites/chips/74ls173';
+	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
 
-		// Latches
+	let library: DefinitionLibrary = emptyLibrary;
+	for (const def of [
+		AND2,
+		OR2,
+		NOT,
+		NAND2,
+		DFF,
+		CLOCK,
+		VCC,
+		GND,
+		TRI_BUFFER,
+
+		// Busses
+		createBus({ id: 'BUS3', name: 'Bus (3 drivers)', driverCount: 3 }),
+
+		// EEPROMS
+		SEVEN_SEGMENT_HEX_DECODER,
+		SEVEN_SEGMENT_DISPLAY,
+
+		// LATCHES
 		SR_LATCH,
 		D_LATCH,
 		DFF_GATES,
 
-		// EEPROMs
-		SEVEN_SEGMENT_HEX_DECODER,
-		SEVEN_SEGMENT_DISPLAY,
+		componentDefinitionSchema.parse(CHIP_74LS173),
 
-		// Demos
+		componentDefinitionSchema.parse(COUNTER_4BIT),
 		componentDefinitionSchema.parse(CLOCKED_DFF_DEMO),
 		componentDefinitionSchema.parse(DIGIT_DISPLAY_DEMO),
 		componentDefinitionSchema.parse(CLOCKED_COUNTER),
-		componentDefinitionSchema.parse(COUNTER_4BIT),
+		componentDefinitionSchema.parse(SHARED_BUS_DEMO),
 	]) {
-		library = registerDefinition(library, def as CompositeDefinition);
+		library = registerDefinition(library, def);
 	}
 </script>
 
@@ -52,7 +66,7 @@
 	to the two cross-coupled NAND gates that actually hold the bit.
 </p>
 
-<CircuitCanvas {library} rootDefinitionId="DFF_GATES" />
+<CircuitCanvas {library} rootDefinitionId="DFF_GATES" width={1000} />
 
 <h1 style="margin-top: 48px">Clock-driven register</h1>
 <p>
@@ -70,6 +84,24 @@
 	it's a pure indicator of whatever it's fed.
 </p>
 
-<CircuitCanvas {library} rootDefinitionId="DIGIT_DISPLAY_DEMO" width={1000} height={260} />
+<CircuitCanvas {library} rootDefinitionId="DIGIT_DISPLAY_DEMO" width={600} height={260} />
 
-<CircuitCanvas {library} rootDefinitionId="COUNTER_4BIT" width={1500} height={500} />
+<h1 style="margin-top: 48px">Fully automatic counter</h1>
+<p>
+	No switches here at all — press play on the clock and the count runs entirely on its own: CLOCK
+	drives COUNTER_4BIT, which addresses the hex decoder, which drives the display. OE' is tied
+	permanently low by a GND component, not a switch.
+</p>
+
+<CircuitCanvas {library} rootDefinitionId="CLOCKED_COUNTER" width={1500} height={280} />
+
+<h1 style="margin-top: 48px">Shared bus</h1>
+<p>
+	Three tri-state buffers (A, B, C) all drive the same single-bit bus. Enable exactly one at a time
+	and its value passes through. Enable none and the bus floats (shown in purple — distinct from a
+	driven LOW). Enable <strong>two with different values</strong> and you'll get a persistent-contention
+	warning (shown in red) rather than a silently wrong answer — try it. A brief, purely transient disagreement
+	while something settles is normal and won't trigger this; only a genuinely persistent conflict does.
+</p>
+
+<CircuitCanvas {library} rootDefinitionId="SHARED_BUS_DEMO" width={650} height={300} />

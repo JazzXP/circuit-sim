@@ -1,0 +1,77 @@
+{
+	"kind": "composite",
+	"id": "TRANSCEIVER_1BIT",
+	"name": "1-Bit Bidirectional Transceiver",
+	"inputs": [
+		{ "id": "A_in", "name": "Internal In", "direction": "input" },
+		{ "id": "B_in", "name": "Bus In", "direction": "input" },
+		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)", "direction": "input" },
+		{ "id": "OE_n", "name": "Output Enable (Active Low)", "direction": "input" }
+	],
+	"outputs": [
+		{ "id": "A_out", "name": "Internal Out", "direction": "output" },
+		{ "id": "B_out", "name": "Bus Out", "direction": "output" }
+	],
+	"children": [
+		{ "instanceId": "notOE", "definitionId": "NOT" },
+		{ "instanceId": "notDIR", "definitionId": "NOT" },
+		{ "instanceId": "enAB", "definitionId": "AND2" },
+		{ "instanceId": "enBA", "definitionId": "AND2" },
+		{ "instanceId": "bufAB", "definitionId": "TRI_BUFFER" },
+		{ "instanceId": "bufBA", "definitionId": "TRI_BUFFER" }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "OE_n" },
+			"to": [{ "component": "notOE", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "DIR" },
+			"to": [{ "component": "notDIR", "pinId": "A" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "DIR" },
+			"to": [{ "component": "enAB", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "notOE", "pinId": "OUT" },
+			"to": [{ "component": "enAB", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "enAB", "pinId": "OUT" },
+			"to": [{ "component": "bufAB", "pinId": "EN" }]
+		},
+
+		{
+			"from": { "component": "notDIR", "pinId": "OUT" },
+			"to": [{ "component": "enBA", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "notOE", "pinId": "OUT" },
+			"to": [{ "component": "enBA", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "enBA", "pinId": "OUT" },
+			"to": [{ "component": "bufBA", "pinId": "EN" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A_in" },
+			"to": [{ "component": "bufAB", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "bufAB", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "B_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "B_in" },
+			"to": [{ "component": "bufBA", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "bufBA", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "A_out" }]
+		}
+	]
+}

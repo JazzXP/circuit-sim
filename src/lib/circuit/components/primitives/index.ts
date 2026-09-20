@@ -8,3 +8,4 @@ export * from './eeprom';
 export * from './vcc';
 export * from './gnd';
 export * from './bus';
+export * from './triBuffer';

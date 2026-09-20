@@ -21,7 +21,8 @@ export interface RenderOptions {
 const COLOR = {
 	wireLow: '#4a4e58',
 	wireHigh: '#e0a840',
-	wireUnkown: '#aa0000',
+	wireFloating: '#6a5a8a',
+	wireContested: '#d9556b',
 	boxFill: '#252932',
 	boxStroke: '#3c414d',
 	boxStrokeComposite: '#6ea8ff',
@@ -30,14 +31,10 @@ const COLOR = {
 };
 
 function wireColor(v: LogicValue): string {
-	switch (v) {
-		case LogicValue.HIGH:
-			return COLOR.wireHigh;
-		case LogicValue.UNKNOWN:
-			return COLOR.wireUnkown;
-		default:
-			return COLOR.wireLow;
-	}
+	if (v === LogicValue.HIGH) return COLOR.wireHigh;
+	if (v === LogicValue.HIGH_Z) return COLOR.wireFloating;
+	if (v === LogicValue.UNKNOWN) return COLOR.wireContested;
+	return COLOR.wireLow;
 }
 
 function roundRect(
@@ -182,7 +179,7 @@ export function renderComposite(
 			ctx.fillStyle = COLOR.text;
 			ctx.font = '500 12px sans-serif';
 			ctx.textAlign = 'center';
-			ctx.fillText(childDef.name, box.x + box.w / 2, box.y + box.h / 2 + 4);
+			ctx.fillText(child.name ?? childDef.name, box.x + box.w / 2, box.y + box.h / 2 + 4);
 		}
 
 		childDef.inputs.forEach((pin) => {

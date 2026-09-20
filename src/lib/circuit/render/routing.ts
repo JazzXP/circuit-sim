@@ -163,6 +163,7 @@ function resolveEndpoint(geometry: Geometry, ref: PinRef): { pin: Point; stub: P
 	const box = geometry.children[ref.component];
 	const isInput = ref.pinId in box.inputPos;
 	const pin = isInput ? box.inputPos[ref.pinId] : box.outputPos[ref.pinId];
+	if (!pin) console.log(ref.pinId, ref.component);
 	const stub: Point = isInput
 		? { x: box.x - STUB, y: pin.y }
 		: { x: box.x + box.w + STUB, y: pin.y };

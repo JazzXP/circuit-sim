@@ -12,6 +12,7 @@ export const DFF_GATES: CompositeDefinition = {
 	inputs: [
 		{ id: 'D', name: 'D', direction: 'input' },
 		{ id: 'CLK', name: 'CLK', direction: 'input' },
+		{ id: 'R', name: 'R', direction: 'input' },
 	],
 	outputs: [
 		{ id: 'Q', name: 'Q', direction: 'output' },
@@ -21,10 +22,24 @@ export const DFF_GATES: CompositeDefinition = {
 		{ instanceId: 'notClk', definitionId: 'NAND2' },
 		{ instanceId: 'master', definitionId: 'D_LATCH' },
 		{ instanceId: 'slave', definitionId: 'D_LATCH' },
+		{ instanceId: 'notR', definitionId: 'NOT' },
+		{ instanceId: 'clearGate', definitionId: 'AND2' },
 	],
 	internalWires: [
 		{
 			from: { component: 'self', pinId: 'D' },
+			to: [{ component: 'clearGate', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'R' },
+			to: [{ component: 'notR', pinId: 'A' }],
+		},
+		{
+			from: { component: 'notR', pinId: 'OUT' },
+			to: [{ component: 'clearGate', pinId: 'B' }],
+		},
+		{
+			from: { component: 'clearGate', pinId: 'OUT' },
 			to: [{ component: 'master', pinId: 'D' }],
 		},
 		{
@@ -43,7 +58,10 @@ export const DFF_GATES: CompositeDefinition = {
 			from: { component: 'master', pinId: 'Q' },
 			to: [{ component: 'slave', pinId: 'D' }],
 		},
-		{ from: { component: 'slave', pinId: 'Q' }, to: [{ component: 'self', pinId: 'Q' }] },
+		{
+			from: { component: 'slave', pinId: 'Q' },
+			to: [{ component: 'self', pinId: 'Q' }],
+		},
 		{
 			from: { component: 'slave', pinId: 'Q_n' },
 			to: [{ component: 'self', pinId: 'NQ' }],

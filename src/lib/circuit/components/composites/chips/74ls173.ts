@@ -1,0 +1,263 @@
+import type { CompositeDefinition } from '$lib/schemas/circuit';
+
+// this nests a composite inside a composite.
+export const CHIP_74LS173: CompositeDefinition = {
+	kind: 'composite',
+	id: '74LS173',
+	name: '74LS173',
+	inputs: [
+		{ id: 'M', name: 'M', direction: 'input' },
+		{ id: 'N', name: 'N', direction: 'input' },
+		{ id: 'G1_n', name: 'G1_n', direction: 'input' },
+		{ id: 'G2_n', name: 'G2_n', direction: 'input' },
+		{ id: 'D0', name: 'D0', direction: 'input' },
+		{ id: 'D1', name: 'D1', direction: 'input' },
+		{ id: 'D2', name: 'D2', direction: 'input' },
+		{ id: 'D3', name: 'D3', direction: 'input' },
+		{ id: 'CLK', name: 'CLK', direction: 'input' },
+		{ id: 'CLR', name: 'CLR', direction: 'input' },
+	],
+	outputs: [
+		{ id: 'Q0', name: 'Q0', direction: 'output' },
+		{ id: 'Q1', name: 'Q1', direction: 'output' },
+		{ id: 'Q2', name: 'Q2', direction: 'output' },
+		{ id: 'Q3', name: 'Q3', direction: 'output' },
+	],
+	children: [
+		{ instanceId: 'not1', definitionId: 'NOT', column: 0 },
+		{ instanceId: 'not2', definitionId: 'NOT', column: 0 },
+		{ instanceId: 'not3', definitionId: 'NOT', column: 0 },
+		{ instanceId: 'not4', definitionId: 'NOT', column: 0 },
+
+		{ instanceId: 'and1', definitionId: 'AND2', column: 1 },
+		{ instanceId: 'and2', definitionId: 'AND2', column: 1 },
+		{ instanceId: 'not5', definitionId: 'NOT', column: 1 },
+
+		{ instanceId: 'not6', definitionId: 'NOT', column: 2 },
+		{ instanceId: 'not7', definitionId: 'NOT', column: 2 },
+
+		{ instanceId: 'and3', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and4', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and5', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and6', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and7', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and8', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and9', definitionId: 'AND2', column: 3 },
+		{ instanceId: 'and10', definitionId: 'AND2', column: 3 },
+
+		{ instanceId: 'or1', definitionId: 'OR2', column: 4 },
+		{ instanceId: 'or2', definitionId: 'OR2', column: 4 },
+		{ instanceId: 'or3', definitionId: 'OR2', column: 4 },
+		{ instanceId: 'or4', definitionId: 'OR2', column: 4 },
+
+		{ instanceId: 'dff1', definitionId: 'DFF_GATES', column: 4 },
+		{ instanceId: 'dff2', definitionId: 'DFF_GATES', column: 4 },
+		{ instanceId: 'dff3', definitionId: 'DFF_GATES', column: 4 },
+		{ instanceId: 'dff4', definitionId: 'DFF_GATES', column: 4 },
+
+		{ instanceId: 'buf0', definitionId: 'TRI_BUFFER', column: 5 },
+		{ instanceId: 'buf1', definitionId: 'TRI_BUFFER', column: 5 },
+		{ instanceId: 'buf2', definitionId: 'TRI_BUFFER', column: 5 },
+		{ instanceId: 'buf3', definitionId: 'TRI_BUFFER', column: 5 },
+	],
+	internalWires: [
+		{
+			from: { component: 'self', pinId: 'M' },
+			to: [{ component: 'not1', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'N' },
+			to: [{ component: 'not2', pinId: 'A' }],
+		},
+		{
+			from: { component: 'not1', pinId: 'OUT' },
+			to: [{ component: 'and1', pinId: 'A' }],
+		},
+		{
+			from: { component: 'not2', pinId: 'OUT' },
+			to: [{ component: 'and1', pinId: 'B' }],
+		},
+		{
+			from: { component: 'self', pinId: 'G1_n' },
+			to: [{ component: 'not3', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'G2_n' },
+			to: [{ component: 'not4', pinId: 'A' }],
+		},
+		{
+			from: { component: 'not3', pinId: 'OUT' },
+			to: [{ component: 'and2', pinId: 'A' }],
+		},
+		{
+			from: { component: 'not4', pinId: 'OUT' },
+			to: [{ component: 'and2', pinId: 'B' }],
+		},
+		{
+			from: { component: 'self', pinId: 'CLK' },
+			to: [{ component: 'not5', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'CLR' },
+			to: [{ component: 'not7', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and2', pinId: 'OUT' },
+			to: [
+				{ component: 'not6', pinId: 'A' },
+				{ component: 'and4', pinId: 'B' },
+				{ component: 'and6', pinId: 'B' },
+				{ component: 'and8', pinId: 'B' },
+				{ component: 'and10', pinId: 'B' },
+			],
+		},
+		{
+			from: { component: 'self', pinId: 'D0' },
+			to: [{ component: 'and4', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'D1' },
+			to: [{ component: 'and6', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'D2' },
+			to: [{ component: 'and8', pinId: 'A' }],
+		},
+		{
+			from: { component: 'self', pinId: 'D3' },
+			to: [{ component: 'and10', pinId: 'A' }],
+		},
+		{
+			from: { component: 'not6', pinId: 'OUT' },
+			to: [
+				{ component: 'and3', pinId: 'B' },
+				{ component: 'and5', pinId: 'B' },
+				{ component: 'and7', pinId: 'B' },
+				{ component: 'and9', pinId: 'B' },
+			],
+		},
+		{
+			from: { component: 'and3', pinId: 'OUT' },
+			to: [{ component: 'or1', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and4', pinId: 'OUT' },
+			to: [{ component: 'or2', pinId: 'B' }],
+		},
+		{
+			from: { component: 'and5', pinId: 'OUT' },
+			to: [{ component: 'or2', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and6', pinId: 'OUT' },
+			to: [{ component: 'or2', pinId: 'B' }],
+		},
+		{
+			from: { component: 'and7', pinId: 'OUT' },
+			to: [{ component: 'or3', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and8', pinId: 'OUT' },
+			to: [{ component: 'or3', pinId: 'B' }],
+		},
+		{
+			from: { component: 'and9', pinId: 'OUT' },
+			to: [{ component: 'or4', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and10', pinId: 'OUT' },
+			to: [{ component: 'or4', pinId: 'B' }],
+		},
+		{
+			from: { component: 'or1', pinId: 'OUT' },
+			to: [{ component: 'dff1', pinId: 'D' }],
+		},
+		{
+			from: { component: 'or2', pinId: 'OUT' },
+			to: [{ component: 'dff2', pinId: 'D' }],
+		},
+		{
+			from: { component: 'or3', pinId: 'OUT' },
+			to: [{ component: 'dff3', pinId: 'D' }],
+		},
+		{
+			from: { component: 'or4', pinId: 'OUT' },
+			to: [{ component: 'dff4', pinId: 'D' }],
+		},
+		{
+			from: { component: 'not5', pinId: 'OUT' },
+			to: [
+				{ component: 'dff1', pinId: 'CLK' },
+				{ component: 'dff2', pinId: 'CLK' },
+				{ component: 'dff3', pinId: 'CLK' },
+				{ component: 'dff4', pinId: 'CLK' },
+			],
+		},
+		{
+			from: { component: 'not7', pinId: 'OUT' },
+			to: [
+				{ component: 'dff1', pinId: 'R' },
+				{ component: 'dff2', pinId: 'R' },
+				{ component: 'dff3', pinId: 'R' },
+				{ component: 'dff4', pinId: 'R' },
+			],
+		},
+		{
+			from: { component: 'dff1', pinId: 'Q' },
+			to: [{ component: 'and3', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff2', pinId: 'Q' },
+			to: [{ component: 'and5', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff3', pinId: 'Q' },
+			to: [{ component: 'and7', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff4', pinId: 'Q' },
+			to: [{ component: 'and9', pinId: 'A' }],
+		},
+		{
+			from: { component: 'and1', pinId: 'OUT' },
+			to: [
+				{ component: 'buf0', pinId: 'EN' },
+				{ component: 'buf1', pinId: 'EN' },
+				{ component: 'buf2', pinId: 'EN' },
+				{ component: 'buf3', pinId: 'EN' },
+			],
+		},
+		{
+			from: { component: 'dff1', pinId: 'NQ' },
+			to: [{ component: 'buf0', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff2', pinId: 'NQ' },
+			to: [{ component: 'buf1', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff3', pinId: 'NQ' },
+			to: [{ component: 'buf2', pinId: 'A' }],
+		},
+		{
+			from: { component: 'dff4', pinId: 'NQ' },
+			to: [{ component: 'buf3', pinId: 'A' }],
+		},
+		{
+			from: { component: 'buf0', pinId: 'OUT' },
+			to: [{ component: 'self', pinId: 'Q0' }],
+		},
+		{
+			from: { component: 'buf1', pinId: 'OUT' },
+			to: [{ component: 'self', pinId: 'Q1' }],
+		},
+		{
+			from: { component: 'buf2', pinId: 'OUT' },
+			to: [{ component: 'self', pinId: 'Q2' }],
+		},
+		{
+			from: { component: 'buf3', pinId: 'OUT' },
+			to: [{ component: 'self', pinId: 'Q3' }],
+		},
+	],
+};

@@ -2,122 +2,67 @@
 	"kind": "composite",
 	"id": "COUNTER_4BIT",
 	"name": "4-bit Counter",
-	"inputs": [],
-	"outputs": [],
+	"inputs": [{ "id": "CLK", "name": "CLK", "direction": "input" }],
+	"outputs": [
+		{ "id": "Q0", "name": "Q0", "direction": "output" },
+		{ "id": "Q1", "name": "Q1", "direction": "output" },
+		{ "id": "Q2", "name": "Q2", "direction": "output" },
+		{ "id": "Q3", "name": "Q3", "direction": "output" }
+	],
 	"children": [
-		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
-		{ "instanceId": "clk", "definitionId": "CLOCK", "column": 0 },
-		{ "instanceId": "bit0", "definitionId": "DFF_GATES", "column": 1 },
-		{ "instanceId": "bit1", "definitionId": "DFF_GATES", "column": 1 },
-		{ "instanceId": "bit2", "definitionId": "DFF_GATES", "column": 1 },
-		{ "instanceId": "bit3", "definitionId": "DFF_GATES", "column": 1 },
-		{ "instanceId": "rom", "definitionId": "SEVEN_SEGMENT_HEX_DECODER" },
-		{ "instanceId": "disp", "definitionId": "SEVEN_SEGMENT_DISPLAY" }
+		{ "instanceId": "bit0", "definitionId": "DFF_GATES" },
+		{ "instanceId": "bit1", "definitionId": "DFF_GATES" },
+		{ "instanceId": "bit2", "definitionId": "DFF_GATES" },
+		{ "instanceId": "bit3", "definitionId": "DFF_GATES" }
 	],
 	"internalWires": [
 		{
-			"id": "wclk",
-			"from": { "component": "clk", "pinId": "CLK" },
+			"from": { "component": "self", "pinId": "CLK" },
 			"to": [{ "component": "bit0", "pinId": "CLK" }]
 		},
-
 		{
-			"id": "wt0",
 			"from": { "component": "bit0", "pinId": "NQ" },
 			"to": [{ "component": "bit0", "pinId": "D" }]
 		},
 		{
-			"id": "wt1",
 			"from": { "component": "bit1", "pinId": "NQ" },
 			"to": [{ "component": "bit1", "pinId": "D" }]
 		},
 		{
-			"id": "wt2",
 			"from": { "component": "bit2", "pinId": "NQ" },
 			"to": [{ "component": "bit2", "pinId": "D" }]
 		},
 		{
-			"id": "wt3",
 			"from": { "component": "bit3", "pinId": "NQ" },
 			"to": [{ "component": "bit3", "pinId": "D" }]
 		},
-
 		{
-			"id": "wr0",
 			"from": { "component": "bit0", "pinId": "NQ" },
 			"to": [{ "component": "bit1", "pinId": "CLK" }]
 		},
 		{
-			"id": "wr1",
 			"from": { "component": "bit1", "pinId": "NQ" },
 			"to": [{ "component": "bit2", "pinId": "CLK" }]
 		},
 		{
-			"id": "wr2",
 			"from": { "component": "bit2", "pinId": "NQ" },
 			"to": [{ "component": "bit3", "pinId": "CLK" }]
 		},
-
 		{
-			"id": "wq0",
 			"from": { "component": "bit0", "pinId": "Q" },
-			"to": [{ "component": "rom", "pinId": "A0" }]
+			"to": [{ "component": "self", "pinId": "Q0" }]
 		},
 		{
-			"id": "wq1",
 			"from": { "component": "bit1", "pinId": "Q" },
-			"to": [{ "component": "rom", "pinId": "A1" }]
+			"to": [{ "component": "self", "pinId": "Q1" }]
 		},
 		{
-			"id": "wq2",
 			"from": { "component": "bit2", "pinId": "Q" },
-			"to": [{ "component": "rom", "pinId": "A2" }]
+			"to": [{ "component": "self", "pinId": "Q2" }]
 		},
 		{
-			"id": "wq3",
 			"from": { "component": "bit3", "pinId": "Q" },
-			"to": [{ "component": "rom", "pinId": "A3" }]
-		},
-
-		{
-			"id": "woe",
-			"from": { "component": "gnd", "pinId": "OUT" },
-			"to": [{ "component": "rom", "pinId": "OE_n" }]
-		},
-		{
-			"id": "wa",
-			"from": { "component": "rom", "pinId": "D0" },
-			"to": [{ "component": "disp", "pinId": "a" }]
-		},
-		{
-			"id": "wb",
-			"from": { "component": "rom", "pinId": "D1" },
-			"to": [{ "component": "disp", "pinId": "b" }]
-		},
-		{
-			"id": "wc",
-			"from": { "component": "rom", "pinId": "D2" },
-			"to": [{ "component": "disp", "pinId": "c" }]
-		},
-		{
-			"id": "wd",
-			"from": { "component": "rom", "pinId": "D3" },
-			"to": [{ "component": "disp", "pinId": "d" }]
-		},
-		{
-			"id": "we",
-			"from": { "component": "rom", "pinId": "D4" },
-			"to": [{ "component": "disp", "pinId": "e" }]
-		},
-		{
-			"id": "wf",
-			"from": { "component": "rom", "pinId": "D5" },
-			"to": [{ "component": "disp", "pinId": "f" }]
-		},
-		{
-			"id": "wg",
-			"from": { "component": "rom", "pinId": "D6" },
-			"to": [{ "component": "disp", "pinId": "g" }]
+			"to": [{ "component": "self", "pinId": "Q3" }]
 		}
 	]
 }

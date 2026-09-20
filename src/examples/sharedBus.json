@@ -1,0 +1,62 @@
+{
+	"kind": "composite",
+	"id": "SHARED_BUS_DEMO",
+	"name": "Shared bus",
+	"inputs": [
+		{ "id": "A", "name": "A", "direction": "input" },
+		{ "id": "EN_A", "name": "EN_A", "direction": "input" },
+		{ "id": "B", "name": "B", "direction": "input" },
+		{ "id": "EN_B", "name": "EN_B", "direction": "input" },
+		{ "id": "C", "name": "C", "direction": "input" },
+		{ "id": "EN_C", "name": "EN_C", "direction": "input" }
+	],
+	"outputs": [{ "id": "BUS_OUT", "name": "BUS_OUT", "direction": "output" }],
+	"children": [
+		{ "instanceId": "bufA", "definitionId": "TRI_BUFFER", "column": 0 },
+		{ "instanceId": "bufB", "definitionId": "TRI_BUFFER", "column": 0 },
+		{ "instanceId": "bufC", "definitionId": "TRI_BUFFER", "column": 0 },
+		{ "instanceId": "bus", "definitionId": "BUS3", "column": 1 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "A" },
+			"to": [{ "component": "bufA", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "EN_A" },
+			"to": [{ "component": "bufA", "pinId": "EN" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B" },
+			"to": [{ "component": "bufB", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "EN_B" },
+			"to": [{ "component": "bufB", "pinId": "EN" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "C" },
+			"to": [{ "component": "bufC", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "EN_C" },
+			"to": [{ "component": "bufC", "pinId": "EN" }]
+		},
+		{
+			"from": { "component": "bufA", "pinId": "OUT" },
+			"to": [{ "component": "bus", "pinId": "D0" }]
+		},
+		{
+			"from": { "component": "bufB", "pinId": "OUT" },
+			"to": [{ "component": "bus", "pinId": "D1" }]
+		},
+		{
+			"from": { "component": "bufC", "pinId": "OUT" },
+			"to": [{ "component": "bus", "pinId": "D2" }]
+		},
+		{
+			"from": { "component": "bus", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "BUS_OUT" }]
+		}
+	]
+}

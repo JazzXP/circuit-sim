@@ -1,0 +1,19 @@
+import { LogicValue } from '#sim/model/component';
+import type { PrimitiveDefinition } from '$lib/schemas/circuit';
+import { bit } from '#sim/util/bit';
+
+export const XOR2: PrimitiveDefinition = {
+	kind: 'primitive',
+	id: 'XOR2',
+	name: 'XOR',
+	inputs: [
+		{ id: 'A', name: 'A', direction: 'input' },
+		{ id: 'B', name: 'B', direction: 'input' },
+	],
+	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+	initialState: () => undefined,
+	evaluate: (inputs) => ({
+		outputs: [bit(inputs[0]) ^ bit(inputs[1]) ? LogicValue.HIGH : LogicValue.LOW],
+		nextState: undefined,
+	}),
+};

@@ -10,19 +10,25 @@
 		CLOCK,
 		GND,
 		VCC,
-		BUS,
+		createBus,
+		TRI_BUFFER,
 	} from '$lib/circuit/components/primitives';
 	import { SEVEN_SEGMENT_HEX_DECODER } from '$lib/circuit/components/composites/eeproms';
 	import { SEVEN_SEGMENT_DISPLAY } from '$lib/circuit/components/composites/displays';
 	import { SR_LATCH, D_LATCH, DFF_GATES } from '$lib/circuit/components/composites/latches';
 	import CLOCK_MODULE from '../../eater/clock.json';
 	import CPU from '../../eater/cpu.json';
+	import BUS_DRIVER from '../../eater/bus_driver.json';
+	import TRANSCEIVER_1BIT from '../../eater/transceiver_1-bit.json';
+	import TRANSCEIVER_8BIT from '../../eater/transceiver_8-bit.json';
+	import REGISTER from '../../eater/register.json';
 	import {
 		componentDefinitionSchema,
 		type CompositeDefinition,
 		type DefinitionLibrary,
 	} from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
+	import { CHIP_74LS173 } from '#circuit/components/composites/chips/74ls173';
 
 	let library: DefinitionLibrary = emptyLibrary;
 	for (const def of [
@@ -35,20 +41,30 @@
 		DFF,
 		VCC,
 		CLOCK,
-		BUS,
+		TRI_BUFFER,
 
 		// Latches
 		SR_LATCH,
 		D_LATCH,
 		DFF_GATES,
 
+		// Buses
+		createBus({ id: 'BUS', name: 'Bus ', driverCount: 8 }),
+
 		// EEPROMs
 		SEVEN_SEGMENT_HEX_DECODER,
 		SEVEN_SEGMENT_DISPLAY,
 
+		// Misc
+		TRANSCEIVER_1BIT,
+		TRANSCEIVER_8BIT,
+		componentDefinitionSchema.parse(CHIP_74LS173),
+
 		// Demos
 		componentDefinitionSchema.parse(CLOCK_MODULE),
 		componentDefinitionSchema.parse(CPU),
+		componentDefinitionSchema.parse(BUS_DRIVER),
+		componentDefinitionSchema.parse(REGISTER),
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}

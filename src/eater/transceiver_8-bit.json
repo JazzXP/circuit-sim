@@ -1,0 +1,217 @@
+{
+	"kind": "composite",
+	"id": "TRANSCEIVER_8BIT",
+	"name": "8-Bit Bidirectional Transceiver (74LS245)",
+	"inputs": [
+		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)", "direction": "input" },
+		{ "id": "OE_n", "name": "Output Enable (Active Low)", "direction": "input" },
+		{ "id": "A0_in", "name": "A0 In", "direction": "input" },
+		{ "id": "A1_in", "name": "A1 In", "direction": "input" },
+		{ "id": "A2_in", "name": "A2 In", "direction": "input" },
+		{ "id": "A3_in", "name": "A3 In", "direction": "input" },
+		{ "id": "A4_in", "name": "A4 In", "direction": "input" },
+		{ "id": "A5_in", "name": "A5 In", "direction": "input" },
+		{ "id": "A6_in", "name": "A6 In", "direction": "input" },
+		{ "id": "A7_in", "name": "A7 In", "direction": "input" },
+		{ "id": "B0_in", "name": "B0 In", "direction": "input" },
+		{ "id": "B1_in", "name": "B1 In", "direction": "input" },
+		{ "id": "B2_in", "name": "B2 In", "direction": "input" },
+		{ "id": "B3_in", "name": "B3 In", "direction": "input" },
+		{ "id": "B4_in", "name": "B4 In", "direction": "input" },
+		{ "id": "B5_in", "name": "B5 In", "direction": "input" },
+		{ "id": "B6_in", "name": "B6 In", "direction": "input" },
+		{ "id": "B7_in", "name": "B7 In", "direction": "input" }
+	],
+	"outputs": [
+		{ "id": "A0_out", "name": "A0 Out", "direction": "output" },
+		{ "id": "A1_out", "name": "A1 Out", "direction": "output" },
+		{ "id": "A2_out", "name": "A2 Out", "direction": "output" },
+		{ "id": "A3_out", "name": "A3 Out", "direction": "output" },
+		{ "id": "A4_out", "name": "A4 Out", "direction": "output" },
+		{ "id": "A5_out", "name": "A5 Out", "direction": "output" },
+		{ "id": "A6_out", "name": "A6 Out", "direction": "output" },
+		{ "id": "A7_out", "name": "A7 Out", "direction": "output" },
+		{ "id": "B0_out", "name": "B0 Out", "direction": "output" },
+		{ "id": "B1_out", "name": "B1 Out", "direction": "output" },
+		{ "id": "B2_out", "name": "B2 Out", "direction": "output" },
+		{ "id": "B3_out", "name": "B3 Out", "direction": "output" },
+		{ "id": "B4_out", "name": "B4 Out", "direction": "output" },
+		{ "id": "B5_out", "name": "B5 Out", "direction": "output" },
+		{ "id": "B6_out", "name": "B6 Out", "direction": "output" },
+		{ "id": "B7_out", "name": "B7 Out", "direction": "output" }
+	],
+	"children": [
+		{ "instanceId": "tx0", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx1", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx2", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx3", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx4", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx5", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx6", "definitionId": "TRANSCEIVER_1BIT" },
+		{ "instanceId": "tx7", "definitionId": "TRANSCEIVER_1BIT" }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "DIR" },
+			"to": [
+				{ "component": "tx0", "pinId": "DIR" },
+				{ "component": "tx1", "pinId": "DIR" },
+				{ "component": "tx2", "pinId": "DIR" },
+				{ "component": "tx3", "pinId": "DIR" },
+				{ "component": "tx4", "pinId": "DIR" },
+				{ "component": "tx5", "pinId": "DIR" },
+				{ "component": "tx6", "pinId": "DIR" },
+				{ "component": "tx7", "pinId": "DIR" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "OE_n" },
+			"to": [
+				{ "component": "tx0", "pinId": "OE_n" },
+				{ "component": "tx1", "pinId": "OE_n" },
+				{ "component": "tx2", "pinId": "OE_n" },
+				{ "component": "tx3", "pinId": "OE_n" },
+				{ "component": "tx4", "pinId": "OE_n" },
+				{ "component": "tx5", "pinId": "OE_n" },
+				{ "component": "tx6", "pinId": "OE_n" },
+				{ "component": "tx7", "pinId": "OE_n" }
+			]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A0_in" },
+			"to": [{ "component": "tx0", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B0_in" },
+			"to": [{ "component": "tx0", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx0", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A0_out" }]
+		},
+		{
+			"from": { "component": "tx0", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B0_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A1_in" },
+			"to": [{ "component": "tx1", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B1_in" },
+			"to": [{ "component": "tx1", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx1", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A1_out" }]
+		},
+		{
+			"from": { "component": "tx1", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B1_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A2_in" },
+			"to": [{ "component": "tx2", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B2_in" },
+			"to": [{ "component": "tx2", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx2", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A2_out" }]
+		},
+		{
+			"from": { "component": "tx2", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B2_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A3_in" },
+			"to": [{ "component": "tx3", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B3_in" },
+			"to": [{ "component": "tx3", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx3", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A3_out" }]
+		},
+		{
+			"from": { "component": "tx3", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B3_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A4_in" },
+			"to": [{ "component": "tx4", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B4_in" },
+			"to": [{ "component": "tx4", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx4", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A4_out" }]
+		},
+		{
+			"from": { "component": "tx4", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B4_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A5_in" },
+			"to": [{ "component": "tx5", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B5_in" },
+			"to": [{ "component": "tx5", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx5", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A5_out" }]
+		},
+		{
+			"from": { "component": "tx5", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B5_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A6_in" },
+			"to": [{ "component": "tx6", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B6_in" },
+			"to": [{ "component": "tx6", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx6", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A6_out" }]
+		},
+		{
+			"from": { "component": "tx6", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B6_out" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A7_in" },
+			"to": [{ "component": "tx7", "pinId": "A_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B7_in" },
+			"to": [{ "component": "tx7", "pinId": "B_in" }]
+		},
+		{
+			"from": { "component": "tx7", "pinId": "A_out" },
+			"to": [{ "component": "self", "pinId": "A7_out" }]
+		},
+		{
+			"from": { "component": "tx7", "pinId": "B_out" },
+			"to": [{ "component": "self", "pinId": "B7_out" }]
+		}
+	]
+}

@@ -12,6 +12,10 @@
 			"./src/lib/circuit/components/*.ts",
 			"./src/lib/circuit/components/*/index.ts"
 		],
+		"#chips/*": [
+			"./src/lib/circuit/components/composites/chips/*.ts",
+			"./src/lib/circuit/components/composites/chips/*/index.ts"
+		],
 		"#render/*": [
 			"./src/lib/circuit/render/*.ts",
 			"./src/lib/circuit/render/*/index.ts"
@@ -20,8 +24,11 @@
 			"./src/lib/circuit/sim/*.ts",
 			"./src/lib/circuit/sim/*/index.ts"
 		],
+		"#examples/*": [
+			"./src/examples/*"
+		],
 		"#svComponents/*": [
-			"./src/lib/components/*.ts",
+			"./src/lib/components/*",
 			"./src/lib/components/*/index.ts"
 		]
 	},

@@ -1,0 +1,206 @@
+{
+	"kind": "composite",
+	"id": "REGISTER",
+	"name": "Register with Transceiver",
+	"inputs": [
+		{ "id": "CLK", "name": "Clock", "direction": "input" },
+		{ "id": "CLR", "name": "Clear", "direction": "input" },
+		{ "id": "AI_n", "name": "Load (AI_n)", "direction": "input" },
+		{ "id": "AO_n", "name": "Output Enable (AO_n)", "direction": "input" },
+		{ "id": "BUS0", "name": "BUS0", "direction": "input" },
+		{ "id": "BUS1", "name": "BUS1", "direction": "input" },
+		{ "id": "BUS2", "name": "BUS2", "direction": "input" },
+		{ "id": "BUS3", "name": "BUS3", "direction": "input" },
+		{ "id": "BUS4", "name": "BUS4", "direction": "input" },
+		{ "id": "BUS5", "name": "BUS5", "direction": "input" },
+		{ "id": "BUS6", "name": "BUS6", "direction": "input" },
+		{ "id": "BUS7", "name": "BUS7", "direction": "input" }
+	],
+	"outputs": [
+		{ "id": "A0", "name": "A0", "direction": "output" },
+		{ "id": "A1", "name": "A1", "direction": "output" },
+		{ "id": "A2", "name": "A2", "direction": "output" },
+		{ "id": "A3", "name": "A3", "direction": "output" },
+		{ "id": "A4", "name": "A4", "direction": "output" },
+		{ "id": "A5", "name": "A5", "direction": "output" },
+		{ "id": "A6", "name": "A6", "direction": "output" },
+		{ "id": "A7", "name": "A7", "direction": "output" }
+	],
+	"children": [
+		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 1 },
+		{ "instanceId": "regHigh", "definitionId": "74LS173", "column": 2 },
+		{ "instanceId": "regLow", "definitionId": "74LS173", "column": 2 },
+		{ "instanceId": "invDIR", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [
+				{ "component": "regHigh", "pinId": "CLK" },
+				{ "component": "regLow", "pinId": "CLK" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR" },
+			"to": [
+				{ "component": "regHigh", "pinId": "CLR" },
+				{ "component": "regLow", "pinId": "CLR" }
+			]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "AI_n" },
+			"to": [
+				{ "component": "regHigh", "pinId": "M" },
+				{ "component": "regHigh", "pinId": "N" },
+				{ "component": "regLow", "pinId": "M" },
+				{ "component": "regLow", "pinId": "N" },
+				{ "component": "invDIR", "pinId": "A" }
+			]
+		},
+
+		{
+			"from": { "component": "invDIR", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "DIR" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "AO_n" },
+			"to": [{ "component": "trns", "pinId": "OE_n" }]
+		},
+
+		{
+			"from": { "component": "gnd", "pinId": "OUT" },
+			"to": [
+				{ "component": "regHigh", "pinId": "G1_n" },
+				{ "component": "regHigh", "pinId": "G2_n" },
+				{ "component": "regLow", "pinId": "G1_n" },
+				{ "component": "regLow", "pinId": "G2_n" }
+			]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "BUS0" },
+			"to": [{ "component": "trns", "pinId": "B0_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS1" },
+			"to": [{ "component": "trns", "pinId": "B1_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS2" },
+			"to": [{ "component": "trns", "pinId": "B2_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS3" },
+			"to": [{ "component": "trns", "pinId": "B3_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS4" },
+			"to": [{ "component": "trns", "pinId": "B4_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS5" },
+			"to": [{ "component": "trns", "pinId": "B5_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS6" },
+			"to": [{ "component": "trns", "pinId": "B6_in" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS7" },
+			"to": [{ "component": "trns", "pinId": "B7_in" }]
+		},
+
+		{
+			"from": { "component": "trns", "pinId": "A7_out" },
+			"to": [{ "component": "regHigh", "pinId": "D3" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A6_out" },
+			"to": [{ "component": "regHigh", "pinId": "D2" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A5_out" },
+			"to": [{ "component": "regHigh", "pinId": "D1" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A4_out" },
+			"to": [{ "component": "regHigh", "pinId": "D0" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A3_out" },
+			"to": [{ "component": "regLow", "pinId": "D3" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A2_out" },
+			"to": [{ "component": "regLow", "pinId": "D2" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A1_out" },
+			"to": [{ "component": "regLow", "pinId": "D1" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "A0_out" },
+			"to": [{ "component": "regLow", "pinId": "D0" }]
+		},
+
+		{
+			"from": { "component": "regHigh", "pinId": "Q3" },
+			"to": [
+				{ "component": "trns", "pinId": "A7_in" },
+				{ "component": "self", "pinId": "A7" }
+			]
+		},
+		{
+			"from": { "component": "regHigh", "pinId": "Q2" },
+			"to": [
+				{ "component": "trns", "pinId": "A6_in" },
+				{ "component": "self", "pinId": "A6" }
+			]
+		},
+		{
+			"from": { "component": "regHigh", "pinId": "Q1" },
+			"to": [
+				{ "component": "trns", "pinId": "A5_in" },
+				{ "component": "self", "pinId": "A5" }
+			]
+		},
+		{
+			"from": { "component": "regHigh", "pinId": "Q0" },
+			"to": [
+				{ "component": "trns", "pinId": "A4_in" },
+				{ "component": "self", "pinId": "A4" }
+			]
+		},
+		{
+			"from": { "component": "regLow", "pinId": "Q3" },
+			"to": [
+				{ "component": "trns", "pinId": "A3_in" },
+				{ "component": "self", "pinId": "A3" }
+			]
+		},
+		{
+			"from": { "component": "regLow", "pinId": "Q2" },
+			"to": [
+				{ "component": "trns", "pinId": "A2_in" },
+				{ "component": "self", "pinId": "A2" }
+			]
+		},
+		{
+			"from": { "component": "regLow", "pinId": "Q1" },
+			"to": [
+				{ "component": "trns", "pinId": "A1_in" },
+				{ "component": "self", "pinId": "A1" }
+			]
+		},
+		{
+			"from": { "component": "regLow", "pinId": "Q0" },
+			"to": [
+				{ "component": "trns", "pinId": "A0_in" },
+				{ "component": "self", "pinId": "A0" }
+			]
+		}
+	]
+}
