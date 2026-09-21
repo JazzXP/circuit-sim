@@ -27,8 +27,8 @@ export const CLOCK: PrimitiveDefinition = {
 	kind: 'primitive',
 	id: 'CLOCK',
 	name: 'Clock',
-	inputs: [{ id: 'EN', name: 'EN', direction: 'input' }],
-	outputs: [{ id: 'CLK', name: 'CLK', direction: 'output' }],
+	inputs: [{ id: 'EN', name: 'EN' }],
+	outputs: [{ id: 'CLK', name: 'CLK' }],
 	initialState: (): ClockState => ({
 		output: LogicValue.LOW,
 		lastToggleAt: Date.now(),

@@ -10,7 +10,7 @@ export const VCC: PrimitiveDefinition = {
 	id: 'VCC',
 	name: 'VCC',
 	inputs: [],
-	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+	outputs: [{ id: 'OUT', name: 'OUT' }],
 	initialState: () => undefined,
 	evaluate: () => ({ outputs: [LogicValue.HIGH], nextState: undefined }),
 };

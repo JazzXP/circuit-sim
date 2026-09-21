@@ -13,12 +13,12 @@ export const DFF: PrimitiveDefinition = {
 	id: 'DFF',
 	name: 'D flip-flop',
 	inputs: [
-		{ id: 'D', name: 'D', direction: 'input' },
-		{ id: 'CLK', name: 'CLK', direction: 'input' },
+		{ id: 'D', name: 'D' },
+		{ id: 'CLK', name: 'CLK' },
 	],
 	outputs: [
-		{ id: 'Q', name: 'Q', direction: 'output' },
-		{ id: 'NQ', name: "Q'", direction: 'output' },
+		{ id: 'Q', name: 'Q' },
+		{ id: 'NQ', name: "Q'" },
 	],
 	initialState: (): DffState => ({ lastClock: LogicValue.LOW, storedBit: LogicValue.LOW }),
 	evaluate: (inputs, prevState) => {

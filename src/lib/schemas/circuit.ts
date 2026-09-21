@@ -1,11 +1,9 @@
 import z from 'zod';
 
 const logicValueSchema = z.number().int().min(0).max(3);
-const pinDirectionSchema = z.enum(['input', 'output']);
 const pinSpecSchema = z.object({
 	id: z.string(),
 	name: z.string(),
-	direction: pinDirectionSchema,
 	width: z.number().optional(),
 	defaultValue: logicValueSchema.optional(),
 });
@@ -14,8 +12,10 @@ const pinRefSchema = z.object({
 	pinId: z.string().readonly(),
 });
 const wireSpecSchema = z.object({
+	id: z.string().optional(),
 	from: pinRefSchema,
 	to: pinRefSchema.array().readonly(),
+	colour: z.string().optional().readonly(),
 });
 export type WireSpec = z.infer<typeof wireSpecSchema>;
 
@@ -97,7 +97,6 @@ export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
 export const definitionLibrarySchema = z.record(z.string(), componentDefinitionSchema).readonly();
 
 export type LogicValue = z.infer<typeof logicValueSchema>;
-export type PinDirection = z.infer<typeof pinDirectionSchema>;
 export type PinSpec = z.infer<typeof pinSpecSchema>;
 
 export type ChildSpec = z.infer<typeof childSpecSchema>;

@@ -1,0 +1,69 @@
+{
+	"kind": "composite",
+	"id": "FULL_ADDER",
+	"name": "1-Bit Full Adder",
+	"inputs": [
+		{ "id": "A", "name": "A" },
+		{ "id": "B", "name": "B" },
+		{ "id": "C_in", "name": "Carry In" }
+	],
+	"outputs": [
+		{ "id": "SUM", "name": "Sum" },
+		{ "id": "C_out", "name": "Carry Out" }
+	],
+	"children": [
+		{ "instanceId": "xor1", "definitionId": "XOR2", "column": 1 },
+		{ "instanceId": "xor2", "definitionId": "XOR2", "column": 2 },
+		{ "instanceId": "and1", "definitionId": "AND2", "column": 1 },
+		{ "instanceId": "and2", "definitionId": "AND2", "column": 2 },
+		{ "instanceId": "or1", "definitionId": "OR2", "column": 3 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "A" },
+			"to": [
+				{ "component": "xor1", "pinId": "A" },
+				{ "component": "and1", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "B" },
+			"to": [
+				{ "component": "xor1", "pinId": "B" },
+				{ "component": "and1", "pinId": "B" }
+			]
+		},
+
+		{
+			"from": { "component": "xor1", "pinId": "OUT" },
+			"to": [
+				{ "component": "xor2", "pinId": "A" },
+				{ "component": "and2", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "C_in" },
+			"to": [
+				{ "component": "xor2", "pinId": "B" },
+				{ "component": "and2", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "xor2", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "SUM" }]
+		},
+
+		{
+			"from": { "component": "and1", "pinId": "OUT" },
+			"to": [{ "component": "or1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and2", "pinId": "OUT" },
+			"to": [{ "component": "or1", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "or1", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "C_out" }]
+		}
+	]
+}

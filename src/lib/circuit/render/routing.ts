@@ -8,11 +8,12 @@ import type { ComponentDefinition, PinRef } from '$lib/schemas/circuit';
 import type { Point, ChildLayout } from './layout';
 
 export interface RoutedWire {
-	// readonly wireId: string;
+	readonly wireId: string;
 	readonly toIndex: number;
 	readonly from: PinRef;
 	readonly to: PinRef;
 	readonly points: readonly Point[];
+	readonly colour?: string;
 }
 
 interface Geometry {
@@ -22,8 +23,8 @@ interface Geometry {
 }
 
 const CELL = 10;
-const STUB = CELL; // how far a wire pokes out from a box before pathfinding takes over
-const CONGESTION_WEIGHT = 4; // extra cost per prior wire already using a cell
+const STUB = CELL * 2; // how far a wire pokes out from a box before pathfinding takes over
+const CONGESTION_WEIGHT = 2; // extra cost per prior wire already using a cell
 
 function buildBlockedGrid(
 	children: Readonly<Record<string, ChildLayout>>,
@@ -45,14 +46,29 @@ function buildBlockedGrid(
 	return { blocked, cols, rows };
 }
 
-// Orthogonal A*, biased toward straight runs via a turn penalty, and away
-// from cells other wires have already claimed via a congestion penalty.
-// Congestion is a SOFT cost, never a hard block — two wires can still
-// share a cell if there's genuinely no room to spread apart, they'll just
-// prefer not to when an alternative exists.
-function astar(
+function cellKeyOfPoint(p: Point, cols: number): number {
+	const r = Math.round(p.y / CELL);
+	const c = Math.round(p.x / CELL);
+	return r * cols + c;
+}
+
+// Uniform-cost (Dijkstra) search from `start` to the NEAREST cell in
+// `goalCells`, rather than to one fixed point. This is what makes a
+// multi-destination wire share a real trunk instead of every destination
+// independently routing all the way back to the original source: each new
+// destination searches for the closest point on the tree built so far
+// (source plus every previously-routed branch) and attaches there. This
+// is the standard greedy heuristic for a rectilinear Steiner tree — it
+// minimizes total wire length and produces genuine branch points instead
+// of several lines that just happen to start from the same coordinate.
+//
+// Heuristic is 0 (no A* guidance) rather than distance-to-nearest-goal,
+// trading a bit of search efficiency for simplicity and correctness —
+// fine given how small these grids are in practice (computeLayout results
+// are cached anyway, so this only ever runs once per definition/size).
+function multiGoalSearch(
 	start: Point,
-	goal: Point,
+	goalCells: ReadonlySet<number>,
 	blocked: boolean[][],
 	cols: number,
 	rows: number,
@@ -61,21 +77,17 @@ function astar(
 	const clamp = (v: number, max: number) => Math.max(0, Math.min(max - 1, v));
 	const sr = clamp(Math.round(start.y / CELL), rows);
 	const sc = clamp(Math.round(start.x / CELL), cols);
-	const gr = clamp(Math.round(goal.y / CELL), rows);
-	const gc = clamp(Math.round(goal.x / CELL), cols);
-
 	const key = (r: number, c: number) => r * cols + c;
-	const heuristic = (r: number, c: number) => Math.abs(r - gr) + Math.abs(c - gc);
+
+	const startKey = key(sr, sc);
+	if (goalCells.has(startKey)) return [start]; // already touching the tree
 
 	const gScore = new Map<number, number>();
-	const fScore = new Map<number, number>();
 	const cameFrom = new Map<number, number>();
 	const dirOf = new Map<number, number>();
 	const open = new Set<number>();
 
-	const startKey = key(sr, sc);
 	gScore.set(startKey, 0);
-	fScore.set(startKey, heuristic(sr, sc));
 	open.add(startKey);
 
 	const dirs: readonly [number, number, number][] = [
@@ -90,19 +102,17 @@ function astar(
 		if (++guard > 50_000) return null; // safety valve — should never trigger on reasonable layouts
 
 		let bestKey = -1;
-		let bestF = Infinity;
+		let bestG = Infinity;
 		for (const k of open) {
-			const fv = fScore.get(k)!;
-			if (fv < bestF) {
-				bestF = fv;
+			const gv = gScore.get(k)!;
+			if (gv < bestG) {
+				bestG = gv;
 				bestKey = k;
 			}
 		}
 		open.delete(bestKey);
 
-		const r = Math.floor(bestKey / cols);
-		const c = bestKey % cols;
-		if (r === gr && c === gc) {
+		if (goalCells.has(bestKey)) {
 			const path: Point[] = [];
 			let cursor: number | undefined = bestKey;
 			while (cursor !== undefined) {
@@ -111,24 +121,24 @@ function astar(
 				path.push({ x: pc * CELL, y: pr * CELL });
 				cursor = cameFrom.get(cursor);
 			}
-			return path.reverse();
+			return path.reverse(); // [start, ..., attachment point on the tree]
 		}
 
-		const curG = gScore.get(bestKey)!;
+		const r = Math.floor(bestKey / cols);
+		const c = bestKey % cols;
 		const curDir = dirOf.get(bestKey) ?? -1;
 		for (const [dr, dc, id] of dirs) {
 			const nr = r + dr;
 			const nc = c + dc;
 			if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
-			if (blocked[nr][nc] && !(nr === gr && nc === gc)) continue;
+			const nKey = key(nr, nc);
+			if (blocked[nr][nc] && !goalCells.has(nKey)) continue;
 
 			const turnPenalty = curDir !== -1 && curDir !== id ? 3 : 0;
-			const congestionPenalty = (congestion.get(key(nr, nc)) ?? 0) * CONGESTION_WEIGHT;
-			const tentativeG = curG + 1 + turnPenalty + congestionPenalty;
-			const nKey = key(nr, nc);
+			const congestionPenalty = (congestion.get(nKey) ?? 0) * CONGESTION_WEIGHT;
+			const tentativeG = bestG + 1 + turnPenalty + congestionPenalty;
 			if (tentativeG < (gScore.get(nKey) ?? Infinity)) {
 				gScore.set(nKey, tentativeG);
-				fScore.set(nKey, tentativeG + heuristic(nr, nc));
 				cameFrom.set(nKey, bestKey);
 				dirOf.set(nKey, id);
 				open.add(nKey);
@@ -163,7 +173,6 @@ function resolveEndpoint(geometry: Geometry, ref: PinRef): { pin: Point; stub: P
 	const box = geometry.children[ref.component];
 	const isInput = ref.pinId in box.inputPos;
 	const pin = isInput ? box.inputPos[ref.pinId] : box.outputPos[ref.pinId];
-	if (!pin) console.log(ref.pinId, ref.component);
 	const stub: Point = isInput
 		? { x: box.x - STUB, y: pin.y }
 		: { x: box.x + box.w + STUB, y: pin.y };
@@ -197,13 +206,37 @@ export function computeRoutes(
 
 	for (const wire of def.internalWires) {
 		const source = resolveEndpoint(geometry, wire.from);
+
+		// Every destination attaches to this set as it's routed, so later
+		// destinations can branch off an earlier destination's path instead of
+		// always going all the way back to the source — a real, growing tree.
+		const treeCells = new Set<number>();
+		treeCells.add(cellKeyOfPoint(source.pin, cols));
+		treeCells.add(cellKeyOfPoint(source.stub, cols));
+
 		wire.to.forEach((toRef, toIndex) => {
 			const dest = resolveEndpoint(geometry, toRef);
-			const gridPath = astar(source.stub, dest.stub, blocked, cols, rows, congestion);
-			const routedThroughGrid = gridPath ?? [source.stub, dest.stub]; // fall back to a direct line if pathfinding fails
-			markCongestion(congestion, routedThroughGrid, cols);
-			const full = simplify([source.pin, ...routedThroughGrid, dest.pin]);
-			routes.push({ toIndex, from: wire.from, to: toRef, points: full });
+			const pathToTree = multiGoalSearch(dest.stub, treeCells, blocked, cols, rows, congestion);
+			const grid = pathToTree ?? [dest.stub, source.stub]; // fall back to a direct line if pathfinding fails
+
+			markCongestion(congestion, grid, cols);
+			for (const p of grid) treeCells.add(cellKeyOfPoint(p, cols));
+
+			const branchFromJunctionToDest = [...grid].reverse(); // [attachment point, ..., dest.stub]
+			// The very first branch always explicitly reaches the true source
+			// pin, so the pin is never left visually disconnected even if this
+			// branch happened to attach at the stub cell rather than the pin
+			// cell (they're one grid cell apart).
+			const prefix = toIndex === 0 ? [source.pin] : [];
+			const full = simplify([...prefix, ...branchFromJunctionToDest, dest.pin]);
+			routes.push({
+				wireId: wire.id!,
+				toIndex,
+				from: wire.from,
+				to: toRef,
+				points: full,
+				colour: wire.colour,
+			});
 		});
 	}
 

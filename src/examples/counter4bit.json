@@ -2,12 +2,12 @@
 	"kind": "composite",
 	"id": "COUNTER_4BIT",
 	"name": "4-bit Counter",
-	"inputs": [{ "id": "CLK", "name": "CLK", "direction": "input" }],
+	"inputs": [{ "id": "CLK", "name": "CLK" }],
 	"outputs": [
-		{ "id": "Q0", "name": "Q0", "direction": "output" },
-		{ "id": "Q1", "name": "Q1", "direction": "output" },
-		{ "id": "Q2", "name": "Q2", "direction": "output" },
-		{ "id": "Q3", "name": "Q3", "direction": "output" }
+		{ "id": "Q0", "name": "Q0" },
+		{ "id": "Q1", "name": "Q1" },
+		{ "id": "Q2", "name": "Q2" },
+		{ "id": "Q3", "name": "Q3" }
 	],
 	"children": [
 		{ "instanceId": "bit0", "definitionId": "DFF_GATES" },

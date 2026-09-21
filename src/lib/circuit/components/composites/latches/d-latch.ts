@@ -9,12 +9,12 @@ export const D_LATCH: CompositeDefinition = {
 	id: 'D_LATCH',
 	name: 'D latch (gated)',
 	inputs: [
-		{ id: 'D', name: 'D', direction: 'input' },
-		{ id: 'EN', name: 'EN', direction: 'input' },
+		{ id: 'D', name: 'D' },
+		{ id: 'EN', name: 'EN' },
 	],
 	outputs: [
-		{ id: 'Q', name: 'Q', direction: 'output' },
-		{ id: 'Q_n', name: "Q'", direction: 'output' },
+		{ id: 'Q', name: 'Q' },
+		{ id: 'Q_n', name: "Q'" },
 	],
 	children: [
 		{ instanceId: 'notD', definitionId: 'NAND2' }, // wired as inverter: A and B both = D

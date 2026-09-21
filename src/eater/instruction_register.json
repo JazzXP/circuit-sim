@@ -1,7 +1,7 @@
 {
 	"kind": "composite",
-	"id": "REGISTER",
-	"name": "Register with Transceiver",
+	"id": "INSTRUCTION_REGISTER",
+	"name": "Instruction Register with Transceiver",
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "CLR", "name": "Clear" },
@@ -47,8 +47,7 @@
 			"to": [
 				{ "component": "regHigh", "pinId": "CLK" },
 				{ "component": "regLow", "pinId": "CLK" }
-			],
-			"colour": "#408000"
+			]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLR" },
@@ -148,19 +147,19 @@
 		},
 		{
 			"from": { "component": "trns", "pinId": "A3_out" },
-			"to": [{ "component": "regLow", "pinId": "D3" }]
+			"to": [{ "component": "gnd", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A2_out" },
-			"to": [{ "component": "regLow", "pinId": "D2" }]
+			"to": [{ "component": "gnd", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A1_out" },
-			"to": [{ "component": "regLow", "pinId": "D1" }]
+			"to": [{ "component": "gnd", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A0_out" },
-			"to": [{ "component": "regLow", "pinId": "D0" }]
+			"to": [{ "component": "gnd", "pinId": "OUT" }]
 		},
 
 		{

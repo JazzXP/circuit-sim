@@ -32,12 +32,12 @@ const HALF_ADDER: CompositeDefinition = {
 	id: 'HALF_ADDER',
 	name: 'Half adder',
 	inputs: [
-		{ id: 'A', name: 'A', direction: 'input' },
-		{ id: 'B', name: 'B', direction: 'input' },
+		{ id: 'A', name: 'A' },
+		{ id: 'B', name: 'B' },
 	],
 	outputs: [
-		{ id: 'SUM', name: 'SUM', direction: 'output' },
-		{ id: 'CARRY', name: 'CARRY', direction: 'output' },
+		{ id: 'SUM', name: 'SUM' },
+		{ id: 'CARRY', name: 'CARRY' },
 	],
 	children: [
 		{ instanceId: 'g1_and', definitionId: 'AND2' },
@@ -151,8 +151,8 @@ console.log('\n== Clock driving a DFF over real time (500ms period, runs for ~1.
 		kind: 'composite',
 		id: 'CLOCKED_DFF_DEMO',
 		name: 'Clocked DFF demo',
-		inputs: [{ id: 'D', name: 'D', direction: 'input' }],
-		outputs: [{ id: 'Q', name: 'Q', direction: 'output' }],
+		inputs: [{ id: 'D', name: 'D' }],
+		outputs: [{ id: 'Q', name: 'Q' }],
 		children: [
 			{ instanceId: 'clock', definitionId: 'CLOCK' },
 			{ instanceId: 'dff', definitionId: 'DFF_GATES' },
@@ -343,12 +343,12 @@ console.log('\n== Shared bus: two tri-state drivers, one line ==');
 		id: 'SHARED_BUS_DEMO',
 		name: 'Shared bus demo',
 		inputs: [
-			{ id: 'A', name: 'A', direction: 'input' },
-			{ id: 'EN_A', name: 'EN_A', direction: 'input' },
-			{ id: 'B', name: 'B', direction: 'input' },
-			{ id: 'EN_B', name: 'EN_B', direction: 'input' },
+			{ id: 'A', name: 'A' },
+			{ id: 'EN_A', name: 'EN_A' },
+			{ id: 'B', name: 'B' },
+			{ id: 'EN_B', name: 'EN_B' },
 		],
-		outputs: [{ id: 'BUS_OUT', name: 'BUS_OUT', direction: 'output' }],
+		outputs: [{ id: 'BUS_OUT', name: 'BUS_OUT' }],
 		children: [
 			{ instanceId: 'bufA', definitionId: 'TRI_BUFFER' },
 			{ instanceId: 'bufB', definitionId: 'TRI_BUFFER' },

@@ -14,7 +14,7 @@ export const SEVEN_SEGMENT_DISPLAY: PrimitiveDefinition = {
 	kind: 'primitive',
 	id: 'SEVEN_SEGMENT_DISPLAY',
 	name: '7-Seg Display',
-	inputs: SEGMENT_IDS.map((id): PinSpec => ({ id, name: id, direction: 'input' })),
+	inputs: SEGMENT_IDS.map((id): PinSpec => ({ id, name: id })),
 	outputs: [],
 	initialState: () => undefined,
 	evaluate: () => ({ outputs: [], nextState: undefined }),

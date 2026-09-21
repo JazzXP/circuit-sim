@@ -3,6 +3,7 @@ import type { Layout, Point } from './layout';
 import { gateShapeFor, drawGateShape } from './gateShapes';
 import { isSevenSegmentDisplay, drawSevenSegmentDisplay } from './sevenSegment';
 import type { ComponentInstance, PinRef, DefinitionLibrary } from '$lib/schemas/circuit';
+import type { RoutedWire } from './routing';
 
 export interface ClickRegion {
 	readonly x: number;
@@ -54,7 +55,12 @@ function roundRect(
 	ctx.closePath();
 }
 
-function drawPolyline(ctx: CanvasRenderingContext2D, points: readonly Point[], value: LogicValue) {
+function drawPolyline(
+	ctx: CanvasRenderingContext2D,
+	points: readonly Point[],
+	value: LogicValue,
+	colourOverride?: string,
+) {
 	if (points.length < 2) return;
 	ctx.strokeStyle = wireColor(value);
 	ctx.lineWidth = value === LogicValue.HIGH ? 2.5 : 1.5;
@@ -63,9 +69,29 @@ function drawPolyline(ctx: CanvasRenderingContext2D, points: readonly Point[], v
 	ctx.moveTo(points[0].x, points[0].y);
 	for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
 	ctx.stroke();
+	if (colourOverride) {
+		ctx.beginPath();
+		ctx.setLineDash([5, 5]);
+		ctx.strokeStyle = colourOverride;
+		for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+		ctx.stroke();
+		ctx.setLineDash([]);
+	}
 }
 
-function drawPinDot(ctx: CanvasRenderingContext2D, p: Point, value: LogicValue) {
+function drawPinDot(
+	ctx: CanvasRenderingContext2D,
+	p: Point,
+	value: LogicValue,
+	colourOverride?: string,
+) {
+	ctx.fillStyle = colourOverride ?? wireColor(value);
+	ctx.beginPath();
+	ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+	ctx.fill();
+}
+
+function drawJunctionDot(ctx: CanvasRenderingContext2D, p: Point, value: LogicValue) {
 	ctx.fillStyle = wireColor(value);
 	ctx.beginPath();
 	ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
@@ -109,9 +135,34 @@ export function renderComposite(
 
 	// Wires first, so pins/boxes draw on top of the lines meeting them.
 	for (const route of layout.routes) {
-		drawPolyline(ctx, route.points, resolveValue(instance, route.from));
+		drawPolyline(ctx, route.points, resolveValue(instance, route.from), route.colour);
 	}
 
+	// A junction dot marks a real electrical branch. Branches now attach at
+	// wherever they actually meet the shared tree (routing.ts grows a real
+	// trunk per wire), not all at one shared coordinate — so every route's
+	// own start point is itself a genuine attachment point, and each needs
+	// checking, not just the first. Deduped by coordinate in case two
+	// branches happen to attach at the exact same cell. Two routes from
+	// DIFFERENT wires that happen to cross paths on the canvas never share
+	// a wireId, so they correctly never get a dot.
+	const routesByWireId = new Map<string, RoutedWire[]>();
+	for (const route of layout.routes) {
+		const existing = routesByWireId.get(route.wireId);
+		if (existing) existing.push(route);
+		else routesByWireId.set(route.wireId, [route]);
+	}
+	for (const routes of routesByWireId.values()) {
+		if (routes.length < 2) continue;
+		const seen = new Set<string>();
+		for (const route of routes) {
+			const p = route.points[0];
+			const key = `${p.x},${p.y}`;
+			if (seen.has(key)) continue;
+			seen.add(key);
+			drawJunctionDot(ctx, p, resolveValue(instance, route.from));
+		}
+	}
 	// Boundary inputs — with a toggle switch when this is the interactive root.
 	def.inputs.forEach((pin) => {
 		const p = layout.selfInputPos[pin.id];

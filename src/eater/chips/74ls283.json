@@ -1,0 +1,102 @@
+{
+	"kind": "composite",
+	"id": "74LS283",
+	"name": "4-Bit Ripple-Carry Adder",
+	"inputs": [
+		{ "id": "A0", "name": "A0 (LSB)" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3 (MSB)" },
+		{ "id": "B0", "name": "B0 (LSB)" },
+		{ "id": "B1", "name": "B1" },
+		{ "id": "B2", "name": "B2" },
+		{ "id": "B3", "name": "B3 (MSB)" },
+		{ "id": "C_in", "name": "Carry In" }
+	],
+	"outputs": [
+		{ "id": "S0", "name": "Sum 0 (LSB)" },
+		{ "id": "S1", "name": "Sum 1" },
+		{ "id": "S2", "name": "Sum 2" },
+		{ "id": "S3", "name": "Sum 3 (MSB)" },
+		{ "id": "C_out", "name": "Carry Out" }
+	],
+	"children": [
+		{ "instanceId": "fa0", "definitionId": "FULL_ADDER", "column": 1 },
+		{ "instanceId": "fa1", "definitionId": "FULL_ADDER", "column": 2 },
+		{ "instanceId": "fa2", "definitionId": "FULL_ADDER", "column": 3 },
+		{ "instanceId": "fa3", "definitionId": "FULL_ADDER", "column": 4 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "A0" },
+			"to": [{ "component": "fa0", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B0" },
+			"to": [{ "component": "fa0", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "C_in" },
+			"to": [{ "component": "fa0", "pinId": "C_in" }]
+		},
+		{
+			"from": { "component": "fa0", "pinId": "SUM" },
+			"to": [{ "component": "self", "pinId": "S0" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A1" },
+			"to": [{ "component": "fa1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B1" },
+			"to": [{ "component": "fa1", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "fa0", "pinId": "C_out" },
+			"to": [{ "component": "fa1", "pinId": "C_in" }]
+		},
+		{
+			"from": { "component": "fa1", "pinId": "SUM" },
+			"to": [{ "component": "self", "pinId": "S1" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A2" },
+			"to": [{ "component": "fa2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B2" },
+			"to": [{ "component": "fa2", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "fa1", "pinId": "C_out" },
+			"to": [{ "component": "fa2", "pinId": "C_in" }]
+		},
+		{
+			"from": { "component": "fa2", "pinId": "SUM" },
+			"to": [{ "component": "self", "pinId": "S2" }]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "A3" },
+			"to": [{ "component": "fa3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B3" },
+			"to": [{ "component": "fa3", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "fa2", "pinId": "C_out" },
+			"to": [{ "component": "fa3", "pinId": "C_in" }]
+		},
+		{
+			"from": { "component": "fa3", "pinId": "SUM" },
+			"to": [{ "component": "self", "pinId": "S3" }]
+		},
+		{
+			"from": { "component": "fa3", "pinId": "C_out" },
+			"to": [{ "component": "self", "pinId": "C_out" }]
+		}
+	]
+}

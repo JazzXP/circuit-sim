@@ -36,13 +36,11 @@ export function createEeprom(config: EepromConfig): PrimitiveDefinition {
 	const addressPins: PinSpec[] = Array.from({ length: addressBits }, (_, i) => ({
 		id: `A${i}`,
 		name: `A${i}`,
-		direction: 'input' as const,
 	}));
-	const oePin: PinSpec = { id: 'OE_n', name: "OE'", direction: 'input' };
+	const oePin: PinSpec = { id: 'OE_n', name: "OE'" };
 	const dataPins: PinSpec[] = Array.from({ length: dataBits }, (_, i) => ({
 		id: `D${i}`,
 		name: `D${i}`,
-		direction: 'output' as const,
 	}));
 
 	return {

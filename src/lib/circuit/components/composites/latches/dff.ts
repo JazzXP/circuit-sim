@@ -10,13 +10,13 @@ export const DFF_GATES: CompositeDefinition = {
 	id: 'DFF_GATES',
 	name: 'D flip-flop (gates)',
 	inputs: [
-		{ id: 'D', name: 'D', direction: 'input' },
-		{ id: 'CLK', name: 'CLK', direction: 'input' },
-		{ id: 'R', name: 'R', direction: 'input' },
+		{ id: 'D', name: 'D' },
+		{ id: 'CLK', name: 'CLK' },
+		{ id: 'R', name: 'R' },
 	],
 	outputs: [
-		{ id: 'Q', name: 'Q', direction: 'output' },
-		{ id: 'NQ', name: "Q'", direction: 'output' },
+		{ id: 'Q', name: 'Q' },
+		{ id: 'NQ', name: "Q'" },
 	],
 	children: [
 		{ instanceId: 'notClk', definitionId: 'NAND2' },

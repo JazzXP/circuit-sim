@@ -7,10 +7,10 @@ export const XOR2: PrimitiveDefinition = {
 	id: 'XOR2',
 	name: 'XOR',
 	inputs: [
-		{ id: 'A', name: 'A', direction: 'input' },
-		{ id: 'B', name: 'B', direction: 'input' },
+		{ id: 'A', name: 'A' },
+		{ id: 'B', name: 'B' },
 	],
-	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+	outputs: [{ id: 'OUT', name: 'OUT' }],
 	initialState: () => undefined,
 	evaluate: (inputs) => ({
 		outputs: [bit(inputs[0]) ^ bit(inputs[1]) ? LogicValue.HIGH : LogicValue.LOW],

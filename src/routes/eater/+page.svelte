@@ -4,8 +4,11 @@
 	import {
 		AND2,
 		OR2,
+		XOR2,
 		NOT,
 		NAND2,
+		XNOR2,
+		NOR2,
 		DFF,
 		CLOCK,
 		GND,
@@ -22,6 +25,10 @@
 	import TRANSCEIVER_1BIT from '../../eater/transceiver_1-bit.json';
 	import TRANSCEIVER_8BIT from '../../eater/transceiver_8-bit.json';
 	import REGISTER from '../../eater/register.json';
+	import INSTRUCTION_REGISTER from '../../eater/instruction_register.json';
+	import ALU from '../../eater/alu.json';
+	import FULL_ADDER from '../../eater/full_adder.json';
+	import CHIP_74LS274 from '../../eater/chips/74ls283.json';
 	import {
 		componentDefinitionSchema,
 		type CompositeDefinition,
@@ -37,6 +44,9 @@
 		OR2,
 		NOT,
 		NAND2,
+		XNOR2,
+		XOR2,
+		NOR2,
 		GND,
 		DFF,
 		VCC,
@@ -58,13 +68,17 @@
 		// Misc
 		TRANSCEIVER_1BIT,
 		TRANSCEIVER_8BIT,
+		FULL_ADDER,
 		componentDefinitionSchema.parse(CHIP_74LS173),
+		componentDefinitionSchema.parse(CHIP_74LS274),
 
 		// Demos
 		componentDefinitionSchema.parse(CLOCK_MODULE),
 		componentDefinitionSchema.parse(CPU),
 		componentDefinitionSchema.parse(BUS_DRIVER),
 		componentDefinitionSchema.parse(REGISTER),
+		componentDefinitionSchema.parse(INSTRUCTION_REGISTER),
+		componentDefinitionSchema.parse(ALU),
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}

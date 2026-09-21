@@ -1,11 +1,11 @@
-import { bit } from '#sim/util/bit';
 import { LogicValue } from '#sim/model/component';
 import type { PrimitiveDefinition } from '$lib/schemas/circuit';
+import { bit } from '#sim/util/bit';
 
-export const AND2: PrimitiveDefinition = {
+export const NOR2: PrimitiveDefinition = {
 	kind: 'primitive',
-	id: 'AND2',
-	name: 'AND',
+	id: 'NOR2',
+	name: 'NOR',
 	inputs: [
 		{ id: 'A', name: 'A' },
 		{ id: 'B', name: 'B' },
@@ -13,7 +13,7 @@ export const AND2: PrimitiveDefinition = {
 	outputs: [{ id: 'OUT', name: 'OUT' }],
 	initialState: () => undefined,
 	evaluate: (inputs) => ({
-		outputs: [bit(inputs[0]) & bit(inputs[1]) ? LogicValue.HIGH : LogicValue.LOW],
+		outputs: [bit(inputs[0]) | bit(inputs[1]) ? LogicValue.LOW : LogicValue.HIGH],
 		nextState: undefined,
 	}),
 };

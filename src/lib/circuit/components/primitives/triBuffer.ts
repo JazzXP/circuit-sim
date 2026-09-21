@@ -12,10 +12,10 @@ export const TRI_BUFFER: PrimitiveDefinition = {
 	id: 'TRI_BUFFER',
 	name: 'Tri-state buffer',
 	inputs: [
-		{ id: 'A', name: 'A', direction: 'input' },
-		{ id: 'EN', name: 'EN', direction: 'input' },
+		{ id: 'A', name: 'A' },
+		{ id: 'EN', name: 'EN' },
 	],
-	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+	outputs: [{ id: 'OUT', name: 'OUT' }],
 	initialState: () => undefined,
 	evaluate: (inputs) => {
 		const [a, en] = inputs;

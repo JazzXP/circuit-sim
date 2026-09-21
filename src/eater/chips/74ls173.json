@@ -3,22 +3,22 @@
 	"id": "74LS173",
 	"name": "74LS173",
 	"inputs": [
-		{ "id": "M", "name": "M", "direction": "input" },
-		{ "id": "N", "name": "N", "direction": "input" },
-		{ "id": "G1_n", "name": "G1_n", "direction": "input" },
-		{ "id": "G2_n", "name": "G2_n", "direction": "input" },
-		{ "id": "D0", "name": "D0", "direction": "input" },
-		{ "id": "D1", "name": "D1", "direction": "input" },
-		{ "id": "D2", "name": "D2", "direction": "input" },
-		{ "id": "D3", "name": "D3", "direction": "input" },
-		{ "id": "CLK", "name": "CLK", "direction": "input" },
-		{ "id": "CLR", "name": "CLR", "direction": "input" }
+		{ "id": "M", "name": "M" },
+		{ "id": "N", "name": "N" },
+		{ "id": "G1_n", "name": "G1_n" },
+		{ "id": "G2_n", "name": "G2_n" },
+		{ "id": "D0", "name": "D0" },
+		{ "id": "D1", "name": "D1" },
+		{ "id": "D2", "name": "D2" },
+		{ "id": "D3", "name": "D3" },
+		{ "id": "CLK", "name": "CLK" },
+		{ "id": "CLR", "name": "CLR" }
 	],
 	"outputs": [
-		{ "id": "Q0", "name": "Q0", "direction": "output" },
-		{ "id": "Q1", "name": "Q1", "direction": "output" },
-		{ "id": "Q2", "name": "Q2", "direction": "output" },
-		{ "id": "Q3", "name": "Q3", "direction": "output" }
+		{ "id": "Q0", "name": "Q0" },
+		{ "id": "Q1", "name": "Q1" },
+		{ "id": "Q2", "name": "Q2" },
+		{ "id": "Q3", "name": "Q3" }
 	],
 	"children": [
 		{ "instanceId": "not1", "definitionId": "NOT", "column": 0 },
@@ -92,7 +92,8 @@
 		},
 		{
 			"from": { "component": "self", "pinId": "CLK" },
-			"to": [{ "component": "not5", "pinId": "A" }]
+			"to": [{ "component": "not5", "pinId": "A" }],
+			"colour": "#408000"
 		},
 		{
 			"from": { "component": "self", "pinId": "CLR" },
@@ -188,7 +189,8 @@
 				{ "component": "dff2", "pinId": "CLK" },
 				{ "component": "dff3", "pinId": "CLK" },
 				{ "component": "dff4", "pinId": "CLK" }
-			]
+			],
+			"colour": "#408000"
 		},
 		{
 			"from": { "component": "not7", "pinId": "OUT" },

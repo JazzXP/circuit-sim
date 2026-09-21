@@ -69,6 +69,7 @@
 		"wrangler": "^4.97.0"
 	},
 	"dependencies": {
+		"uuid": "^14.0.2",
 		"zod": "^4.6.5"
 	}
 }

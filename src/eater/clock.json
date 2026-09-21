@@ -3,12 +3,12 @@
 	"id": "EATER_CLOCK",
 	"name": "Counter Module",
 	"inputs": [
-		{ "id": "CLK_STEP", "name": "Clock Step", "direction": "input", "defaultValue": 0 },
-		{ "id": "HLT", "name": "Halt", "direction": "input", "defaultValue": 0 }
+		{ "id": "CLK_STEP", "name": "Clock Step" },
+		{ "id": "HLT", "name": "Halt" }
 	],
 	"outputs": [
-		{ "id": "CLK", "name": "CLK", "direction": "output" },
-		{ "id": "CLK_n", "name": "'CLK", "direction": "output" }
+		{ "id": "CLK", "name": "CLK" },
+		{ "id": "CLK_n", "name": "'CLK" }
 	],
 	"children": [
 		{ "instanceId": "clock", "definitionId": "CLOCK", "column": 0 },
@@ -32,7 +32,8 @@
 		},
 		{
 			"from": { "component": "clock", "pinId": "CLK" },
-			"to": [{ "component": "c_or", "pinId": "B" }]
+			"to": [{ "component": "c_or", "pinId": "B" }],
+			"colour": "#408000"
 		},
 		{
 			"from": { "component": "c_or", "pinId": "OUT" },
@@ -48,7 +49,8 @@
 		},
 		{
 			"from": { "component": "c_not", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "CLK_n" }]
+			"to": [{ "component": "self", "pinId": "CLK_n" }],
+			"colour": "#400080"
 		}
 	]
 }

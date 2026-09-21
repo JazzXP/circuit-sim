@@ -6,7 +6,7 @@ export const GND: PrimitiveDefinition = {
 	id: 'GND',
 	name: 'GND',
 	inputs: [],
-	outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+	outputs: [{ id: 'OUT', name: 'OUT' }],
 	initialState: () => undefined,
 	evaluate: () => ({ outputs: [LogicValue.LOW], nextState: undefined }),
 };

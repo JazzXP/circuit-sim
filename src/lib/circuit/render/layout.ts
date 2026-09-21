@@ -36,7 +36,29 @@ const BOX_WIDTH = 100;
 const PIN_SPACING = 22;
 const BOUNDARY_MARGIN = 40;
 
+const layoutCache = new WeakMap<DefinitionLibrary, Map<string, Layout>>();
+
 export function computeLayout(
+	lib: DefinitionLibrary,
+	definitionId: string,
+	canvasWidth: number,
+	canvasHeight: number,
+): Layout {
+	const cacheKey = `${definitionId}:${canvasWidth}x${canvasHeight}`;
+	let libCache = layoutCache.get(lib);
+	if (!libCache) {
+		libCache = new Map();
+		layoutCache.set(lib, libCache);
+	}
+	const cached = libCache.get(cacheKey);
+	if (cached) return cached;
+
+	const result = computeLayoutUncached(lib, definitionId, canvasWidth, canvasHeight);
+	libCache.set(cacheKey, result);
+	return result;
+}
+
+export function computeLayoutUncached(
 	lib: DefinitionLibrary,
 	definitionId: string,
 	canvasWidth: number,

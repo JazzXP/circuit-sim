@@ -10,10 +10,11 @@
 		{ "instanceId": "regB", "definitionId": "REGISTER", "column": 3, "name": "Register B" },
 		{
 			"instanceId": "regI",
-			"definitionId": "REGISTER",
-			"column": 3,
+			"definitionId": "INSTRUCTION_REGISTER",
+			"column": 0,
 			"name": "Instruction Register"
-		}
+		},
+		{ "instanceId": "alu", "definitionId": "ALU", "column": 4 }
 	],
 	"internalWires": [
 		{
@@ -21,7 +22,178 @@
 			"to": [
 				{ "component": "regA", "pinId": "CLK" },
 				{ "component": "regB", "pinId": "CLK" },
-				{ "component": "regI", "pinId": "CLK" }
+				{ "component": "regI", "pinId": "CLK" },
+				{ "component": "alu", "pinId": "CLK" }
+			],
+			"colour": "#408000"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS0" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS0_out" },
+				{ "component": "regB", "pinId": "BUS0" },
+				{ "component": "regB", "pinId": "BUS0_out" },
+				{ "component": "regI", "pinId": "BUS0" },
+				{ "component": "regI", "pinId": "BUS0_out" },
+				{ "component": "alu", "pinId": "BUS0" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS1" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS1_out" },
+				{ "component": "regB", "pinId": "BUS1" },
+				{ "component": "regB", "pinId": "BUS1_out" },
+				{ "component": "regI", "pinId": "BUS1" },
+				{ "component": "regI", "pinId": "BUS1_out" },
+				{ "component": "alu", "pinId": "BUS1" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS2" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS2_out" },
+				{ "component": "regB", "pinId": "BUS2" },
+				{ "component": "regB", "pinId": "BUS2_out" },
+				{ "component": "regI", "pinId": "BUS2" },
+				{ "component": "regI", "pinId": "BUS2_out" },
+				{ "component": "alu", "pinId": "BUS2" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS3" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS3_out" },
+				{ "component": "regB", "pinId": "BUS3" },
+				{ "component": "regB", "pinId": "BUS3_out" },
+				{ "component": "regI", "pinId": "BUS3" },
+				{ "component": "regI", "pinId": "BUS3_out" },
+				{ "component": "alu", "pinId": "BUS3" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS4" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS4_out" },
+				{ "component": "regB", "pinId": "BUS4" },
+				{ "component": "regB", "pinId": "BUS4_out" },
+				{ "component": "regI", "pinId": "BUS4" },
+				{ "component": "regI", "pinId": "BUS4_out" },
+				{ "component": "alu", "pinId": "BUS4" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS5" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS5_out" },
+				{ "component": "regB", "pinId": "BUS5" },
+				{ "component": "regB", "pinId": "BUS5_out" },
+				{ "component": "regI", "pinId": "BUS5" },
+				{ "component": "regI", "pinId": "BUS5_out" },
+				{ "component": "alu", "pinId": "BUS5" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS6" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS6_out" },
+				{ "component": "regB", "pinId": "BUS6" },
+				{ "component": "regB", "pinId": "BUS6_out" },
+				{ "component": "regI", "pinId": "BUS6" },
+				{ "component": "regI", "pinId": "BUS6_out" },
+				{ "component": "alu", "pinId": "BUS6" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "BUS7" },
+			"to": [
+				{ "component": "regA", "pinId": "BUS7_out" },
+				{ "component": "regB", "pinId": "BUS7" },
+				{ "component": "regB", "pinId": "BUS7_out" },
+				{ "component": "regI", "pinId": "BUS7" },
+				{ "component": "regI", "pinId": "BUS7_out" },
+				{ "component": "alu", "pinId": "BUS7" }
+			],
+			"colour": "#008080"
+		},
+		{
+			"from": { "component": "regA", "pinId": "A0" },
+			"to": [{ "component": "alu", "pinId": "A0" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A1" },
+			"to": [{ "component": "alu", "pinId": "A1" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A2" },
+			"to": [{ "component": "alu", "pinId": "A2" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A3" },
+			"to": [{ "component": "alu", "pinId": "A3" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A4" },
+			"to": [{ "component": "alu", "pinId": "A4" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A5" },
+			"to": [{ "component": "alu", "pinId": "A5" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A6" },
+			"to": [{ "component": "alu", "pinId": "A6" }]
+		},
+		{
+			"from": { "component": "regA", "pinId": "A7" },
+			"to": [{ "component": "alu", "pinId": "A7" }]
+		},
+
+		{
+			"from": { "component": "regB", "pinId": "A0" },
+			"to": [{ "component": "alu", "pinId": "B0" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A1" },
+			"to": [{ "component": "alu", "pinId": "B1" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A2" },
+			"to": [{ "component": "alu", "pinId": "B2" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A3" },
+			"to": [{ "component": "alu", "pinId": "B3" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A4" },
+			"to": [{ "component": "alu", "pinId": "B4" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A5" },
+			"to": [{ "component": "alu", "pinId": "B5" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A6" },
+			"to": [{ "component": "alu", "pinId": "B6" }]
+		},
+		{
+			"from": { "component": "regB", "pinId": "A7" },
+			"to": [{ "component": "alu", "pinId": "B7" }]
+		},
+		{
+			"from": { "component": "regI", "pinId": "CLR" },
+			"to": [
+				{ "component": "regA", "pinId": "CLR" },
+				{ "component": "regB", "pinId": "CLR" },
+				{ "component": "alu", "pinId": "CLR" }
 			]
 		}
 	]

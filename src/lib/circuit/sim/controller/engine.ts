@@ -11,6 +11,7 @@ import type {
 	WireSpec,
 } from '$lib/schemas/circuit';
 import { LogicValue, getDefinition } from '../model/component';
+import { v4 as uuid } from 'uuid';
 
 export interface PinChange {
 	readonly ref: PinRef; // "self" = this instance's own boundary pin
@@ -24,6 +25,7 @@ function pinKey(ref: PinRef): string {
 function wiresBySource(def: CompositeDefinition): ReadonlyMap<string, readonly WireSpec[]> {
 	const map = new Map<string, WireSpec[]>();
 	for (const wire of def.internalWires) {
+		wire.id = wire.id ?? uuid();
 		const key = pinKey(wire.from);
 		const list = map.get(key);
 		if (list) list.push(wire);

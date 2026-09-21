@@ -3,10 +3,10 @@
 	"id": "DIGIT_DISPLAY_DEMO",
 	"name": "Hex digit display",
 	"inputs": [
-		{ "id": "A0", "name": "A0", "direction": "input" },
-		{ "id": "A1", "name": "A1", "direction": "input" },
-		{ "id": "A2", "name": "A2", "direction": "input" },
-		{ "id": "A3", "name": "A3", "direction": "input" }
+		{ "id": "A0", "name": "A0" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3" }
 	],
 	"outputs": [],
 	"children": [

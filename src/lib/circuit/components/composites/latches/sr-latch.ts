@@ -9,12 +9,12 @@ export const SR_LATCH: CompositeDefinition = {
 	id: 'SR_LATCH',
 	name: 'SR latch (NAND)',
 	inputs: [
-		{ id: 'S_n', name: "S'", direction: 'input' },
-		{ id: 'R_n', name: "R'", direction: 'input' },
+		{ id: 'S_n', name: "S'" },
+		{ id: 'R_n', name: "R'" },
 	],
 	outputs: [
-		{ id: 'Q', name: 'Q', direction: 'output' },
-		{ id: 'Q_n', name: "Q'", direction: 'output' },
+		{ id: 'Q', name: 'Q' },
+		{ id: 'Q_n', name: "Q'" },
 	],
 	children: [
 		{ instanceId: 'nandA', definitionId: 'NAND2' },

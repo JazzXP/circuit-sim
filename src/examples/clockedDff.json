@@ -2,8 +2,8 @@
 	"kind": "composite",
 	"id": "CLOCKED_DFF_DEMO",
 	"name": "Clocked DFF",
-	"inputs": [{ "id": "D", "name": "D", "direction": "input" }],
-	"outputs": [{ "id": "Q", "name": "Q", "direction": "output" }],
+	"inputs": [{ "id": "D", "name": "D" }],
+	"outputs": [{ "id": "Q", "name": "Q" }],
 	"children": [
 		{ "instanceId": "clock", "definitionId": "CLOCK" },
 		{ "instanceId": "dff", "definitionId": "DFF_GATES" }

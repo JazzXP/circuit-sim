@@ -3,14 +3,14 @@
 	"id": "TRANSCEIVER_1BIT",
 	"name": "1-Bit Bidirectional Transceiver",
 	"inputs": [
-		{ "id": "A_in", "name": "Internal In", "direction": "input" },
-		{ "id": "B_in", "name": "Bus In", "direction": "input" },
-		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)", "direction": "input" },
-		{ "id": "OE_n", "name": "Output Enable (Active Low)", "direction": "input" }
+		{ "id": "A_in", "name": "Internal In" },
+		{ "id": "B_in", "name": "Bus In" },
+		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)" },
+		{ "id": "OE_n", "name": "Output Enable (Active Low)" }
 	],
 	"outputs": [
-		{ "id": "A_out", "name": "Internal Out", "direction": "output" },
-		{ "id": "B_out", "name": "Bus Out", "direction": "output" }
+		{ "id": "A_out", "name": "Internal Out" },
+		{ "id": "B_out", "name": "Bus Out" }
 	],
 	"children": [
 		{ "instanceId": "notOE", "definitionId": "NOT" },

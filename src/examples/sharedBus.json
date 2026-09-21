@@ -3,14 +3,14 @@
 	"id": "SHARED_BUS_DEMO",
 	"name": "Shared bus",
 	"inputs": [
-		{ "id": "A", "name": "A", "direction": "input" },
-		{ "id": "EN_A", "name": "EN_A", "direction": "input" },
-		{ "id": "B", "name": "B", "direction": "input" },
-		{ "id": "EN_B", "name": "EN_B", "direction": "input" },
-		{ "id": "C", "name": "C", "direction": "input" },
-		{ "id": "EN_C", "name": "EN_C", "direction": "input" }
+		{ "id": "A", "name": "A" },
+		{ "id": "EN_A", "name": "EN_A" },
+		{ "id": "B", "name": "B" },
+		{ "id": "EN_B", "name": "EN_B" },
+		{ "id": "C", "name": "C" },
+		{ "id": "EN_C", "name": "EN_C" }
 	],
-	"outputs": [{ "id": "BUS_OUT", "name": "BUS_OUT", "direction": "output" }],
+	"outputs": [{ "id": "BUS_OUT", "name": "BUS_OUT" }],
 	"children": [
 		{ "instanceId": "bufA", "definitionId": "TRI_BUFFER", "column": 0 },
 		{ "instanceId": "bufB", "definitionId": "TRI_BUFFER", "column": 0 },

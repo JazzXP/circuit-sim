@@ -49,7 +49,6 @@ export function createBus(config: BusConfig): PrimitiveDefinition {
 	const inputs: PinSpec[] = Array.from({ length: driverCount }, (_, i) => ({
 		id: `D${i}`,
 		name: `D${i}`,
-		direction: 'input' as const,
 	}));
 
 	return {
@@ -57,7 +56,7 @@ export function createBus(config: BusConfig): PrimitiveDefinition {
 		id,
 		name,
 		inputs,
-		outputs: [{ id: 'OUT', name: 'OUT', direction: 'output' }],
+		outputs: [{ id: 'OUT', name: 'OUT' }],
 		initialState: () => undefined,
 		evaluate: (values) => {
 			const active = values.filter((v) => v === LogicValue.HIGH || v === LogicValue.LOW);
