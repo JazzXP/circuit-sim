@@ -41,7 +41,8 @@
 		},
 		{
 			"from": { "component": "h_and", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "CLK" }]
+			"to": [{ "component": "self", "pinId": "CLK" }],
+			"colour": "#408000"
 		},
 		{
 			"from": { "component": "h_and", "pinId": "OUT" },
@@ -49,8 +50,7 @@
 		},
 		{
 			"from": { "component": "c_not", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "CLK_n" }],
-			"colour": "#400080"
+			"to": [{ "component": "self", "pinId": "CLK_n" }]
 		}
 	]
 }

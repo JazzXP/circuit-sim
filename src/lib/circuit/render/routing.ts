@@ -25,6 +25,7 @@ interface Geometry {
 const CELL = 10;
 const STUB = CELL * 2; // how far a wire pokes out from a box before pathfinding takes over
 const CONGESTION_WEIGHT = 2; // extra cost per prior wire already using a cell
+const TURN_WEIGHT = 5;
 
 function buildBlockedGrid(
 	children: Readonly<Record<string, ChildLayout>>,
@@ -134,7 +135,7 @@ function multiGoalSearch(
 			const nKey = key(nr, nc);
 			if (blocked[nr][nc] && !goalCells.has(nKey)) continue;
 
-			const turnPenalty = curDir !== -1 && curDir !== id ? 3 : 0;
+			const turnPenalty = curDir !== -1 && curDir !== id ? TURN_WEIGHT : 0;
 			const congestionPenalty = (congestion.get(nKey) ?? 0) * CONGESTION_WEIGHT;
 			const tentativeG = bestG + 1 + turnPenalty + congestionPenalty;
 			if (tentativeG < (gScore.get(nKey) ?? Infinity)) {

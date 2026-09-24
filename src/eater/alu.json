@@ -40,10 +40,15 @@
 	"children": [
 		{ "instanceId": "gnd", "definitionId": "GND", "column": 1 },
 		{ "instanceId": "vcc", "definitionId": "VCC", "column": 1 },
-		{ "instanceId": "reg", "definitionId": "74LS173", "column": 0 },
-		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 1 },
-		{ "instanceId": "add1", "definitionId": "74LS283", "column": 5 },
-		{ "instanceId": "add2", "definitionId": "74LS283", "column": 5 },
+		{ "instanceId": "reg", "definitionId": "74LS173", "column": 0, "name": "Output Register" },
+		{
+			"instanceId": "trns",
+			"definitionId": "TRANSCEIVER_8BIT",
+			"column": 1,
+			"name": "Transceiver"
+		},
+		{ "instanceId": "add1", "definitionId": "74LS283", "column": 5, "name": "Adder" },
+		{ "instanceId": "add2", "definitionId": "74LS283", "column": 5, "name": "Adder" },
 		{ "instanceId": "and1", "definitionId": "AND2", "column": 1 },
 		{ "instanceId": "and2", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "and3", "definitionId": "AND2", "column": 3 },

@@ -2,10 +2,19 @@
 	"kind": "composite",
 	"id": "EATER_CPU",
 	"name": "CPU",
-	"inputs": [],
+	"inputs": [
+		{ "id": "CLK_STEP", "name": "Clock Step" },
+		{ "id": "PRG", "name": "Program Mode" },
+		{ "id": "RAM1", "name": "RAM1" },
+		{ "id": "RAM2", "name": "RAM2" },
+		{ "id": "RAM3", "name": "RAM3" },
+		{ "id": "RAM4", "name": "RAM4" }
+	],
+
 	"outputs": [],
 	"children": [
 		{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 0 },
+		{ "instanceId": "ram", "definitionId": "RAM", "column": 0 },
 		{ "instanceId": "regA", "definitionId": "REGISTER", "column": 3, "name": "Register A" },
 		{ "instanceId": "regB", "definitionId": "REGISTER", "column": 3, "name": "Register B" },
 		{
@@ -23,7 +32,8 @@
 				{ "component": "regA", "pinId": "CLK" },
 				{ "component": "regB", "pinId": "CLK" },
 				{ "component": "regI", "pinId": "CLK" },
-				{ "component": "alu", "pinId": "CLK" }
+				{ "component": "alu", "pinId": "CLK" },
+				{ "component": "ram", "pinId": "CLK" }
 			],
 			"colour": "#408000"
 		},
@@ -35,7 +45,9 @@
 				{ "component": "regB", "pinId": "BUS0_out" },
 				{ "component": "regI", "pinId": "BUS0" },
 				{ "component": "regI", "pinId": "BUS0_out" },
-				{ "component": "alu", "pinId": "BUS0" }
+				{ "component": "alu", "pinId": "BUS0" },
+				{ "component": "ram", "pinId": "BUS0" },
+				{ "component": "ram", "pinId": "BUS0_out" }
 			],
 			"colour": "#008080"
 		},
@@ -47,7 +59,9 @@
 				{ "component": "regB", "pinId": "BUS1_out" },
 				{ "component": "regI", "pinId": "BUS1" },
 				{ "component": "regI", "pinId": "BUS1_out" },
-				{ "component": "alu", "pinId": "BUS1" }
+				{ "component": "alu", "pinId": "BUS1" },
+				{ "component": "ram", "pinId": "BUS1" },
+				{ "component": "ram", "pinId": "BUS1_out" }
 			],
 			"colour": "#008080"
 		},
@@ -59,7 +73,9 @@
 				{ "component": "regB", "pinId": "BUS2_out" },
 				{ "component": "regI", "pinId": "BUS2" },
 				{ "component": "regI", "pinId": "BUS2_out" },
-				{ "component": "alu", "pinId": "BUS2" }
+				{ "component": "alu", "pinId": "BUS2" },
+				{ "component": "ram", "pinId": "BUS2" },
+				{ "component": "ram", "pinId": "BUS2_out" }
 			],
 			"colour": "#008080"
 		},
@@ -71,7 +87,9 @@
 				{ "component": "regB", "pinId": "BUS3_out" },
 				{ "component": "regI", "pinId": "BUS3" },
 				{ "component": "regI", "pinId": "BUS3_out" },
-				{ "component": "alu", "pinId": "BUS3" }
+				{ "component": "alu", "pinId": "BUS3" },
+				{ "component": "ram", "pinId": "BUS3" },
+				{ "component": "ram", "pinId": "BUS3_out" }
 			],
 			"colour": "#008080"
 		},
@@ -195,6 +213,31 @@
 				{ "component": "regB", "pinId": "CLR" },
 				{ "component": "alu", "pinId": "CLR" }
 			]
+		},
+
+		{
+			"from": { "component": "self", "pinId": "CLK_STEP" },
+			"to": [{ "component": "clock", "pinId": "CLK_STEP" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PRG" },
+			"to": [{ "component": "ram", "pinId": "PRG" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "ram", "pinId": "RAM1" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "ram", "pinId": "RAM2" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM3" },
+			"to": [{ "component": "ram", "pinId": "RAM3" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM4" },
+			"to": [{ "component": "ram", "pinId": "RAM4" }]
 		}
 	]
 }

@@ -1,0 +1,178 @@
+{
+	"kind": "composite",
+	"id": "74F189",
+	"name": "74F189",
+	"inputs": [
+		{ "id": "A0", "name": "A0" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3" },
+		{ "id": "D0", "name": "D0" },
+		{ "id": "D1", "name": "D1" },
+		{ "id": "D2", "name": "D2" },
+		{ "id": "D3", "name": "D3" },
+		{ "id": "CS_n", "name": "'CS" },
+		{ "id": "WE_n", "name": "'WE" }
+	],
+	"outputs": [
+		{ "id": "O0", "name": "'O0" },
+		{ "id": "O1", "name": "'O1" },
+		{ "id": "O2", "name": "'O2" },
+		{ "id": "O3", "name": "'O3" }
+	],
+	"children": [
+		{ "instanceId": "not_a0", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_a1", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_a2", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_a3", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_cs", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not_we", "definitionId": "NOT", "column": 1 },
+
+		{ "instanceId": "dec0", "definitionId": "AND4", "column": 1 },
+		{ "instanceId": "dec1", "definitionId": "AND4", "column": 1 },
+
+		{ "instanceId": "cell_array_gate0", "definitionId": "NAND3", "column": 2 },
+		{ "instanceId": "cell_array_gate1", "definitionId": "NAND3", "column": 2 },
+		{ "instanceId": "cell_array_gate2", "definitionId": "NAND3", "column": 2 },
+		{ "instanceId": "cell_array_gate3", "definitionId": "NAND3", "column": 2 },
+
+		{ "instanceId": "out_inv0", "definitionId": "NOT", "column": 3 },
+		{ "instanceId": "out_inv1", "definitionId": "NOT", "column": 3 },
+		{ "instanceId": "out_inv2", "definitionId": "NOT", "column": 3 },
+		{ "instanceId": "out_inv3", "definitionId": "NOT", "column": 3 },
+
+		{ "instanceId": "buf0", "definitionId": "TRI_BUFFER", "column": 4 },
+		{ "instanceId": "buf1", "definitionId": "TRI_BUFFER", "column": 4 },
+		{ "instanceId": "buf2", "definitionId": "TRI_BUFFER", "column": 4 },
+		{ "instanceId": "buf3", "definitionId": "TRI_BUFFER", "column": 4 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "A0" },
+			"to": [
+				{ "component": "not_a0", "pinId": "A" },
+				{ "component": "dec0", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "A1" },
+			"to": [
+				{ "component": "not_a1", "pinId": "A" },
+				{ "component": "dec0", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "A2" },
+			"to": [
+				{ "component": "not_a2", "pinId": "A" },
+				{ "component": "dec0", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "A3" },
+			"to": [
+				{ "component": "not_a3", "pinId": "A" },
+				{ "component": "dec0", "pinId": "D" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "CS_n" },
+			"to": [{ "component": "not_cs", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "WE_n" },
+			"to": [{ "component": "not_we", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D0" },
+			"to": [{ "component": "cell_array_gate0", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D1" },
+			"to": [{ "component": "cell_array_gate1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D2" },
+			"to": [{ "component": "cell_array_gate2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D3" },
+			"to": [{ "component": "cell_array_gate3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "dec0", "pinId": "OUT" },
+			"to": [
+				{ "component": "cell_array_gate0", "pinId": "B" },
+				{ "component": "cell_array_gate1", "pinId": "B" },
+				{ "component": "cell_array_gate2", "pinId": "B" },
+				{ "component": "cell_array_gate3", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "not_we", "pinId": "OUT" },
+			"to": [
+				{ "component": "cell_array_gate0", "pinId": "C" },
+				{ "component": "cell_array_gate1", "pinId": "C" },
+				{ "component": "cell_array_gate2", "pinId": "C" },
+				{ "component": "cell_array_gate3", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "cell_array_gate0", "pinId": "OUT" },
+			"to": [{ "component": "out_inv0", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "cell_array_gate1", "pinId": "OUT" },
+			"to": [{ "component": "out_inv1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "cell_array_gate2", "pinId": "OUT" },
+			"to": [{ "component": "out_inv2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "cell_array_gate3", "pinId": "OUT" },
+			"to": [{ "component": "out_inv3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "out_inv0", "pinId": "OUT" },
+			"to": [{ "component": "buf0", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "out_inv1", "pinId": "OUT" },
+			"to": [{ "component": "buf1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "out_inv2", "pinId": "OUT" },
+			"to": [{ "component": "buf2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "out_inv3", "pinId": "OUT" },
+			"to": [{ "component": "buf3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_cs", "pinId": "OUT" },
+			"to": [
+				{ "component": "buf0", "pinId": "OE" },
+				{ "component": "buf1", "pinId": "OE" },
+				{ "component": "buf2", "pinId": "OE" },
+				{ "component": "buf3", "pinId": "OE" }
+			]
+		},
+		{
+			"from": { "component": "buf0", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "O0" }]
+		},
+		{
+			"from": { "component": "buf1", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "O1" }]
+		},
+		{
+			"from": { "component": "buf2", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "O2" }]
+		},
+		{
+			"from": { "component": "buf3", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "O3" }]
+		}
+	]
+}

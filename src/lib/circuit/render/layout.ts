@@ -33,7 +33,7 @@ export interface Layout {
 }
 
 const BOX_WIDTH = 100;
-const PIN_SPACING = 22;
+const PIN_SPACING = 20;
 const BOUNDARY_MARGIN = 40;
 
 const layoutCache = new WeakMap<DefinitionLibrary, Map<string, Layout>>();

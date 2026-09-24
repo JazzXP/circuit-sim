@@ -1,0 +1,123 @@
+{
+	"kind": "composite",
+	"id": "MAR",
+	"name": "MAR",
+	"inputs": [
+		{ "id": "CLK", "name": "Clock" },
+		{ "id": "CLR", "name": "Clear" },
+		{ "id": "MI_n", "name": "'MI" },
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" },
+		{ "id": "PRG", "name": "Program Mode" },
+		{ "id": "RAM1", "name": "RAM1" },
+		{ "id": "RAM2", "name": "RAM2" },
+		{ "id": "RAM3", "name": "RAM3" },
+		{ "id": "RAM4", "name": "RAM4" }
+	],
+	"outputs": [
+		{ "id": "A0", "name": "A0" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3" }
+	],
+	"children": [
+		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "74ls157", "definitionId": "74LS157", "column": 1 },
+		{ "instanceId": "reg", "definitionId": "74LS173", "column": 2 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "gnd", "pinId": "OUT" },
+			"to": [
+				{ "component": "74ls157", "pinId": "G_n" },
+				{ "component": "reg", "pinId": "G1_n" },
+				{ "component": "reg", "pinId": "G2_n" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "74ls157", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "74ls157", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "74ls157", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "74ls157", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "D3" },
+			"to": [{ "component": "self", "pinId": "BUS0" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "D2" },
+			"to": [{ "component": "self", "pinId": "BUS1" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "D1" },
+			"to": [{ "component": "self", "pinId": "BUS2" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "D0" },
+			"to": [{ "component": "self", "pinId": "BUS3" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR" },
+			"to": [{ "component": "reg", "pinId": "CLR" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "MI_n" },
+			"to": [
+				{ "component": "reg", "pinId": "M" },
+				{ "component": "reg", "pinId": "N" }
+			]
+		},
+		{
+			"from": { "component": "reg", "pinId": "Q0" },
+			"to": [{ "component": "74ls157", "pinId": "1B" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "Q1" },
+			"to": [{ "component": "74ls157", "pinId": "2B" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "Q2" },
+			"to": [{ "component": "74ls157", "pinId": "3B" }]
+		},
+		{
+			"from": { "component": "reg", "pinId": "Q3" },
+			"to": [{ "component": "74ls157", "pinId": "4B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PRG" },
+			"to": [{ "component": "74ls157", "pinId": "SEL" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "reg", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "74ls157", "pinId": "4Y" },
+			"to": [{ "component": "self", "pinId": "A0" }]
+		},
+		{
+			"from": { "component": "74ls157", "pinId": "3Y" },
+			"to": [{ "component": "self", "pinId": "A1" }]
+		},
+		{
+			"from": { "component": "74ls157", "pinId": "2Y" },
+			"to": [{ "component": "self", "pinId": "A2" }]
+		},
+		{
+			"from": { "component": "74ls157", "pinId": "1Y" },
+			"to": [{ "component": "self", "pinId": "A3" }]
+		}
+	]
+}

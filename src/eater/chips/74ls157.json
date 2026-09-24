@@ -1,0 +1,159 @@
+{
+	"kind": "composite",
+	"id": "74LS157",
+	"name": "74LS157",
+	"inputs": [
+		{ "id": "1A", "name": "1A" },
+		{ "id": "1B", "name": "1B" },
+		{ "id": "2A", "name": "2A" },
+		{ "id": "2B", "name": "2B" },
+		{ "id": "3A", "name": "3A" },
+		{ "id": "3B", "name": "3B" },
+		{ "id": "4A", "name": "4A" },
+		{ "id": "4B", "name": "4B" },
+		{ "id": "SEL", "name": "'A/B" },
+		{ "id": "G_n", "name": "'G" }
+	],
+	"outputs": [
+		{ "id": "1Y", "name": "1Y" },
+		{ "id": "2Y", "name": "2Y" },
+		{ "id": "3Y", "name": "3Y" },
+		{ "id": "4Y", "name": "4Y" }
+	],
+	"children": [
+		{ "instanceId": "not1", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not2", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not3", "definitionId": "NOT", "column": 1 },
+
+		{ "instanceId": "and1", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and2", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and3", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and4", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and5", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and6", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and7", "definitionId": "AND3", "column": 2 },
+		{ "instanceId": "and8", "definitionId": "AND3", "column": 2 },
+
+		{ "instanceId": "or1", "definitionId": "OR2", "column": 3 },
+		{ "instanceId": "or2", "definitionId": "OR2", "column": 3 },
+		{ "instanceId": "or3", "definitionId": "OR2", "column": 3 },
+		{ "instanceId": "or4", "definitionId": "OR2", "column": 3 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "1A" },
+			"to": [{ "component": "and1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1B" },
+			"to": [{ "component": "and2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2A" },
+			"to": [{ "component": "and3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2B" },
+			"to": [{ "component": "and4", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "3A" },
+			"to": [{ "component": "and5", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "3B" },
+			"to": [{ "component": "and6", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "4A" },
+			"to": [{ "component": "and7", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "4B" },
+			"to": [{ "component": "and8", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "SEL" },
+			"to": [{ "component": "not1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "G_n" },
+			"to": [{ "component": "not3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not1", "pinId": "OUT" },
+			"to": [
+				{ "component": "not2", "pinId": "A" },
+				{ "component": "and1", "pinId": "B" },
+				{ "component": "and2", "pinId": "B" },
+				{ "component": "and3", "pinId": "B" },
+				{ "component": "and4", "pinId": "B" },
+				{ "component": "and5", "pinId": "B" },
+				{ "component": "and6", "pinId": "B" },
+				{ "component": "and7", "pinId": "B" },
+				{ "component": "and8", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "not3", "pinId": "OUT" },
+			"to": [
+				{ "component": "and1", "pinId": "C" },
+				{ "component": "and2", "pinId": "C" },
+				{ "component": "and3", "pinId": "C" },
+				{ "component": "and4", "pinId": "C" },
+				{ "component": "and5", "pinId": "C" },
+				{ "component": "and6", "pinId": "C" },
+				{ "component": "and7", "pinId": "C" },
+				{ "component": "and8", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "and1", "pinId": "OUT" },
+			"to": [{ "component": "or1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and2", "pinId": "OUT" },
+			"to": [{ "component": "or1", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and3", "pinId": "OUT" },
+			"to": [{ "component": "or2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and4", "pinId": "OUT" },
+			"to": [{ "component": "or2", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and5", "pinId": "OUT" },
+			"to": [{ "component": "or3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and6", "pinId": "OUT" },
+			"to": [{ "component": "or3", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and7", "pinId": "OUT" },
+			"to": [{ "component": "or4", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and8", "pinId": "OUT" },
+			"to": [{ "component": "or4", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "or1", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "1Y" }]
+		},
+		{
+			"from": { "component": "or2", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "2Y" }]
+		},
+		{
+			"from": { "component": "or3", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "3Y" }]
+		},
+		{
+			"from": { "component": "or4", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "4Y" }]
+		}
+	]
+}

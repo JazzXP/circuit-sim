@@ -1,0 +1,88 @@
+{
+	"kind": "composite",
+	"id": "RAM",
+	"name": "RAM",
+	"inputs": [
+		{ "id": "CLK", "name": "Clock" },
+		{ "id": "CLR", "name": "Clear" },
+		{ "id": "MI_n", "name": "'MI" },
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" },
+		{ "id": "PRG", "name": "Program Mode" },
+		{ "id": "RAM1", "name": "RAM1" },
+		{ "id": "RAM2", "name": "RAM2" },
+		{ "id": "RAM3", "name": "RAM3" },
+		{ "id": "RAM4", "name": "RAM4" }
+	],
+	"outputs": [
+		{ "id": "BUS0_out", "name": "BUS0" },
+		{ "id": "BUS1_out", "name": "BUS1" },
+		{ "id": "BUS2_out", "name": "BUS2" },
+		{ "id": "BUS3_out", "name": "BUS3" }
+	],
+	"children": [{ "instanceId": "mar", "definitionId": "MAR", "column": 0 }],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "mar", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR" },
+			"to": [{ "component": "mar", "pinId": "CLR" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "MI_n" },
+			"to": [{ "component": "mar", "pinId": "MI_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PRG" },
+			"to": [{ "component": "mar", "pinId": "PRG" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "mar", "pinId": "RAM1" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "mar", "pinId": "RAM2" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM3" },
+			"to": [{ "component": "mar", "pinId": "RAM3" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM4" },
+			"to": [{ "component": "mar", "pinId": "RAM4" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS0" },
+			"to": [
+				{ "component": "mar", "pinId": "BUS0" },
+				{ "component": "self", "pinId": "BUS0_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS1" },
+			"to": [
+				{ "component": "mar", "pinId": "BUS1" },
+				{ "component": "self", "pinId": "BUS1_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS2" },
+			"to": [
+				{ "component": "mar", "pinId": "BUS2" },
+				{ "component": "self", "pinId": "BUS2_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS3" },
+			"to": [
+				{ "component": "mar", "pinId": "BUS3" },
+				{ "component": "self", "pinId": "BUS3_out" }
+			]
+		}
+	]
+}

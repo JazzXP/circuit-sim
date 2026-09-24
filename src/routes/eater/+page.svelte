@@ -13,6 +13,7 @@
 		CLOCK,
 		GND,
 		VCC,
+		AND3,
 		createBus,
 		TRI_BUFFER,
 	} from '$lib/circuit/components/primitives';
@@ -29,6 +30,9 @@
 	import ALU from '../../eater/alu.json';
 	import FULL_ADDER from '../../eater/full_adder.json';
 	import CHIP_74LS274 from '../../eater/chips/74ls283.json';
+	import CHIP_74LS157 from '../../eater/chips/74ls157.json';
+	import MAR from '../../eater/mar.json';
+	import RAM from '../../eater/ram.json';
 	import {
 		componentDefinitionSchema,
 		type CompositeDefinition,
@@ -52,6 +56,7 @@
 		VCC,
 		CLOCK,
 		TRI_BUFFER,
+		AND3,
 
 		// Latches
 		SR_LATCH,
@@ -69,6 +74,7 @@
 		TRANSCEIVER_1BIT,
 		TRANSCEIVER_8BIT,
 		FULL_ADDER,
+		componentDefinitionSchema.parse(CHIP_74LS157),
 		componentDefinitionSchema.parse(CHIP_74LS173),
 		componentDefinitionSchema.parse(CHIP_74LS274),
 
@@ -79,6 +85,8 @@
 		componentDefinitionSchema.parse(REGISTER),
 		componentDefinitionSchema.parse(INSTRUCTION_REGISTER),
 		componentDefinitionSchema.parse(ALU),
+		componentDefinitionSchema.parse(MAR),
+		componentDefinitionSchema.parse(RAM),
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}
