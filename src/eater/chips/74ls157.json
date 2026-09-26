@@ -85,12 +85,17 @@
 			"to": [
 				{ "component": "not2", "pinId": "A" },
 				{ "component": "and1", "pinId": "B" },
-				{ "component": "and2", "pinId": "B" },
 				{ "component": "and3", "pinId": "B" },
-				{ "component": "and4", "pinId": "B" },
 				{ "component": "and5", "pinId": "B" },
+				{ "component": "and7", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "not2", "pinId": "OUT" },
+			"to": [
+				{ "component": "and2", "pinId": "B" },
+				{ "component": "and4", "pinId": "B" },
 				{ "component": "and6", "pinId": "B" },
-				{ "component": "and7", "pinId": "B" },
 				{ "component": "and8", "pinId": "B" }
 			]
 		},

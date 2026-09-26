@@ -23,6 +23,7 @@
 	import SHARED_BUS_DEMO from '../examples/sharedBus.json';
 	import { CHIP_74LS173 } from '#circuit/components/composites/chips/74ls173';
 	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
+	import { OUTPUT } from '../eater/output';
 
 	let library: DefinitionLibrary = emptyLibrary;
 	for (const def of [
@@ -55,6 +56,7 @@
 		componentDefinitionSchema.parse(DIGIT_DISPLAY_DEMO),
 		componentDefinitionSchema.parse(CLOCKED_COUNTER),
 		componentDefinitionSchema.parse(SHARED_BUS_DEMO),
+		OUTPUT,
 	]) {
 		library = registerDefinition(library, def);
 	}

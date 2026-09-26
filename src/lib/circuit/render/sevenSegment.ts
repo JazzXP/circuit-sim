@@ -1,4 +1,5 @@
 import { LogicValue } from '#sim/model/component';
+import type { Point } from './layout';
 
 export function isSevenSegmentDisplay(definitionId: string): boolean {
 	return definitionId === 'SEVEN_SEGMENT_DISPLAY';
@@ -7,7 +8,7 @@ export function isSevenSegmentDisplay(definitionId: string): boolean {
 const SEGMENT_ON = '#ff5a3c';
 const SEGMENT_OFF = '#3a2420'; // dim, but still visible — like a real unlit LED segment
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const SEGMENT_ORDER = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const;
+const SEGMENT_ORDER = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const;
 
 // Draws the classic 7-segment glyph filling the given box, with each
 // segment colored by whether its corresponding pin is currently HIGH.
@@ -19,7 +20,7 @@ export function drawSevenSegmentDisplay(
 	y: number,
 	w: number,
 	h: number,
-	pinValues: Readonly<Record<string, LogicValue>>
+	pinValues: Readonly<Record<string, LogicValue>>,
 ): void {
 	const margin = 10;
 	const x0 = x + margin;
@@ -34,6 +35,12 @@ export function drawSevenSegmentDisplay(
 		if (rw <= 0 || rh <= 0) return;
 		ctx.fillStyle = on ? SEGMENT_ON : SEGMENT_OFF;
 		ctx.fillRect(rx, ry, rw, rh);
+	};
+	const drawDot = (p: Point, size: number, isOn: boolean) => {
+		ctx.fillStyle = isOn ? SEGMENT_ON : SEGMENT_OFF;
+		ctx.beginPath();
+		ctx.arc(p.x - size / 2, p.y - size / 2, size, 0, Math.PI * 2);
+		ctx.fill();
 	};
 
 	// Background plate, like the dark PCB behind a real 7-seg display.
@@ -53,4 +60,10 @@ export function drawSevenSegmentDisplay(
 	fillRect(x1 - t, y0 + t, t, topVSpan, isOn('b')); // top-right
 	fillRect(x0, midY + t / 2, t, botVSpan, isOn('e')); // bottom-left
 	fillRect(x1 - t, midY + t / 2, t, botVSpan, isOn('c')); // bottom-right
+
+	drawDot(
+		{ x: x + margin + w - margin - t / 2, y: y + margin + h - margin - t },
+		t / 2,
+		isOn('dp'),
+	);
 }

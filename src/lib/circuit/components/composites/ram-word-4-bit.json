@@ -1,0 +1,253 @@
+{
+	"kind": "composite",
+	"id": "RAM_WORD_4BIT",
+	"name": "RAM_WORD_4BIT",
+	"inputs": [
+		{
+			"id": "D0",
+			"name": "D0"
+		},
+		{
+			"id": "D1",
+			"name": "D1"
+		},
+		{
+			"id": "D2",
+			"name": "D2"
+		},
+		{
+			"id": "D3",
+			"name": "D3"
+		},
+		{
+			"id": "EN",
+			"name": "EN"
+		}
+	],
+	"outputs": [
+		{
+			"id": "Q0",
+			"name": "Q0"
+		},
+		{
+			"id": "Q1",
+			"name": "Q1"
+		},
+		{
+			"id": "Q2",
+			"name": "Q2"
+		},
+		{
+			"id": "Q3",
+			"name": "Q3"
+		},
+		{
+			"id": "Q0_n",
+			"name": "Q0_n"
+		},
+		{
+			"id": "Q1_n",
+			"name": "Q1_n"
+		},
+		{
+			"id": "Q2_n",
+			"name": "Q2_n"
+		},
+		{
+			"id": "Q3_n",
+			"name": "Q3_n"
+		}
+	],
+	"children": [
+		{
+			"instanceId": "dff1",
+			"definitionId": "D_LATCH",
+			"column": 0
+		},
+		{
+			"instanceId": "dff2",
+			"definitionId": "D_LATCH",
+			"column": 0
+		},
+		{
+			"instanceId": "dff3",
+			"definitionId": "D_LATCH",
+			"column": 0
+		},
+		{
+			"instanceId": "dff4",
+			"definitionId": "D_LATCH",
+			"column": 0
+		}
+	],
+	"internalWires": [
+		{
+			"from": {
+				"component": "self",
+				"pinId": "D0"
+			},
+			"to": [
+				{
+					"component": "dff1",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "EN"
+			},
+			"to": [
+				{
+					"component": "dff1",
+					"pinId": "EN"
+				},
+				{
+					"component": "dff2",
+					"pinId": "EN"
+				},
+				{
+					"component": "dff3",
+					"pinId": "EN"
+				},
+				{
+					"component": "dff4",
+					"pinId": "EN"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff1",
+				"pinId": "Q"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q0"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff1",
+				"pinId": "Q_n"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q0_n"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "D1"
+			},
+			"to": [
+				{
+					"component": "dff2",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff2",
+				"pinId": "Q"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q1"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff2",
+				"pinId": "Q_n"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q1_n"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "D2"
+			},
+			"to": [
+				{
+					"component": "dff3",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff3",
+				"pinId": "Q"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q2"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff3",
+				"pinId": "Q_n"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q2_n"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "D3"
+			},
+			"to": [
+				{
+					"component": "dff4",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff4",
+				"pinId": "Q"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q3"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "dff4",
+				"pinId": "Q_n"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Q3_n"
+				}
+			]
+		}
+	]
+}

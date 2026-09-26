@@ -23,6 +23,8 @@ export interface ChildLayout {
 	readonly h: number;
 	readonly inputPos: Readonly<Record<string, Point>>;
 	readonly outputPos: Readonly<Record<string, Point>>;
+	readonly inputStubPos: Readonly<Record<string, Point>>;
+	readonly outputStubPos: Readonly<Record<string, Point>>;
 }
 
 export interface Layout {
@@ -35,6 +37,7 @@ export interface Layout {
 const BOX_WIDTH = 100;
 const PIN_SPACING = 20;
 const BOUNDARY_MARGIN = 40;
+const STUB = 40;
 
 const layoutCache = new WeakMap<DefinitionLibrary, Map<string, Layout>>();
 
@@ -79,7 +82,7 @@ export function computeLayoutUncached(
 	const children: Record<string, ChildLayout> = {};
 	if (def.kind === 'composite') {
 		const usableWidth = Math.max(canvasWidth - 260, BOX_WIDTH);
-		const VERTICAL_GAP = 24;
+		const VERTICAL_GAP = 80;
 
 		// Group children by column. A child with no explicit column falls back
 		// to its own declaration index — meaning "no column specified anywhere"
@@ -112,22 +115,29 @@ export function computeLayoutUncached(
 			const slot = numColumns <= 1 ? 0.5 : colIndex / (numColumns - 1);
 			const x = BOUNDARY_MARGIN + 90 + slot * (usableWidth - colWidth);
 
-			const totalHeight =
-				sized.reduce((sum, s) => sum + s.h, 0) + VERTICAL_GAP * (sized.length - 1);
-			let y = canvasHeight / 2 - totalHeight / 2;
+			// Anchor columns near the top of the canvas instead of vertically centering them
+			let y = BOUNDARY_MARGIN + 20;
 
 			for (const { child, childDef, w, h } of sized) {
 				const centerY = y + h / 2;
 				const inputPos: Record<string, Point> = {};
+				const inputStubPos: Record<string, Point> = {};
 				childDef.inputs.forEach((pin, pi) => {
 					const offset = (pi - (childDef.inputs.length - 1) / 2) * PIN_SPACING;
 					inputPos[pin.id] = { x, y: centerY + offset };
+					// Stagger input stubs further left the further they are from center/top
+					const stubDepth = STUB + pi * 10;
+					inputStubPos[pin.id] = { x: x - stubDepth, y: centerY + offset };
 				});
 
 				const outputPos: Record<string, Point> = {};
+				const outputStubPos: Record<string, Point> = {};
 				childDef.outputs.forEach((pin, pi) => {
 					const offset = (pi - (childDef.outputs.length - 1) / 2) * PIN_SPACING;
 					outputPos[pin.id] = { x: x + w, y: centerY + offset };
+					// Stagger output stubs further right
+					const stubDepth = STUB + pi * 10;
+					outputStubPos[pin.id] = { x: x + w + stubDepth, y: centerY + offset };
 				});
 
 				children[child.instanceId] = {
@@ -139,6 +149,8 @@ export function computeLayoutUncached(
 					h,
 					inputPos,
 					outputPos,
+					inputStubPos,
+					outputStubPos,
 				};
 
 				y += h + VERTICAL_GAP;

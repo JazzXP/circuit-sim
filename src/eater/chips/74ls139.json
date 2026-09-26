@@ -1,0 +1,183 @@
+{
+	"kind": "composite",
+	"id": "74LS139",
+	"name": "74LS139",
+	"inputs": [
+		{ "id": "1G_n", "name": "1'G" },
+		{ "id": "1A", "name": "1A" },
+		{ "id": "1B", "name": "1B" },
+		{ "id": "2G_n", "name": "2'G" },
+		{ "id": "2A", "name": "2A" },
+		{ "id": "2B", "name": "2B" }
+	],
+	"outputs": [
+		{ "id": "1Y0_n", "name": "1Y0" },
+		{ "id": "1Y1_n", "name": "1Y1" },
+		{ "id": "1Y2_n", "name": "1Y2" },
+		{ "id": "1Y3_n", "name": "1Y3" },
+		{ "id": "2Y0_n", "name": "2Y0" },
+		{ "id": "2Y1_n", "name": "2Y1" },
+		{ "id": "2Y2_n", "name": "2Y2" },
+		{ "id": "2Y3_n", "name": "2Y3" }
+	],
+	"children": [
+		{ "instanceId": "1_not_g", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "1_not_a", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "1_not_b", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "1_nand0", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "1_nand1", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "1_nand2", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "1_nand3", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "2_not_g", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "2_not_a", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "2_not_b", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "2_nand0", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "2_nand1", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "2_nand2", "definitionId": "NAND3", "column": 1 },
+		{ "instanceId": "2_nand3", "definitionId": "NAND3", "column": 1 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "1G_n" },
+			"to": [{ "component": "1_not_g", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1A" },
+			"to": [
+				{ "component": "1_not_a", "pinId": "A" },
+				{ "component": "1_nand1", "pinId": "C" },
+				{ "component": "1_nand3", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "1B" },
+			"to": [
+				{ "component": "1_not_b", "pinId": "A" },
+				{ "component": "1_nand2", "pinId": "B" },
+				{ "component": "1_nand3", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "1_not_g", "pinId": "OUT" },
+			"to": [
+				{ "component": "1_nand0", "pinId": "A" },
+				{ "component": "1_nand1", "pinId": "A" },
+				{ "component": "1_nand2", "pinId": "A" },
+				{ "component": "1_nand3", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "1_not_b", "pinId": "OUT" },
+			"to": [
+				{ "component": "1_nand0", "pinId": "B" },
+				{ "component": "1_nand1", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "1_not_a", "pinId": "OUT" },
+			"to": [
+				{ "component": "1_nand0", "pinId": "C" },
+				{ "component": "1_nand2", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "1_nand0", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "1Y0_n" }]
+		},
+		{
+			"from": { "component": "1_nand1", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "1Y1_n" }]
+		},
+		{
+			"from": { "component": "1_nand2", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "1Y2_n" }]
+		},
+		{
+			"from": { "component": "1_nand3", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "1Y3_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2G_n" },
+			"to": [{ "component": "2_not_g", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2A" },
+			"to": [
+				{ "component": "2_not_a", "pinId": "A" },
+				{ "component": "2_nand1", "pinId": "C" },
+				{ "component": "2_nand3", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "2B" },
+			"to": [
+				{ "component": "2_not_b", "pinId": "A" },
+				{ "component": "2_nand2", "pinId": "B" },
+				{ "component": "2_nand3", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "2_not_g", "pinId": "OUT" },
+			"to": [
+				{ "component": "2_nand0", "pinId": "A" },
+				{ "component": "2_nand1", "pinId": "A" },
+				{ "component": "2_nand2", "pinId": "A" },
+				{ "component": "2_nand3", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "2_not_b", "pinId": "OUT" },
+			"to": [
+				{ "component": "2_nand0", "pinId": "B" },
+				{ "component": "2_nand1", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "2_not_a", "pinId": "OUT" },
+			"to": [
+				{ "component": "2_nand0", "pinId": "C" },
+				{ "component": "2_nand2", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "2_nand0", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "2Y0_n" }]
+		},
+		{
+			"from": {
+				"component": "2_nand1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "2Y1_n"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "2_nand2",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "2Y2_n"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "2_nand3",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "2Y3_n"
+				}
+			]
+		}
+	]
+}

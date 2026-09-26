@@ -16,6 +16,7 @@ const wireSpecSchema = z.object({
 	from: pinRefSchema,
 	to: pinRefSchema.array().readonly(),
 	colour: z.string().optional().readonly(),
+	groupName: z.string().optional().readonly(),
 });
 export type WireSpec = z.infer<typeof wireSpecSchema>;
 
@@ -82,6 +83,7 @@ export type ComponentInstance = {
 	readonly pinValues: Readonly<Record<string, number>>;
 	readonly children?: Readonly<Record<string, ComponentInstance>>;
 	readonly primitiveState?: Readonly<unknown>;
+	readonly groupName?: string;
 };
 
 export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
@@ -92,6 +94,7 @@ export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
 		return z.record(z.string(), componentInstanceSchema).optional().readonly();
 	},
 	primitiveState: z.unknown().optional().readonly(),
+	groupName: z.string().optional(),
 });
 
 export const definitionLibrarySchema = z.record(z.string(), componentDefinitionSchema).readonly();

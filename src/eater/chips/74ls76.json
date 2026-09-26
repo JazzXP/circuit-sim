@@ -1,0 +1,85 @@
+{
+	"kind": "composite",
+	"id": "74LS76",
+	"name": "74LS76",
+	"inputs": [
+		{ "id": "1J", "name": "1J" },
+		{ "id": "1K", "name": "1K" },
+		{ "id": "1CLK", "name": "1CLK" },
+		{ "id": "1PR_n", "name": "1'PR" },
+		{ "id": "1CLR_n", "name": "1'CLR" },
+		{ "id": "2J", "name": "2J" },
+		{ "id": "2K", "name": "2K" },
+		{ "id": "2CLK", "name": "2CLK" },
+		{ "id": "2PR_n", "name": "2'PR" },
+		{ "id": "2CLR_n", "name": "2'CLR" }
+	],
+	"outputs": [
+		{ "id": "1Q", "name": "1Q" },
+		{ "id": "1Q_n", "name": "1Q'" },
+		{ "id": "2Q", "name": "2Q" },
+		{ "id": "2Q_n", "name": "2Q'" }
+	],
+	"children": [
+		{ "instanceId": "ff1", "definitionId": "JK_ASYNC", "column": 0 },
+		{ "instanceId": "ff2", "definitionId": "JK_ASYNC", "column": 0 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "1J" },
+			"to": [{ "component": "ff1", "pinId": "J" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1K" },
+			"to": [{ "component": "ff1", "pinId": "K" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1CLK" },
+			"to": [{ "component": "ff1", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1PR_n" },
+			"to": [{ "component": "ff1", "pinId": "PR_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "1CLR_n" },
+			"to": [{ "component": "ff1", "pinId": "CLR_n" }]
+		},
+		{
+			"from": { "component": "ff1", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "1Q" }]
+		},
+		{
+			"from": { "component": "ff1", "pinId": "Q_n" },
+			"to": [{ "component": "self", "pinId": "1Q_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2J" },
+			"to": [{ "component": "ff2", "pinId": "J" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2K" },
+			"to": [{ "component": "ff2", "pinId": "K" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2CLK" },
+			"to": [{ "component": "ff2", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2PR_n" },
+			"to": [{ "component": "ff2", "pinId": "PR_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "2CLR_n" },
+			"to": [{ "component": "ff2", "pinId": "CLR_n" }]
+		},
+		{
+			"from": { "component": "ff2", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "2Q" }]
+		},
+		{
+			"from": { "component": "ff2", "pinId": "Q_n" },
+			"to": [{ "component": "self", "pinId": "2Q_n" }]
+		}
+	]
+}

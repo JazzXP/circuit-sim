@@ -1,0 +1,104 @@
+{
+	"kind": "composite",
+	"id": "PC",
+	"name": "PC",
+	"inputs": [
+		{ "id": "CLK", "name": "Clock" },
+		{ "id": "CLR_n", "name": "'CLR" },
+		{ "id": "CE", "name": "CE" },
+		{ "id": "J_n", "name": "'J" },
+		{ "id": "CO_n", "name": "'CO" },
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" }
+	],
+	"outputs": [
+		{ "id": "BUS0_out", "name": "BUS0_out" },
+		{ "id": "BUS1_out", "name": "BUS1_out" },
+		{ "id": "BUS2_out", "name": "BUS2_out" },
+		{ "id": "BUS3_out", "name": "BUS3_out" }
+	],
+	"children": [
+		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 1 },
+		{ "instanceId": "74ls161", "definitionId": "74LS161", "column": 2 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "74ls161", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR_n" },
+			"to": [{ "component": "74ls161", "pinId": "CLR_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CE" },
+			"to": [
+				{ "component": "74ls161", "pinId": "ENP" },
+				{ "component": "74ls161", "pinId": "ENT" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "J_n" },
+			"to": [{ "component": "74ls161", "pinId": "LOAD_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS0" },
+			"to": [
+				{ "component": "74ls161", "pinId": "P0" },
+				{ "component": "self", "pinId": "BUS0_out" },
+				{ "component": "trns", "pinId": "A4_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS1" },
+			"to": [
+				{ "component": "74ls161", "pinId": "P1" },
+				{ "component": "self", "pinId": "BUS1_out" },
+				{ "component": "trns", "pinId": "A5_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS2" },
+			"to": [
+				{ "component": "74ls161", "pinId": "P2" },
+				{ "component": "self", "pinId": "BUS2_out" },
+				{ "component": "trns", "pinId": "A6_out" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "BUS3" },
+			"to": [
+				{ "component": "74ls161", "pinId": "P3" },
+				{ "component": "self", "pinId": "BUS3_out" },
+				{ "component": "trns", "pinId": "A7_out" }
+			]
+		},
+		{
+			"from": { "component": "gnd", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "DIR" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CO_n" },
+			"to": [{ "component": "trns", "pinId": "OE_n" }]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q0" },
+			"to": [{ "component": "trns", "pinId": "B7" }]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q1" },
+			"to": [{ "component": "trns", "pinId": "B6" }]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q2" },
+			"to": [{ "component": "trns", "pinId": "B5" }]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q3" },
+			"to": [{ "component": "trns", "pinId": "B4" }]
+		}
+	]
+}

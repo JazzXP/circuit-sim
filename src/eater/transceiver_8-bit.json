@@ -41,14 +41,14 @@
 		{ "id": "B7_out", "name": "B7 Out" }
 	],
 	"children": [
-		{ "instanceId": "tx0", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx1", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx2", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx3", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx4", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx5", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx6", "definitionId": "TRANSCEIVER_1BIT" },
-		{ "instanceId": "tx7", "definitionId": "TRANSCEIVER_1BIT" }
+		{ "instanceId": "tx0", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx1", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx2", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx3", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx4", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx5", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx6", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx7", "definitionId": "TRANSCEIVER_1BIT", "column": 1 }
 	],
 	"internalWires": [
 		{

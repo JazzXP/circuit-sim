@@ -1,0 +1,721 @@
+{
+	"kind": "composite",
+	"id": "DECODER_4_16",
+	"name": "DECODER_4_16",
+	"inputs": [
+		{
+			"id": "A0",
+			"name": "A0"
+		},
+		{
+			"id": "A1",
+			"name": "A1"
+		},
+		{
+			"id": "A2",
+			"name": "A2"
+		},
+		{
+			"id": "A3",
+			"name": "A3"
+		}
+	],
+	"outputs": [
+		{
+			"id": "W0",
+			"name": "W0"
+		},
+		{
+			"id": "W1",
+			"name": "W1"
+		},
+		{
+			"id": "W2",
+			"name": "W2"
+		},
+		{
+			"id": "W3",
+			"name": "W3"
+		},
+		{
+			"id": "W4",
+			"name": "W4"
+		},
+		{
+			"id": "W5",
+			"name": "W5"
+		},
+		{
+			"id": "W6",
+			"name": "W6"
+		},
+		{
+			"id": "W7",
+			"name": "W7"
+		},
+		{
+			"id": "W8",
+			"name": "W8"
+		},
+		{
+			"id": "W9",
+			"name": "W9"
+		},
+		{
+			"id": "W10",
+			"name": "W10"
+		},
+		{
+			"id": "W11",
+			"name": "W11"
+		},
+		{
+			"id": "W12",
+			"name": "W12"
+		},
+		{
+			"id": "W13",
+			"name": "W13"
+		},
+		{
+			"id": "W14",
+			"name": "W14"
+		},
+		{
+			"id": "W15",
+			"name": "W15"
+		}
+	],
+	"children": [
+		{
+			"instanceId": "not_a0",
+			"definitionId": "NOT",
+			"column": 0
+		},
+		{
+			"instanceId": "not_a1",
+			"definitionId": "NOT",
+			"column": 0
+		},
+		{
+			"instanceId": "not_a2",
+			"definitionId": "NOT",
+			"column": 0
+		},
+		{
+			"instanceId": "not_a3",
+			"definitionId": "NOT",
+			"column": 0
+		},
+		{
+			"instanceId": "and0",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and1",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and2",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and3",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and4",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and5",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and6",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and7",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and8",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and9",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and10",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and11",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and12",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and13",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and14",
+			"definitionId": "AND4",
+			"column": 1
+		},
+		{
+			"instanceId": "and15",
+			"definitionId": "AND4",
+			"column": 1
+		}
+	],
+	"internalWires": [
+		{
+			"from": {
+				"component": "self",
+				"pinId": "A0"
+			},
+			"to": [
+				{
+					"component": "not_a0",
+					"pinId": "A"
+				},
+				{
+					"component": "and1",
+					"pinId": "A"
+				},
+				{
+					"component": "and3",
+					"pinId": "A"
+				},
+				{
+					"component": "and5",
+					"pinId": "A"
+				},
+				{
+					"component": "and7",
+					"pinId": "A"
+				},
+				{
+					"component": "and9",
+					"pinId": "A"
+				},
+				{
+					"component": "and11",
+					"pinId": "A"
+				},
+				{
+					"component": "and13",
+					"pinId": "A"
+				},
+				{
+					"component": "and15",
+					"pinId": "A"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "not_a0",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "and0",
+					"pinId": "A"
+				},
+				{
+					"component": "and2",
+					"pinId": "A"
+				},
+				{
+					"component": "and4",
+					"pinId": "A"
+				},
+				{
+					"component": "and6",
+					"pinId": "A"
+				},
+				{
+					"component": "and8",
+					"pinId": "A"
+				},
+				{
+					"component": "and10",
+					"pinId": "A"
+				},
+				{
+					"component": "and12",
+					"pinId": "A"
+				},
+				{
+					"component": "and14",
+					"pinId": "A"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "A1"
+			},
+			"to": [
+				{
+					"component": "not_a1",
+					"pinId": "A"
+				},
+				{
+					"component": "and2",
+					"pinId": "B"
+				},
+				{
+					"component": "and3",
+					"pinId": "B"
+				},
+				{
+					"component": "and6",
+					"pinId": "B"
+				},
+				{
+					"component": "and7",
+					"pinId": "B"
+				},
+				{
+					"component": "and10",
+					"pinId": "B"
+				},
+				{
+					"component": "and11",
+					"pinId": "B"
+				},
+				{
+					"component": "and14",
+					"pinId": "B"
+				},
+				{
+					"component": "and15",
+					"pinId": "B"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "not_a1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "and0",
+					"pinId": "B"
+				},
+				{
+					"component": "and1",
+					"pinId": "B"
+				},
+				{
+					"component": "and4",
+					"pinId": "B"
+				},
+				{
+					"component": "and5",
+					"pinId": "B"
+				},
+				{
+					"component": "and8",
+					"pinId": "B"
+				},
+				{
+					"component": "and9",
+					"pinId": "B"
+				},
+				{
+					"component": "and12",
+					"pinId": "B"
+				},
+				{
+					"component": "and13",
+					"pinId": "B"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "A2"
+			},
+			"to": [
+				{
+					"component": "not_a2",
+					"pinId": "A"
+				},
+				{
+					"component": "and4",
+					"pinId": "C"
+				},
+				{
+					"component": "and5",
+					"pinId": "C"
+				},
+				{
+					"component": "and6",
+					"pinId": "C"
+				},
+				{
+					"component": "and7",
+					"pinId": "C"
+				},
+				{
+					"component": "and12",
+					"pinId": "C"
+				},
+				{
+					"component": "and13",
+					"pinId": "C"
+				},
+				{
+					"component": "and14",
+					"pinId": "C"
+				},
+				{
+					"component": "and15",
+					"pinId": "C"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "not_a2",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "and0",
+					"pinId": "C"
+				},
+				{
+					"component": "and1",
+					"pinId": "C"
+				},
+				{
+					"component": "and2",
+					"pinId": "C"
+				},
+				{
+					"component": "and3",
+					"pinId": "C"
+				},
+				{
+					"component": "and8",
+					"pinId": "C"
+				},
+				{
+					"component": "and9",
+					"pinId": "C"
+				},
+				{
+					"component": "and10",
+					"pinId": "C"
+				},
+				{
+					"component": "and11",
+					"pinId": "C"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "A3"
+			},
+			"to": [
+				{
+					"component": "not_a3",
+					"pinId": "A"
+				},
+				{
+					"component": "and8",
+					"pinId": "D"
+				},
+				{
+					"component": "and9",
+					"pinId": "D"
+				},
+				{
+					"component": "and10",
+					"pinId": "D"
+				},
+				{
+					"component": "and11",
+					"pinId": "D"
+				},
+				{
+					"component": "and12",
+					"pinId": "D"
+				},
+				{
+					"component": "and13",
+					"pinId": "D"
+				},
+				{
+					"component": "and14",
+					"pinId": "D"
+				},
+				{
+					"component": "and15",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "not_a3",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "and0",
+					"pinId": "D"
+				},
+				{
+					"component": "and1",
+					"pinId": "D"
+				},
+				{
+					"component": "and2",
+					"pinId": "D"
+				},
+				{
+					"component": "and3",
+					"pinId": "D"
+				},
+				{
+					"component": "and4",
+					"pinId": "D"
+				},
+				{
+					"component": "and5",
+					"pinId": "D"
+				},
+				{
+					"component": "and6",
+					"pinId": "D"
+				},
+				{
+					"component": "and7",
+					"pinId": "D"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and0",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W0"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W1"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and2",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W2"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and3",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W3"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and4",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W4"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and5",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W5"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and6",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W6"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and7",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W7"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and8",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W8"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and9",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W9"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and10",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W10"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and11",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W11"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and12",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W12"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and13",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W13"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and14",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W14"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and15",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "W15"
+				}
+			]
+		}
+	]
+}

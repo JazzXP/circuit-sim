@@ -1,0 +1,139 @@
+{
+	"kind": "composite",
+	"id": "74LS273",
+	"name": "74LS273",
+	"inputs": [
+		{ "id": "CLK", "name": "CLK" },
+		{ "id": "CLR_n", "name": "'CLR" },
+		{ "id": "D0", "name": "D0" },
+		{ "id": "D1", "name": "D1" },
+		{ "id": "D2", "name": "D2" },
+		{ "id": "D3", "name": "D3" },
+		{ "id": "D4", "name": "D4" },
+		{ "id": "D5", "name": "D5" },
+		{ "id": "D6", "name": "D6" },
+		{ "id": "D7", "name": "D7" }
+	],
+	"outputs": [
+		{ "id": "Q0", "name": "Q0" },
+		{ "id": "Q1", "name": "Q1" },
+		{ "id": "Q2", "name": "Q2" },
+		{ "id": "Q3", "name": "Q3" },
+		{ "id": "Q4", "name": "Q4" },
+		{ "id": "Q5", "name": "Q5" },
+		{ "id": "Q6", "name": "Q6" },
+		{ "id": "Q7", "name": "Q7" }
+	],
+	"children": [
+		{ "instanceId": "not1", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not2", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "dff1", "definitionId": "DFF_GATES", "column": 1 },
+		{ "instanceId": "dff2", "definitionId": "DFF_GATES", "column": 2 },
+		{ "instanceId": "dff3", "definitionId": "DFF_GATES", "column": 3 },
+		{ "instanceId": "dff4", "definitionId": "DFF_GATES", "column": 4 },
+		{ "instanceId": "dff5", "definitionId": "DFF_GATES", "column": 5 },
+		{ "instanceId": "dff6", "definitionId": "DFF_GATES", "column": 6 },
+		{ "instanceId": "dff7", "definitionId": "DFF_GATES", "column": 7 },
+		{ "instanceId": "dff8", "definitionId": "DFF_GATES", "column": 8 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "not1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR_n" },
+			"to": [{ "component": "not2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D0" },
+			"to": [{ "component": "dff1", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D1" },
+			"to": [{ "component": "dff2", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D2" },
+			"to": [{ "component": "dff3", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D3" },
+			"to": [{ "component": "dff4", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D4" },
+			"to": [{ "component": "dff5", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D5" },
+			"to": [{ "component": "dff6", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D6" },
+			"to": [{ "component": "dff7", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "D7" },
+			"to": [{ "component": "dff8", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "not2", "pinId": "OUT" },
+			"to": [
+				{ "component": "dff1", "pinId": "R" },
+				{ "component": "dff2", "pinId": "R" },
+				{ "component": "dff3", "pinId": "R" },
+				{ "component": "dff4", "pinId": "R" },
+				{ "component": "dff5", "pinId": "R" },
+				{ "component": "dff6", "pinId": "R" },
+				{ "component": "dff7", "pinId": "R" },
+				{ "component": "dff8", "pinId": "R" }
+			]
+		},
+		{
+			"from": { "component": "not1", "pinId": "OUT" },
+			"to": [
+				{ "component": "dff1", "pinId": "CLK" },
+				{ "component": "dff2", "pinId": "CLK" },
+				{ "component": "dff3", "pinId": "CLK" },
+				{ "component": "dff4", "pinId": "CLK" },
+				{ "component": "dff5", "pinId": "CLK" },
+				{ "component": "dff6", "pinId": "CLK" },
+				{ "component": "dff7", "pinId": "CLK" },
+				{ "component": "dff8", "pinId": "CLK" }
+			]
+		},
+		{
+			"from": { "component": "dff1", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q0" }]
+		},
+		{
+			"from": { "component": "dff2", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q1" }]
+		},
+		{
+			"from": { "component": "dff3", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q2" }]
+		},
+		{
+			"from": { "component": "dff4", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q3" }]
+		},
+		{
+			"from": { "component": "dff5", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q4" }]
+		},
+		{
+			"from": { "component": "dff6", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q5" }]
+		},
+		{
+			"from": { "component": "dff7", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q6" }]
+		},
+		{
+			"from": { "component": "dff8", "pinId": "Q" },
+			"to": [{ "component": "self", "pinId": "Q7" }]
+		}
+	]
+}

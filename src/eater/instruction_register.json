@@ -36,10 +36,11 @@
 	],
 	"children": [
 		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 1 },
-		{ "instanceId": "regHigh", "definitionId": "74LS173", "column": 2 },
-		{ "instanceId": "regLow", "definitionId": "74LS173", "column": 2 },
+		{ "instanceId": "regHigh", "definitionId": "74LS173", "column": 3 },
+		{ "instanceId": "regLow", "definitionId": "74LS173", "column": 3 },
 		{ "instanceId": "invDIR", "definitionId": "NOT", "column": 1 },
-		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 }
+		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "gndA", "definitionId": "GND", "column": 2 }
 	],
 	"internalWires": [
 		{
@@ -91,42 +92,42 @@
 		{
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [{ "component": "trns", "pinId": "B0_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [{ "component": "trns", "pinId": "B1_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [{ "component": "trns", "pinId": "B2_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [{ "component": "trns", "pinId": "B3_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS4" },
 			"to": [{ "component": "trns", "pinId": "B4_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS5" },
 			"to": [{ "component": "trns", "pinId": "B5_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS6" },
 			"to": [{ "component": "trns", "pinId": "B6_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [{ "component": "trns", "pinId": "B7_in" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 
 		{
@@ -147,19 +148,19 @@
 		},
 		{
 			"from": { "component": "trns", "pinId": "A3_out" },
-			"to": [{ "component": "gnd", "pinId": "OUT" }]
+			"to": [{ "component": "gndA", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A2_out" },
-			"to": [{ "component": "gnd", "pinId": "OUT" }]
+			"to": [{ "component": "gndA", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A1_out" },
-			"to": [{ "component": "gnd", "pinId": "OUT" }]
+			"to": [{ "component": "gndA", "pinId": "OUT" }]
 		},
 		{
 			"from": { "component": "trns", "pinId": "A0_out" },
-			"to": [{ "component": "gnd", "pinId": "OUT" }]
+			"to": [{ "component": "gndA", "pinId": "OUT" }]
 		},
 
 		{
@@ -221,42 +222,42 @@
 		{
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [{ "component": "self", "pinId": "BUS0_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [{ "component": "self", "pinId": "BUS1_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [{ "component": "self", "pinId": "BUS2_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [{ "component": "self", "pinId": "BUS3_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS4" },
 			"to": [{ "component": "self", "pinId": "BUS4_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS5" },
 			"to": [{ "component": "self", "pinId": "BUS5_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS6" },
 			"to": [{ "component": "self", "pinId": "BUS6_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [{ "component": "self", "pinId": "BUS7_out" }],
-			"colour": "#008080"
+			"groupName": "bus"
 		}
 	]
 }

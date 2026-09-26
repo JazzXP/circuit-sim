@@ -8,7 +8,7 @@
 import type { PinSpec, PrimitiveDefinition } from '$lib/schemas/circuit';
 
 // g=middle.
-const SEGMENT_IDS = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const;
+const SEGMENT_IDS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const;
 
 export const SEVEN_SEGMENT_DISPLAY: PrimitiveDefinition = {
 	kind: 'primitive',

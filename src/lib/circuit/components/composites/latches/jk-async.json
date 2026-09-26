@@ -1,0 +1,135 @@
+{
+	"kind": "composite",
+	"id": "JK_ASYNC",
+	"name": "JK_ASYNC",
+	"inputs": [
+		{ "id": "J", "name": "J" },
+		{ "id": "K", "name": "K" },
+		{ "id": "CLK", "name": "CLK" },
+		{ "id": "PR_n", "name": "'PR" },
+		{ "id": "CLR_n", "name": "'CLR" }
+	],
+	"outputs": [
+		{ "id": "Q", "name": "Q" },
+		{ "id": "Q_n", "name": "Q'" }
+	],
+	"children": [
+		{ "instanceId": "not_clk", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_k", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_pr", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_cl", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "and_j", "definitionId": "AND2", "column": 1 },
+		{ "instanceId": "and_k", "definitionId": "AND2", "column": 1 },
+		{ "instanceId": "or_d", "definitionId": "OR2", "column": 2 },
+		{ "instanceId": "dff1", "definitionId": "DFF", "column": 3 },
+		{ "instanceId": "and_term_set", "definitionId": "AND2", "column": 4 },
+		{ "instanceId": "and_term_reset", "definitionId": "AND2", "column": 4 },
+		{ "instanceId": "or_set", "definitionId": "OR2", "column": 5 },
+		{ "instanceId": "or_reset", "definitionId": "OR2", "column": 5 },
+		{ "instanceId": "not_s", "definitionId": "NOT", "column": 6 },
+		{ "instanceId": "not_r", "definitionId": "NOT", "column": 6 },
+		{ "instanceId": "srlatch", "definitionId": "SR_LATCH", "column": 7 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "not_clk", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_clk", "pinId": "OUT" },
+			"to": [{ "component": "dff1", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "K" },
+			"to": [{ "component": "not_k", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "J" },
+			"to": [{ "component": "and_j", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "srlatch", "pinId": "Q_n" },
+			"to": [
+				{ "component": "and_j", "pinId": "B" },
+				{ "component": "self", "pinId": "Q_n" }
+			]
+		},
+		{
+			"from": { "component": "not_k", "pinId": "OUT" },
+			"to": [{ "component": "and_k", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "srlatch", "pinId": "Q" },
+			"to": [
+				{ "component": "and_k", "pinId": "B" },
+				{ "component": "self", "pinId": "Q" }
+			]
+		},
+		{
+			"from": { "component": "and_j", "pinId": "OUT" },
+			"to": [{ "component": "or_d", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and_k", "pinId": "OUT" },
+			"to": [{ "component": "or_d", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "or_d", "pinId": "OUT" },
+			"to": [{ "component": "dff1", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "dff1", "pinId": "Q" },
+			"to": [{ "component": "and_term_set", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR_n" },
+			"to": [
+				{ "component": "and_term_set", "pinId": "B" },
+				{ "component": "not_cl", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "PR_n" },
+			"to": [
+				{ "component": "not_pr", "pinId": "A" },
+				{ "component": "and_term_reset", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "not_pr", "pinId": "OUT" },
+			"to": [{ "component": "or_set", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and_term_set", "pinId": "OUT" },
+			"to": [{ "component": "or_set", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "or_set", "pinId": "OUT" },
+			"to": [{ "component": "not_s", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_s", "pinId": "OUT" },
+			"to": [{ "component": "srlatch", "pinId": "S_n" }]
+		},
+		{
+			"from": { "component": "dff1", "pinId": "NQ" },
+			"to": [{ "component": "and_term_reset", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_cl", "pinId": "OUT" },
+			"to": [{ "component": "or_reset", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and_term_reset", "pinId": "OUT" },
+			"to": [{ "component": "or_reset", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "or_reset", "pinId": "OUT" },
+			"to": [{ "component": "not_r", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_r", "pinId": "OUT" },
+			"to": [{ "component": "srlatch", "pinId": "R_n" }]
+		}
+	]
+}

@@ -92,42 +92,50 @@
 		{
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [{ "component": "trns", "pinId": "B0_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [{ "component": "trns", "pinId": "B1_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [{ "component": "trns", "pinId": "B2_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [{ "component": "trns", "pinId": "B3_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS4" },
 			"to": [{ "component": "trns", "pinId": "B4_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS5" },
 			"to": [{ "component": "trns", "pinId": "B5_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS6" },
 			"to": [{ "component": "trns", "pinId": "B6_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [{ "component": "trns", "pinId": "B7_in" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 
 		{
@@ -222,42 +230,50 @@
 		{
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [{ "component": "self", "pinId": "BUS0_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [{ "component": "self", "pinId": "BUS1_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [{ "component": "self", "pinId": "BUS2_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [{ "component": "self", "pinId": "BUS3_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS4" },
 			"to": [{ "component": "self", "pinId": "BUS4_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS5" },
 			"to": [{ "component": "self", "pinId": "BUS5_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS6" },
 			"to": [{ "component": "self", "pinId": "BUS6_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [{ "component": "self", "pinId": "BUS7_out" }],
-			"colour": "#008080"
+			"colour": "#008080",
+			"groupName": "bus"
 		}
 	]
 }

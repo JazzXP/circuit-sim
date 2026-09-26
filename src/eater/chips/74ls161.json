@@ -1,0 +1,242 @@
+{
+	"kind": "composite",
+	"id": "74LS161",
+	"name": "74LS161",
+	"inputs": [
+		{ "id": "CLR_n", "name": "'CLR" },
+		{ "id": "CLK", "name": "CLK" },
+		{ "id": "P0", "name": "P0" },
+		{ "id": "P1", "name": "P1" },
+		{ "id": "P2", "name": "P2" },
+		{ "id": "P3", "name": "P3" },
+		{ "id": "ENP", "name": "ENP" },
+		{ "id": "ENT", "name": "ENT" },
+		{ "id": "LOAD_n", "name": "'LOAD" }
+	],
+	"outputs": [
+		{ "id": "Q0", "name": "Q0" },
+		{ "id": "Q1", "name": "Q1" },
+		{ "id": "Q2", "name": "Q2" },
+		{ "id": "Q3", "name": "Q3" },
+		{ "id": "RCO", "name": "RCO" }
+	],
+	"children": [
+		{ "instanceId": "not_load", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "and_cnt_en", "definitionId": "AND2", "column": 0 },
+		{ "instanceId": "not_a_toggle", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "and_c2", "definitionId": "AND2", "column": 0 },
+		{ "instanceId": "xor_b_toggle", "definitionId": "XOR2", "column": 1 },
+		{ "instanceId": "and_c3", "definitionId": "AND3", "column": 1 },
+		{ "instanceId": "xor_c_toggle", "definitionId": "XOR2", "column": 2 },
+		{ "instanceId": "and_full", "definitionId": "AND2", "column": 2 },
+		{ "instanceId": "xor_d_toggle", "definitionId": "XOR2", "column": 3 },
+		{ "instanceId": "and_rco", "definitionId": "AND2", "column": 3 },
+		{ "instanceId": "muxcnt_a", "definitionId": "MUX2_1BIT", "column": 1 },
+		{ "instanceId": "muxload_a", "definitionId": "MUX2_1BIT", "column": 2 },
+		{ "instanceId": "and_d_a", "definitionId": "AND2", "column": 3 },
+		{ "instanceId": "dff_a", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "muxcnt_b", "definitionId": "MUX2_1BIT", "column": 1 },
+		{ "instanceId": "muxload_b", "definitionId": "MUX2_1BIT", "column": 2 },
+		{ "instanceId": "and_d_b", "definitionId": "AND2", "column": 3 },
+		{ "instanceId": "dff_b", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "muxcnt_c", "definitionId": "MUX2_1BIT", "column": 1 },
+		{ "instanceId": "muxload_c", "definitionId": "MUX2_1BIT", "column": 2 },
+		{ "instanceId": "and_d_c", "definitionId": "AND2", "column": 3 },
+		{ "instanceId": "dff_c", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "muxcnt_d", "definitionId": "MUX2_1BIT", "column": 1 },
+		{ "instanceId": "muxload_d", "definitionId": "MUX2_1BIT", "column": 2 },
+		{ "instanceId": "and_d_d", "definitionId": "AND2", "column": 3 },
+		{ "instanceId": "dff_d", "definitionId": "DFF", "column": 4 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "LOAD_n" },
+			"to": [{ "component": "not_load", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "ENP" },
+			"to": [{ "component": "and_cnt_en", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "ENT" },
+			"to": [
+				{ "component": "and_cnt_en", "pinId": "B" },
+				{ "component": "and_rco", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "not_load", "pinId": "OUT" },
+			"to": [
+				{ "component": "muxload_a", "pinId": "SEL" },
+				{ "component": "muxload_b", "pinId": "SEL" },
+				{ "component": "muxload_c", "pinId": "SEL" },
+				{ "component": "muxload_d", "pinId": "SEL" }
+			]
+		},
+		{
+			"from": { "component": "and_cnt_en", "pinId": "OUT" },
+			"to": [
+				{ "component": "muxcnt_a", "pinId": "SEL" },
+				{ "component": "muxcnt_b", "pinId": "SEL" },
+				{ "component": "muxcnt_c", "pinId": "SEL" },
+				{ "component": "muxcnt_d", "pinId": "SEL" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [
+				{ "component": "dff_a", "pinId": "CLK" },
+				{ "component": "dff_b", "pinId": "CLK" },
+				{ "component": "dff_c", "pinId": "CLK" },
+				{ "component": "dff_d", "pinId": "CLK" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR_n" },
+			"to": [
+				{ "component": "and_d_a", "pinId": "A" },
+				{ "component": "and_d_b", "pinId": "A" },
+				{ "component": "and_d_c", "pinId": "A" },
+				{ "component": "and_d_d", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "dff_a", "pinId": "Q" },
+			"to": [
+				{ "component": "not_a_toggle", "pinId": "A" },
+				{ "component": "xor_b_toggle", "pinId": "A" },
+				{ "component": "and_c2", "pinId": "A" },
+				{ "component": "and_c3", "pinId": "A" },
+				{ "component": "muxcnt_a", "pinId": "B" },
+				{ "component": "self", "pinId": "Q0" }
+			]
+		},
+		{
+			"from": { "component": "dff_b", "pinId": "Q" },
+			"to": [
+				{ "component": "xor_b_toggle", "pinId": "B" },
+				{ "component": "and_c2", "pinId": "B" },
+				{ "component": "and_c3", "pinId": "B" },
+				{ "component": "muxcnt_b", "pinId": "B" },
+				{ "component": "self", "pinId": "Q1" }
+			]
+		},
+		{
+			"from": { "component": "dff_c", "pinId": "Q" },
+			"to": [
+				{ "component": "xor_c_toggle", "pinId": "A" },
+				{ "component": "and_c3", "pinId": "C" },
+				{ "component": "muxcnt_c", "pinId": "B" },
+				{ "component": "self", "pinId": "Q2" }
+			]
+		},
+		{
+			"from": { "component": "and_c2", "pinId": "OUT" },
+			"to": [{ "component": "xor_c_toggle", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "dff_d", "pinId": "Q" },
+			"to": [
+				{ "component": "xor_d_toggle", "pinId": "A" },
+				{ "component": "and_full", "pinId": "B" },
+				{ "component": "muxcnt_d", "pinId": "B" },
+				{ "component": "self", "pinId": "Q3" }
+			]
+		},
+		{
+			"from": { "component": "and_c3", "pinId": "OUT" },
+			"to": [
+				{ "component": "xor_d_toggle", "pinId": "A" },
+				{ "component": "and_full", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "and_full", "pinId": "OUT" },
+			"to": [{ "component": "and_rco", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "and_rco", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "RCO" }]
+		},
+		{
+			"from": { "component": "not_a_toggle", "pinId": "OUT" },
+			"to": [{ "component": "muxcnt_a", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "P0" },
+			"to": [{ "component": "muxload_a", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "muxcnt_a", "pinId": "Y" },
+			"to": [{ "component": "muxload_a", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "muxload_a", "pinId": "Y" },
+			"to": [{ "component": "and_d_a", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and_d_a", "pinId": "OUT" },
+			"to": [{ "component": "dff_a", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "xor_b_toggle", "pinId": "OUT" },
+			"to": [{ "component": "muxcnt_b", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "P1" },
+			"to": [{ "component": "muxload_b", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "muxcnt_b", "pinId": "Y" },
+			"to": [{ "component": "muxload_b", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "muxload_b", "pinId": "Y" },
+			"to": [{ "component": "and_d_b", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and_d_b", "pinId": "OUT" },
+			"to": [{ "component": "dff_b", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "xor_c_toggle", "pinId": "OUT" },
+			"to": [{ "component": "muxcnt_c", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "P2" },
+			"to": [{ "component": "muxload_c", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "muxcnt_c", "pinId": "Y" },
+			"to": [{ "component": "muxload_c", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "muxload_c", "pinId": "Y" },
+			"to": [{ "component": "and_d_c", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and_d_c", "pinId": "OUT" },
+			"to": [{ "component": "dff_c", "pinId": "D" }]
+		},
+		{
+			"from": { "component": "xor_d_toggle", "pinId": "OUT" },
+			"to": [{ "component": "muxcnt_d", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "P3" },
+			"to": [{ "component": "muxload_d", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "muxcnt_d", "pinId": "Y" },
+			"to": [{ "component": "muxload_d", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "muxload_d", "pinId": "Y" },
+			"to": [{ "component": "and_d_d", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "and_d_d", "pinId": "OUT" },
+			"to": [{ "component": "dff_d", "pinId": "D" }]
+		}
+	]
+}

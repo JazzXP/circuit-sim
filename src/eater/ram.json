@@ -4,85 +4,349 @@
 	"name": "RAM",
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
-		{ "id": "CLR", "name": "Clear" },
-		{ "id": "MI_n", "name": "'MI" },
+		{ "id": "RO_n", "name": "'RO" },
+		{ "id": "RI", "name": "RI" },
 		{ "id": "BUS0", "name": "BUS0" },
 		{ "id": "BUS1", "name": "BUS1" },
 		{ "id": "BUS2", "name": "BUS2" },
 		{ "id": "BUS3", "name": "BUS3" },
-		{ "id": "PRG", "name": "Program Mode" },
-		{ "id": "RAM1", "name": "RAM1" },
-		{ "id": "RAM2", "name": "RAM2" },
-		{ "id": "RAM3", "name": "RAM3" },
-		{ "id": "RAM4", "name": "RAM4" }
+		{ "id": "BUS4", "name": "BUS4" },
+		{ "id": "BUS5", "name": "BUS5" },
+		{ "id": "BUS6", "name": "BUS6" },
+		{ "id": "BUS7", "name": "BUS7" },
+		{ "id": "PROG", "name": "PROG" },
+		{ "id": "SET", "name": "RAM Set" },
+		{ "id": "A0", "name": "A0" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3" },
+		{ "id": "RAM_SET_0", "name": "RAM_SET_0" },
+		{ "id": "RAM_SET_1", "name": "RAM_SET_1" },
+		{ "id": "RAM_SET_2", "name": "RAM_SET_2" },
+		{ "id": "RAM_SET_3", "name": "RAM_SET_3" },
+		{ "id": "RAM_SET_4", "name": "RAM_SET_4" },
+		{ "id": "RAM_SET_5", "name": "RAM_SET_5" },
+		{ "id": "RAM_SET_6", "name": "RAM_SET_6" },
+		{ "id": "RAM_SET_7", "name": "RAM_SET_7" }
 	],
 	"outputs": [
 		{ "id": "BUS0_out", "name": "BUS0" },
 		{ "id": "BUS1_out", "name": "BUS1" },
 		{ "id": "BUS2_out", "name": "BUS2" },
-		{ "id": "BUS3_out", "name": "BUS3" }
+		{ "id": "BUS3_out", "name": "BUS3" },
+		{ "id": "BUS4_out", "name": "BUS4" },
+		{ "id": "BUS5_out", "name": "BUS5" },
+		{ "id": "BUS6_out", "name": "BUS6" },
+		{ "id": "BUS7_out", "name": "BUS7" }
 	],
-	"children": [{ "instanceId": "mar", "definitionId": "MAR", "column": 0 }],
+	"children": [
+		{ "instanceId": "ram1", "definitionId": "74189", "column": 0 },
+		{ "instanceId": "gnd1", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "ram2", "definitionId": "74189", "column": 3 },
+		{ "instanceId": "74ls157_1", "definitionId": "74LS157", "column": 0 },
+		{ "instanceId": "gnd3", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "74ls157_2", "definitionId": "74LS157", "column": 4 },
+		{ "instanceId": "gnd4", "definitionId": "GND", "column": 4 },
+		{ "instanceId": "74ls157_3", "definitionId": "74LS157", "column": 5 },
+		{ "instanceId": "gnd5", "definitionId": "GND", "column": 5 },
+		{ "instanceId": "gnd2", "definitionId": "GND", "column": 3 },
+		{ "instanceId": "vcc", "definitionId": "VCC", "column": 3 },
+		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 3 },
+		{ "instanceId": "not1", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not2", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not3", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not4", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not5", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not6", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not7", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "not8", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "nand", "definitionId": "NAND2", "column": 2 }
+	],
 	"internalWires": [
 		{
 			"from": { "component": "self", "pinId": "CLK" },
-			"to": [{ "component": "mar", "pinId": "CLK" }]
+			"to": [{ "component": "nand", "pinId": "A" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "CLR" },
-			"to": [{ "component": "mar", "pinId": "CLR" }]
+			"from": { "component": "self", "pinId": "RI" },
+			"to": [{ "component": "nand", "pinId": "B" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "MI_n" },
-			"to": [{ "component": "mar", "pinId": "MI_n" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "PRG" },
-			"to": [{ "component": "mar", "pinId": "PRG" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "RAM1" },
-			"to": [{ "component": "mar", "pinId": "RAM1" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "RAM2" },
-			"to": [{ "component": "mar", "pinId": "RAM2" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "RAM3" },
-			"to": [{ "component": "mar", "pinId": "RAM3" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "RAM4" },
-			"to": [{ "component": "mar", "pinId": "RAM4" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "BUS0" },
+			"from": { "component": "self", "pinId": "PROG" },
 			"to": [
-				{ "component": "mar", "pinId": "BUS0" },
+				{ "component": "74ls157_1", "pinId": "SEL" },
+				{ "component": "74ls157_2", "pinId": "SEL" },
+				{ "component": "74ls157_3", "pinId": "SEL" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "RO_n" },
+			"to": [{ "component": "trns", "pinId": "OE_n" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "SET" },
+			"to": [{ "component": "74ls157_1", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A0" },
+			"to": [
+				{ "component": "ram1", "pinId": "A0" },
+				{ "component": "ram2", "pinId": "A0" }
+			],
+			"groupName": "address"
+		},
+		{
+			"from": { "component": "self", "pinId": "A1" },
+			"to": [
+				{ "component": "ram1", "pinId": "A1" },
+				{ "component": "ram2", "pinId": "A1" }
+			],
+			"groupName": "address"
+		},
+		{
+			"from": { "component": "self", "pinId": "A2" },
+			"to": [
+				{ "component": "ram1", "pinId": "A2" },
+				{ "component": "ram2", "pinId": "A2" }
+			],
+			"groupName": "address"
+		},
+		{
+			"from": { "component": "self", "pinId": "A3" },
+			"to": [
+				{ "component": "ram1", "pinId": "A3" },
+				{ "component": "ram2", "pinId": "A3" }
+			],
+			"groupName": "address"
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_0" },
+			"to": [{ "component": "74ls157_2", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_1" },
+			"to": [{ "component": "74ls157_2", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_2" },
+			"to": [{ "component": "74ls157_2", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_3" },
+			"to": [{ "component": "74ls157_2", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_4" },
+			"to": [{ "component": "74ls157_3", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_5" },
+			"to": [{ "component": "74ls157_3", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_6" },
+			"to": [{ "component": "74ls157_3", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_7" },
+			"to": [{ "component": "74ls157_3", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "ram1", "pinId": "O0" },
+			"to": [{ "component": "not1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram1", "pinId": "O1" },
+			"to": [{ "component": "not2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram1", "pinId": "O2" },
+			"to": [{ "component": "not3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram1", "pinId": "O3" },
+			"to": [{ "component": "not4", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram2", "pinId": "O0" },
+			"to": [{ "component": "not5", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram2", "pinId": "O1" },
+			"to": [{ "component": "not6", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram2", "pinId": "O2" },
+			"to": [{ "component": "not7", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "ram2", "pinId": "O3" },
+			"to": [{ "component": "not8", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not1", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A0_in" }]
+		},
+		{
+			"from": { "component": "not2", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A1_in" }]
+		},
+		{
+			"from": { "component": "not3", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A2_in" }]
+		},
+		{
+			"from": { "component": "not4", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A3_in" }]
+		},
+		{
+			"from": { "component": "not5", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A4_in" }]
+		},
+		{
+			"from": { "component": "not6", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A5_in" }]
+		},
+		{
+			"from": { "component": "not7", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A6_in" }]
+		},
+		{
+			"from": { "component": "not8", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "A7_in" }]
+		},
+		{
+			"from": { "component": "trns", "pinId": "B0_out" },
+			"to": [
+				{ "component": "74ls157_2", "pinId": "1B" },
 				{ "component": "self", "pinId": "BUS0_out" }
 			]
 		},
 		{
-			"from": { "component": "self", "pinId": "BUS1" },
+			"from": { "component": "trns", "pinId": "B1_out" },
 			"to": [
-				{ "component": "mar", "pinId": "BUS1" },
+				{ "component": "74ls157_2", "pinId": "2B" },
 				{ "component": "self", "pinId": "BUS1_out" }
 			]
 		},
 		{
-			"from": { "component": "self", "pinId": "BUS2" },
+			"from": { "component": "trns", "pinId": "B2_out" },
 			"to": [
-				{ "component": "mar", "pinId": "BUS2" },
+				{ "component": "74ls157_2", "pinId": "3B" },
 				{ "component": "self", "pinId": "BUS2_out" }
 			]
 		},
 		{
-			"from": { "component": "self", "pinId": "BUS3" },
+			"from": { "component": "trns", "pinId": "B3_out" },
 			"to": [
-				{ "component": "mar", "pinId": "BUS3" },
+				{ "component": "74ls157_2", "pinId": "4B" },
 				{ "component": "self", "pinId": "BUS3_out" }
 			]
+		},
+
+		{
+			"from": { "component": "trns", "pinId": "B4_out" },
+			"to": [
+				{ "component": "74ls157_3", "pinId": "1B" },
+				{ "component": "self", "pinId": "BUS4_out" }
+			]
+		},
+		{
+			"from": { "component": "trns", "pinId": "B5_out" },
+			"to": [
+				{ "component": "74ls157_3", "pinId": "2B" },
+				{ "component": "self", "pinId": "BUS5_out" }
+			]
+		},
+		{
+			"from": { "component": "trns", "pinId": "B6_out" },
+			"to": [
+				{ "component": "74ls157_3", "pinId": "3B" },
+				{ "component": "self", "pinId": "BUS6_out" }
+			]
+		},
+		{
+			"from": { "component": "trns", "pinId": "B7_out" },
+			"to": [
+				{ "component": "74ls157_3", "pinId": "4B" },
+				{ "component": "self", "pinId": "BUS7_out" }
+			]
+		},
+		{
+			"from": { "component": "vcc", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "DIR" }]
+		},
+		{
+			"from": { "component": "gnd1", "pinId": "OUT" },
+			"to": [{ "component": "ram1", "pinId": "CS_n" }]
+		},
+		{
+			"from": { "component": "gnd2", "pinId": "OUT" },
+			"to": [{ "component": "ram2", "pinId": "CS_n" }]
+		},
+
+		{
+			"from": { "component": "74ls157_1", "pinId": "3Y" },
+			"to": [
+				{ "component": "ram1", "pinId": "WE_n" },
+				{ "component": "ram2", "pinId": "WE_n" }
+			]
+		},
+		{
+			"from": { "component": "gnd3", "pinId": "OUT" },
+			"to": [{ "component": "74ls157_1", "pinId": "G_n" }]
+		},
+		{
+			"from": { "component": "gnd4", "pinId": "OUT" },
+			"to": [{ "component": "74ls157_2", "pinId": "G_n" }]
+		},
+		{
+			"from": { "component": "gnd5", "pinId": "OUT" },
+			"to": [{ "component": "74ls157_3", "pinId": "G_n" }]
+		},
+		{
+			"from": { "component": "nand", "pinId": "OUT" },
+			"to": [{ "component": "74ls157_1", "pinId": "3B" }]
+		},
+		{
+			"from": { "component": "74ls157_2", "pinId": "1Y" },
+			"to": [{ "component": "ram1", "pinId": "D0" }],
+			"groupName": "ram1data"
+		},
+		{
+			"from": { "component": "74ls157_2", "pinId": "2Y" },
+			"to": [{ "component": "ram1", "pinId": "D1" }],
+			"groupName": "ram1data"
+		},
+		{
+			"from": { "component": "74ls157_2", "pinId": "3Y" },
+			"to": [{ "component": "ram1", "pinId": "D2" }],
+			"groupName": "ram1data"
+		},
+		{
+			"from": { "component": "74ls157_2", "pinId": "4Y" },
+			"to": [{ "component": "ram1", "pinId": "D3" }],
+			"groupName": "ram1data"
+		},
+		{
+			"from": { "component": "74ls157_3", "pinId": "1Y" },
+			"to": [{ "component": "ram2", "pinId": "D0" }],
+			"groupName": "ram2data"
+		},
+		{
+			"from": { "component": "74ls157_3", "pinId": "2Y" },
+			"to": [{ "component": "ram2", "pinId": "D1" }],
+			"groupName": "ram2data"
+		},
+		{
+			"from": { "component": "74ls157_3", "pinId": "3Y" },
+			"to": [{ "component": "ram2", "pinId": "D2" }],
+			"groupName": "ram2data"
+		},
+		{
+			"from": { "component": "74ls157_3", "pinId": "4Y" },
+			"to": [{ "component": "ram2", "pinId": "D3" }],
+			"groupName": "ram2data"
 		}
 	]
 }

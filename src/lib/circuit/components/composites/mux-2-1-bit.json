@@ -1,0 +1,137 @@
+{
+	"kind": "composite",
+	"id": "MUX2_1BIT",
+	"name": "MUX2_1BIT",
+	"inputs": [
+		{
+			"id": "SEL",
+			"name": "SEL"
+		},
+		{
+			"id": "A",
+			"name": "A"
+		},
+		{
+			"id": "B",
+			"name": "B"
+		}
+	],
+	"outputs": [
+		{
+			"id": "Y",
+			"name": "Y"
+		}
+	],
+	"children": [
+		{
+			"instanceId": "not1",
+			"definitionId": "NOT",
+			"column": 0
+		},
+		{
+			"instanceId": "and1",
+			"definitionId": "AND2",
+			"column": 1
+		},
+		{
+			"instanceId": "and2",
+			"definitionId": "AND2",
+			"column": 1
+		},
+		{
+			"instanceId": "or1",
+			"definitionId": "OR2",
+			"column": 2
+		}
+	],
+	"internalWires": [
+		{
+			"from": {
+				"component": "self",
+				"pinId": "SEL"
+			},
+			"to": [
+				{
+					"component": "not1",
+					"pinId": "A"
+				},
+				{
+					"component": "and1",
+					"pinId": "A"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "A"
+			},
+			"to": [
+				{
+					"component": "and1",
+					"pinId": "B"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "not1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "and2",
+					"pinId": "A"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "self",
+				"pinId": "B"
+			},
+			"to": [
+				{
+					"component": "and2",
+					"pinId": "B"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "or1",
+					"pinId": "A"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "and2",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "or1",
+					"pinId": "B"
+				}
+			]
+		},
+		{
+			"from": {
+				"component": "or1",
+				"pinId": "OUT"
+			},
+			"to": [
+				{
+					"component": "self",
+					"pinId": "Y"
+				}
+			]
+		}
+	]
+}

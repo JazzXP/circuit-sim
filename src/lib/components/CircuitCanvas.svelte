@@ -8,7 +8,7 @@
 		instantiate,
 		type PinChange,
 	} from '#sim/controller/engine';
-	import type { ClockState } from '#components/primitives/clock';
+	import type { TimerState } from '#components/primitives/timer';
 	import { computeLayout } from '#render/layout';
 	import { renderComposite, type ClickRegion } from '#render/canvasRenderer';
 	import {
@@ -58,7 +58,10 @@
 	// Every CLOCK instance anywhere in the tree, regardless of nesting depth —
 	// recomputed whenever the tree changes so newly-drilled-into clocks (or
 	// ones a future design might add dynamically) are picked up automatically.
-	let clocks = $derived(findInstancesByDefinition(rootInstance, 'CLOCK'));
+	let clocks = $derived([
+		...findInstancesByDefinition(rootInstance, 'CLOCK'),
+		...findInstancesByDefinition(rootInstance, 'OUTPUT_TIMER'),
+	]);
 
 	function instanceAtPath(path: string[]): ComponentInstance {
 		let current = rootInstance;
@@ -154,7 +157,7 @@
 	function setClockPeriod(path: readonly string[], periodMs: number) {
 		rootInstance = updateInstanceStateAtPath(rootInstance, path, (instance) => ({
 			...instance,
-			primitiveState: { ...(instance.primitiveState as ClockState), periodMs },
+			primitiveState: { ...(instance.primitiveState as TimerState), periodMs },
 		}));
 	}
 
@@ -467,7 +470,7 @@
 		<div class="clocks">
 			{#each clocks as clock (clock.path.join('.'))}
 				{@const running = clock.instance.pinValues['EN'] === LogicValue.HIGH}
-				{@const periodMs = (clock.instance.primitiveState as ClockState).periodMs}
+				{@const periodMs = (clock.instance.primitiveState as TimerState).periodMs}
 				<div class="clock-row">
 					<button class="play-pause" onclick={() => toggleClockRunning(clock.path, running)}>
 						{running ? '⏸' : '▶'}
