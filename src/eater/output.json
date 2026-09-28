@@ -6,6 +6,7 @@
 		{ "id": "CLK", "name": "CLK" },
 		{ "id": "CLR_n", "name": "'CLR" },
 		{ "id": "OI", "name": "OI" },
+		{ "id": "SIGNED", "name": "SIGNED" },
 		{ "id": "BUS0", "name": "BUS0" },
 		{ "id": "BUS1", "name": "BUS1" },
 		{ "id": "BUS2", "name": "BUS2" },
@@ -42,7 +43,7 @@
 	],
 	"internalWires": [
 		{
-			"from": { "component": "self", "pinId": "BUS0" },
+			"from": { "component": "self", "pinId": "OUT" },
 			"to": [{ "component": "74ls273", "pinId": "D0" }]
 		},
 		{
@@ -72,6 +73,22 @@
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [{ "component": "74ls273", "pinId": "D7" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "OI" },
+			"to": [{ "component": "and", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "and", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLR_n" },
+			"to": [{ "component": "74ls273", "pinId": "CLR_n" }]
+		},
+		{
+			"from": { "component": "and", "pinId": "OUT" },
+			"to": [{ "component": "74ls273", "pinId": "CLK" }]
 		},
 		{
 			"from": { "component": "vcc", "pinId": "OUT" },
@@ -107,12 +124,20 @@
 			"from": { "component": "74ls76", "pinId": "1Q_n" },
 			"to": [
 				{ "component": "74ls76", "pinId": "2CLK" },
-				{ "component": "74ls139", "pinId": "1B" }
+				{ "component": "74ls139", "pinId": "1B" },
+				{ "component": "output_eeprom", "pinId": "A8" }
 			]
 		},
 		{
 			"from": { "component": "74ls76", "pinId": "2Q_n" },
-			"to": [{ "component": "74ls139", "pinId": "1A" }]
+			"to": [
+				{ "component": "74ls139", "pinId": "1A" },
+				{ "component": "output_eeprom", "pinId": "A9" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "SIGNED" },
+			"to": [{ "component": "output_eeprom", "pinId": "A10" }]
 		},
 		{
 			"from": { "component": "74ls139", "pinId": "1Y0_n" },
@@ -129,6 +154,70 @@
 		{
 			"from": { "component": "74ls139", "pinId": "1Y3_n" },
 			"to": [{ "component": "self", "pinId": "DISP_EN_3" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q0" },
+			"to": [{ "component": "output_eeprom", "pinId": "A0" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q1" },
+			"to": [{ "component": "output_eeprom", "pinId": "A1" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q2" },
+			"to": [{ "component": "output_eeprom", "pinId": "A2" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q3" },
+			"to": [{ "component": "output_eeprom", "pinId": "A3" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q4" },
+			"to": [{ "component": "output_eeprom", "pinId": "A4" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q5" },
+			"to": [{ "component": "output_eeprom", "pinId": "A5" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q6" },
+			"to": [{ "component": "output_eeprom", "pinId": "A6" }]
+		},
+		{
+			"from": { "component": "74ls273", "pinId": "Q7" },
+			"to": [{ "component": "output_eeprom", "pinId": "A7" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D0" },
+			"to": [{ "component": "self", "pinId": "D0" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D1" },
+			"to": [{ "component": "self", "pinId": "D1" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D2" },
+			"to": [{ "component": "self", "pinId": "D2" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D3" },
+			"to": [{ "component": "self", "pinId": "D3" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D4" },
+			"to": [{ "component": "self", "pinId": "D4" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D5" },
+			"to": [{ "component": "self", "pinId": "D5" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D6" },
+			"to": [{ "component": "self", "pinId": "D6" }]
+		},
+		{
+			"from": { "component": "output_eeprom", "pinId": "D7" },
+			"to": [{ "component": "self", "pinId": "D7" }]
 		}
 	]
 }

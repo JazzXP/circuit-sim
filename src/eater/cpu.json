@@ -2,13 +2,16 @@
 	"kind": "composite",
 	"id": "EATER_CPU",
 	"name": "CPU",
+	"minCanvasWidth": 3000,
+	"minCanvasHeight": 2000,
 	"inputs": [
 		{ "id": "CLK_STEP", "name": "Clock Step" },
 		{ "id": "PRG", "name": "Program Mode" },
 		{ "id": "RAM1", "name": "RAM1" },
 		{ "id": "RAM2", "name": "RAM2" },
 		{ "id": "RAM3", "name": "RAM3" },
-		{ "id": "RAM4", "name": "RAM4" }
+		{ "id": "RAM4", "name": "RAM4" },
+		{ "id": "SIGNED", "name": "Signed Output" }
 	],
 
 	"outputs": [],
@@ -31,25 +34,25 @@
 		{
 			"instanceId": "disp1",
 			"definitionId": "SEVEN_SEGMENT_DISPLAY",
-			"column": 5,
+			"column": 8,
 			"groupName": "output"
 		},
 		{
 			"instanceId": "disp2",
 			"definitionId": "SEVEN_SEGMENT_DISPLAY",
-			"column": 6,
+			"column": 7,
 			"groupName": "output"
 		},
 		{
 			"instanceId": "disp3",
 			"definitionId": "SEVEN_SEGMENT_DISPLAY",
-			"column": 7,
+			"column": 6,
 			"groupName": "output"
 		},
 		{
 			"instanceId": "disp4",
 			"definitionId": "SEVEN_SEGMENT_DISPLAY",
-			"column": 8,
+			"column": 5,
 			"groupName": "output"
 		}
 	],
@@ -489,10 +492,6 @@
 			"to": [{ "component": "mar", "pinId": "MI_n" }]
 		},
 		{
-			"from": { "component": "control", "pinId": "AI_n" },
-			"to": [{ "component": "mar", "pinId": "AI_n" }]
-		},
-		{
 			"from": { "component": "control", "pinId": "IO_n" },
 			"to": [{ "component": "regI", "pinId": "IO_n" }]
 		},
@@ -555,6 +554,10 @@
 		{
 			"from": { "component": "control", "pinId": "HLT" },
 			"to": [{ "component": "clock", "pinId": "HLT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "SIGNED" },
+			"to": [{ "component": "output", "pinId": "SIGNED" }]
 		}
 	]
 }
