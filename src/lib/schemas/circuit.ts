@@ -24,6 +24,8 @@ const primitiveDefinitionSchema = z.object({
 	kind: z.literal('primitive'),
 	id: z.string(),
 	name: z.string(),
+	minCanvasWidth: z.number().optional(),
+	minCanvasHeight: z.number().optional(),
 	inputs: pinSpecSchema.array().readonly(),
 	outputs: pinSpecSchema.array().readonly(),
 
@@ -62,6 +64,8 @@ const compositeDefinitionSchema = z.object({
 	kind: z.literal('composite'),
 	id: z.string(),
 	name: z.string(),
+	minCanvasWidth: z.number().optional(),
+	minCanvasHeight: z.number().optional(),
 	inputs: pinSpecSchema.array().readonly(),
 	outputs: pinSpecSchema.array().readonly(),
 	children: childSpecSchema.array().readonly(),

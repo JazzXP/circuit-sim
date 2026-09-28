@@ -3,7 +3,7 @@
 // — no per-definition drawing code needed, unlike the earlier HTML demo
 // which hand-positioned every box for exactly one circuit.
 
-import { getDefinition } from '#sim/model/component';
+import { getDefinition, getSizeForDefinition } from '#sim/model/component';
 import type { DefinitionLibrary } from '$lib/schemas/circuit';
 import { gateShapeFor, isCompactGate } from './gateShapes';
 import type { RoutedWire } from './routing';
@@ -48,7 +48,10 @@ export function computeLayout(
 	canvasWidth: number,
 	canvasHeight: number,
 ): Layout {
-	const cacheKey = `${definitionId}:${canvasWidth}x${canvasHeight}`;
+	const minCanvasSize = getSizeForDefinition(lib, definitionId);
+	const width = Math.max(minCanvasSize.minCanvasWidth ?? 0, canvasWidth);
+	const height = Math.max(minCanvasSize.minCanvasHeight ?? 0, canvasHeight);
+	const cacheKey = `${definitionId}:${width}x${height}`;
 	let libCache = layoutCache.get(lib);
 	if (!libCache) {
 		libCache = new Map();
@@ -57,7 +60,7 @@ export function computeLayout(
 	const cached = libCache.get(cacheKey);
 	if (cached) return cached;
 
-	const result = computeLayoutUncached(lib, definitionId, canvasWidth, canvasHeight);
+	const result = computeLayoutUncached(lib, definitionId, width, height);
 	libCache.set(cacheKey, result);
 	return result;
 }

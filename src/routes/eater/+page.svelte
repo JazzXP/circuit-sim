@@ -133,8 +133,8 @@
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}
-	let width = $derived(browser ? window.innerWidth * 2 - 50 : 200);
-	let height = $derived(browser ? window.innerHeight * 2 - 100 : 200);
+	let width = $derived(browser ? window.innerWidth - 20 : 200);
+	let height = $derived(browser ? window.innerHeight - 130 : 200);
 	// let width = 1800;
 	// let height = 3000;
 </script>

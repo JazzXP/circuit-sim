@@ -18,6 +18,17 @@ export function getDefinition(lib: DefinitionLibrary, id: string): ComponentDefi
 	if (!def) throw new Error(`Unknown definition: ${id}`);
 	return def;
 }
+export function getSizeForDefinition(
+	lib: DefinitionLibrary,
+	id: string,
+): { minCanvasWidth?: number; minCanvasHeight?: number } {
+	const def = lib[id];
+	if (!def) throw new Error(`Unknown definition: ${id}`);
+	return {
+		minCanvasWidth: def.minCanvasWidth,
+		minCanvasHeight: def.minCanvasHeight,
+	};
+}
 
 export function registerDefinition(
 	lib: DefinitionLibrary,
