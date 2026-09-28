@@ -1,0 +1,293 @@
+{
+	"kind": "composite",
+	"id": "CONTROL_MODULE",
+	"name": "Control",
+	"inputs": [
+		{ "id": "CLK_n", "name": "'CLK" },
+		{ "id": "CF", "name": "CF" },
+		{ "id": "ZF", "name": "ZF" },
+		{ "id": "RESET", "name": "RESET" },
+		{ "id": "IR0", "name": "IR0" },
+		{ "id": "IR1", "name": "IR1" },
+		{ "id": "IR2", "name": "IR2" },
+		{ "id": "IR3", "name": "IR3" }
+	],
+	"outputs": [
+		{ "id": "CLR", "name": "CLR" },
+		{ "id": "CLR_n", "name": "'CLR" },
+		{ "id": "HLT", "name": "HLT" },
+		{ "id": "MI_n", "name": "'MI" },
+		{ "id": "RI", "name": "RI" },
+		{ "id": "RO_n", "name": "'RO" },
+		{ "id": "IO_n", "name": "'IO" },
+		{ "id": "II_n", "name": "'II" },
+		{ "id": "AI_n", "name": "'AI" },
+		{ "id": "EO_n", "name": "'EO" },
+		{ "id": "SU", "name": "SU" },
+		{ "id": "BI_n", "name": "'BI" },
+		{ "id": "OI", "name": "OI" },
+		{ "id": "CE", "name": "CE" },
+		{ "id": "CO_n", "name": "'CO" },
+		{ "id": "J_n", "name": "'J" },
+		{ "id": "FI_n", "name": "'FI" }
+	],
+	"children": [
+		{ "instanceId": "gnd1", "definitionId": "GND", "column": 1 },
+		{ "instanceId": "gnd2", "definitionId": "GND", "column": 1 },
+		{ "instanceId": "vcc1", "definitionId": "VCC", "column": 1 },
+		{ "instanceId": "vcc2", "definitionId": "VCC", "column": 3 },
+
+		{ "instanceId": "not1", "definitionId": "NOT", "column": 0 },
+
+		{ "instanceId": "not2", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "nand", "definitionId": "NAND2", "column": 1 },
+
+		{ "instanceId": "74ls161", "definitionId": "74LS161", "column": 2 },
+		{ "instanceId": "3to8", "definitionId": "DECODER_3_8", "column": 2 },
+		{ "instanceId": "not3", "definitionId": "NOT", "column": 2 },
+
+		{ "instanceId": "control_eeprom1", "definitionId": "CONTROL_EEPROM_1", "column": 3 },
+		{ "instanceId": "control_eeprom2", "definitionId": "CONTROL_EEPROM_2", "column": 3 },
+
+		{ "instanceId": "not4", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not5", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not6", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not7", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not8", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not9", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not10", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not11", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not12", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not13", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not14", "definitionId": "NOT", "column": 4 },
+		{ "instanceId": "not15", "definitionId": "NOT", "column": 4 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "RESET" },
+			"to": [{ "component": "not2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "IR0" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A3" },
+				{ "component": "control_eeprom2", "pinId": "A3" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "IR1" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A4" },
+				{ "component": "control_eeprom2", "pinId": "A4" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "IR2" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A5" },
+				{ "component": "control_eeprom2", "pinId": "A5" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "IR3" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A6" },
+				{ "component": "control_eeprom2", "pinId": "A6" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "CF" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A8" },
+				{ "component": "control_eeprom2", "pinId": "A8" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "ZF" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A9" },
+				{ "component": "control_eeprom2", "pinId": "A9" }
+			]
+		},
+		{
+			"from": { "component": "not2", "pinId": "OUT" },
+			"to": [
+				{ "component": "self", "pinId": "CLR_n" },
+				{ "component": "not3", "pinId": "A" },
+				{ "component": "nand", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "nand", "pinId": "OUT" },
+			"to": [{ "component": "not1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not1", "pinId": "OUT" },
+			"to": [{ "component": "74ls161", "pinId": "CLR_n" }]
+		},
+		{
+			"from": { "component": "3to8", "pinId": "Y5" },
+			"to": [{ "component": "nand", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "CLK_n" },
+			"to": [{ "component": "74ls161", "pinId": "CLK" }]
+		},
+		{
+			"from": { "component": "vcc1", "pinId": "OUT" },
+			"to": [
+				{ "component": "74ls161", "pinId": "ENP" },
+				{ "component": "74ls161", "pinId": "ENT" },
+				{ "component": "74ls161", "pinId": "LOAD_n" }
+			]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q0" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A0" },
+				{ "component": "control_eeprom2", "pinId": "A0" },
+				{ "component": "3to8", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q1" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A1" },
+				{ "component": "control_eeprom2", "pinId": "A1" },
+				{ "component": "3to8", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "74ls161", "pinId": "Q2" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "A2" },
+				{ "component": "control_eeprom2", "pinId": "A3" },
+				{ "component": "3to8", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "gnd2", "pinId": "OUT" },
+			"to": [
+				{ "component": "control_eeprom1", "pinId": "OE_n" },
+				{ "component": "control_eeprom2", "pinId": "OE_n" }
+			]
+		},
+		{
+			"from": { "component": "vcc2", "pinId": "OUT" },
+			"to": [{ "component": "control_eeprom2", "pinId": "A7" }]
+		},
+
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D0" },
+			"to": [{ "component": "not9", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D1" },
+			"to": [{ "component": "not8", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D2" },
+			"to": [{ "component": "not7", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D3" },
+			"to": [{ "component": "not6", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D4" },
+			"to": [{ "component": "not5", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D5" },
+			"to": [{ "component": "self", "pinId": "RI" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D6" },
+			"to": [{ "component": "not4", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom1", "pinId": "D7" },
+			"to": [{ "component": "self", "pinId": "HLT" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D0" },
+			"to": [{ "component": "not14", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D1" },
+			"to": [{ "component": "not13", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D2" },
+			"to": [{ "component": "not12", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D3" },
+			"to": [{ "component": "self", "pinId": "CE" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D4" },
+			"to": [{ "component": "self", "pinId": "OI" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D5" },
+			"to": [{ "component": "not11", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D6" },
+			"to": [{ "component": "self", "pinId": "SU" }]
+		},
+		{
+			"from": { "component": "control_eeprom2", "pinId": "D7" },
+			"to": [{ "component": "not10", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not4", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "MI_n" }]
+		},
+		{
+			"from": { "component": "not5", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "RO_n" }]
+		},
+		{
+			"from": { "component": "not6", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "IO_n" }]
+		},
+		{
+			"from": { "component": "not7", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "II_n" }]
+		},
+		{
+			"from": { "component": "not8", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "AI_n" }]
+		},
+		{
+			"from": { "component": "not9", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "AO_n" }]
+		},
+		{
+			"from": { "component": "not10", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "EO_n" }]
+		},
+		{
+			"from": { "component": "not11", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "BI_n" }]
+		},
+		{
+			"from": { "component": "not12", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "CO_n" }]
+		},
+		{
+			"from": { "component": "not13", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "J_n" }]
+		},
+		{
+			"from": { "component": "not14", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "FI_n" }]
+		},
+		{
+			"from": { "component": "not3", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "CLR" }]
+		}
+	]
+}

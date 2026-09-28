@@ -55,6 +55,7 @@ const childSpecSchema = z.object({
 		.optional(),
 	column: z.number().readonly().optional(),
 	name: z.string().optional(),
+	groupName: z.string().readonly().optional(),
 });
 
 const compositeDefinitionSchema = z.object({

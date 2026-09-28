@@ -33,3 +33,25 @@ export const NAND3: PrimitiveDefinition = {
 		nextState: undefined,
 	}),
 };
+
+export const NAND4: PrimitiveDefinition = {
+	kind: 'primitive',
+	id: 'NAND4',
+	name: 'NAND',
+	inputs: [
+		{ id: 'A', name: 'A' },
+		{ id: 'B', name: 'B' },
+		{ id: 'C', name: 'C' },
+		{ id: 'D', name: 'D' },
+	],
+	outputs: [{ id: 'OUT', name: 'OUT' }],
+	initialState: () => undefined,
+	evaluate: (inputs) => ({
+		outputs: [
+			bit(inputs[0]) & bit(inputs[1] & bit(inputs[2]) & bit(inputs[3]))
+				? LogicValue.LOW
+				: LogicValue.HIGH,
+		],
+		nextState: undefined,
+	}),
+};

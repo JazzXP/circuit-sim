@@ -10,6 +10,7 @@
 		NOT,
 		NAND2,
 		NAND3,
+		NAND4,
 		XNOR2,
 		NOR2,
 		DFF,
@@ -44,10 +45,12 @@
 	import MUX2_1BIT from '$lib/circuit/components/composites/mux-2-1-bit.json';
 	import RAM_WORD_4BIT from '$lib/circuit/components/composites/ram-word-4-bit.json';
 	import CHIP_74189 from '../../eater/chips/74189.json';
+	import DECODER_3_TO_8 from '$lib/circuit/components/composites/decoder-3-to-8.json';
 	import MAR from '../../eater/mar.json';
 	import RAM from '../../eater/ram.json';
 	import PC from '../../eater/program_counter.json';
 	import OUTPUT from '../../eater/output.json';
+	import CONTROL from '../../eater/control.json';
 	import {
 		componentDefinitionSchema,
 		type CompositeDefinition,
@@ -56,6 +59,7 @@
 	import { browser } from '$app/env';
 	import { createTimer } from '#circuit/components/primitives/timer';
 	import { OUTPUT_EEPROM } from '../../eater/eeproms/output';
+	import { CONTROL_EEPROM_1, CONTROL_EEPROM_2 } from '../../eater/eeproms/control';
 
 	let library: DefinitionLibrary = emptyLibrary;
 	for (const def of [
@@ -67,6 +71,7 @@
 		NOT,
 		NAND2,
 		NAND3,
+		NAND4,
 		XNOR2,
 		XOR2,
 		NOR2,
@@ -92,6 +97,8 @@
 		SEVEN_SEGMENT_HEX_DECODER,
 		SEVEN_SEGMENT_DISPLAY,
 		OUTPUT_EEPROM,
+		CONTROL_EEPROM_1,
+		CONTROL_EEPROM_2,
 
 		// Misc
 		TRANSCEIVER_1BIT,
@@ -106,6 +113,7 @@
 		componentDefinitionSchema.parse(CHIP_74LS161),
 		componentDefinitionSchema.parse(CHIP_74189),
 		componentDefinitionSchema.parse(DECODER_4_to_6),
+		componentDefinitionSchema.parse(DECODER_3_TO_8),
 		componentDefinitionSchema.parse(MUX16_1BIT),
 		componentDefinitionSchema.parse(MUX2_1BIT),
 		componentDefinitionSchema.parse(RAM_WORD_4BIT),
@@ -121,6 +129,7 @@
 		componentDefinitionSchema.parse(RAM),
 		componentDefinitionSchema.parse(PC),
 		componentDefinitionSchema.parse(OUTPUT),
+		componentDefinitionSchema.parse(CONTROL),
 	]) {
 		library = registerDefinition(library, def as CompositeDefinition);
 	}

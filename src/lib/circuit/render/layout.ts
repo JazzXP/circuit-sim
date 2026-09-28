@@ -38,6 +38,7 @@ const BOX_WIDTH = 100;
 const PIN_SPACING = 20;
 const BOUNDARY_MARGIN = 40;
 const STUB = 40;
+const HORIZONTAL_GROUP_GAP = 150;
 
 const layoutCache = new WeakMap<DefinitionLibrary, Map<string, Layout>>();
 
@@ -99,9 +100,10 @@ export function computeLayoutUncached(
 		const sortedColumnKeys = [...columns.keys()].sort((a, b) => a - b);
 		const numColumns = sortedColumnKeys.length;
 
-		sortedColumnKeys.forEach((colKey, colIndex) => {
+		// First pass: size every column, and note the horizontal group its
+		// children belong to (the groupName shared by children placed in it).
+		const columnInfos = sortedColumnKeys.map((colKey) => {
 			const childrenInColumn = columns.get(colKey)!;
-
 			const sized = childrenInColumn.map((child) => {
 				const childDef = getDefinition(lib, child.definitionId);
 				const compact = childDef.kind === 'primitive' && isCompactGate(gateShapeFor(childDef.id));
@@ -110,11 +112,35 @@ export function computeLayoutUncached(
 				const h = compact ? pinCount * 20 + 20 : pinCount * PIN_SPACING + 24;
 				return { child, childDef, w, h };
 			});
-
 			const colWidth = Math.max(...sized.map((s) => s.w));
-			const slot = numColumns <= 1 ? 0.5 : colIndex / (numColumns - 1);
-			const x = BOUNDARY_MARGIN + 90 + slot * (usableWidth - colWidth);
+			const groupName = sized.find((s) => s.child.groupName)?.child.groupName;
+			return { sized, colWidth, groupName };
+		});
 
+		// Second pass: resolve the horizontal gap between each pair of adjacent
+		// columns. Columns sharing a horizontal group are pulled close together;
+		// the remaining ("normal") gaps split whatever width that frees up, so
+		// the overall layout still spans the canvas the way it used to.
+		const rawGaps = columnInfos.slice(0, -1).map((info, i) => {
+			const grouped =
+				info.groupName !== undefined && info.groupName === columnInfos[i + 1].groupName;
+			return grouped ? HORIZONTAL_GROUP_GAP : null;
+		});
+		const totalColWidth = columnInfos.reduce((sum, c) => sum + c.colWidth, 0);
+		const groupGapTotal = rawGaps.reduce((sum: number, g) => sum + (g ?? 0), 0);
+		const normalGapCount = rawGaps.filter((g) => g === null).length;
+		const remainingWidth = Math.max(usableWidth - totalColWidth - groupGapTotal, 0);
+		const normalGap = normalGapCount > 0 ? remainingWidth / normalGapCount : 0;
+		const resolvedGaps = rawGaps.map((g) => g ?? normalGap);
+
+		// Third pass: place columns left-to-right using the resolved gaps, and
+		// lay out each column's children as before.
+		let x =
+			numColumns <= 1
+				? BOUNDARY_MARGIN + 90 + 0.5 * (usableWidth - (columnInfos[0]?.colWidth ?? 0))
+				: BOUNDARY_MARGIN + 90;
+
+		columnInfos.forEach(({ sized, colWidth }, colIndex) => {
 			// Anchor columns near the top of the canvas instead of vertically centering them
 			let y = BOUNDARY_MARGIN + 20;
 
@@ -154,6 +180,10 @@ export function computeLayoutUncached(
 				};
 
 				y += h + VERTICAL_GAP;
+			}
+
+			if (colIndex < resolvedGaps.length) {
+				x += colWidth + resolvedGaps[colIndex];
 			}
 		});
 	}

@@ -1,7 +1,7 @@
 {
 	"kind": "composite",
 	"id": "OUTPUT_MODULE",
-	"name": "OUTPUT_MODULE",
+	"name": "Output Register",
 	"inputs": [
 		{ "id": "CLK", "name": "CLK" },
 		{ "id": "CLR_n", "name": "'CLR" },

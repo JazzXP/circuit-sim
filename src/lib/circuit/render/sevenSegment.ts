@@ -8,7 +8,7 @@ export function isSevenSegmentDisplay(definitionId: string): boolean {
 const SEGMENT_ON = '#ff5a3c';
 const SEGMENT_OFF = '#3a2420'; // dim, but still visible — like a real unlit LED segment
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const SEGMENT_ORDER = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp'] as const;
+const SEGMENT_ORDER = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'dp', 'en'] as const;
 
 // Draws the classic 7-segment glyph filling the given box, with each
 // segment colored by whether its corresponding pin is currently HIGH.
@@ -30,7 +30,8 @@ export function drawSevenSegmentDisplay(
 	const midY = (y0 + y1) / 2;
 	const t = Math.max(4, Math.min(10, (x1 - x0) * 0.22)); // segment thickness
 
-	const isOn = (seg: (typeof SEGMENT_ORDER)[number]) => pinValues[seg] === LogicValue.HIGH;
+	const isOn = (seg: (typeof SEGMENT_ORDER)[number]) =>
+		pinValues['en'] !== LogicValue.HIGH && pinValues[seg] === LogicValue.HIGH;
 	const fillRect = (rx: number, ry: number, rw: number, rh: number, on: boolean) => {
 		if (rw <= 0 || rh <= 0) return;
 		ctx.fillStyle = on ? SEGMENT_ON : SEGMENT_OFF;
