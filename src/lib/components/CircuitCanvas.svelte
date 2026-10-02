@@ -18,7 +18,7 @@
 		pan,
 		type ViewTransform,
 	} from '#render/viewTransform';
-	import { LogicValue } from '#circuit/sim/model/component';
+	import { LogicValue, getDefinition, inoutPins } from '#circuit/sim/model/component';
 	import type { DefinitionLibrary, ComponentInstance } from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
 
@@ -29,10 +29,26 @@
 		height?: number;
 	}
 
-	let { library, rootDefinitionId, width = 720, height = 320 }: Props = $props();
+	let { library, rootDefinitionId, width: totalWidth = 720, height = 320 }: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
-	let rootInstance = $state<ComponentInstance>(instantiate(library, rootDefinitionId, 'root'));
+	// Root inputs start LOW rather than UNKNOWN. Routing this through
+	// evaluateTick means everything downstream settles from those values.
+	// Root inouts are left floating (HIGH_Z) so they aren't forced to drive.
+	function createRootInstance(): ComponentInstance {
+		const fresh = instantiate(library, rootDefinitionId, 'root');
+		const def = getDefinition(library, rootDefinitionId);
+		return evaluateTick(
+			library,
+			fresh,
+			def.inputs.map((pin) => ({
+				ref: { component: 'self' as const, pinId: pin.id },
+				value: LogicValue.LOW,
+			})),
+		);
+	}
+
+	let rootInstance = $state<ComponentInstance>(createRootInstance());
 	let errorMessage = $state<string | null>(checkForProblems(rootInstance));
 
 	function describeError(e: unknown): string {
@@ -55,6 +71,56 @@
 	let clickRegions: ClickRegion[] = [];
 	let view = $state<ViewTransform>(DEFAULT_VIEW_TRANSFORM);
 
+	// --- Loading status ------------------------------------------------
+	//
+	// The first time a level is drawn at a given size, computeLayout has to
+	// route every wire (grid A*), which can block the main thread for a
+	// noticeable moment on bigger circuits. Results are cached inside
+	// computeLayout, so this only happens once per level/size. To let a
+	// status message actually paint before that blocking work starts, the
+	// work is deferred by a frame and the canvas shows an overlay meanwhile.
+	let loadingStatus = $state<string | null>(null);
+	const preparedLayouts = new Set<string>();
+
+	// Resolves only AFTER the browser has actually painted the current DOM.
+	// requestAnimationFrame alone isn't enough: its callback runs *before*
+	// the frame is painted, so blocking work started there would freeze the
+	// page before the status message ever appeared. The setTimeout inside it
+	// runs after that paint has happened.
+	function waitForPaint(): Promise<void> {
+		return new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+	}
+
+	async function prepareLayout(definitionId: string, layoutKey: string) {
+		loadingStatus = 'Routing wires…';
+		await waitForPaint();
+		try {
+			computeLayout(library, definitionId, width, height);
+			preparedLayouts.add(layoutKey);
+		} catch (e) {
+			errorMessage = describeError(e);
+			preparedLayouts.add(layoutKey); // don't retry in a loop; the error banner explains
+		}
+		loadingStatus = null;
+	}
+
+	// The root's own boundary pins that the person can drive. These live in
+	// the toolbar (not just on the canvas) so they stay reachable while
+	// drilled into a sub-circuit.
+	let rootDef = $derived(getDefinition(library, rootDefinitionId));
+	let rootInputs = $derived(rootDef.inputs);
+	let rootInouts = $derived(inoutPins(rootDef));
+
+	// `totalWidth` (the prop) is the width of the whole component. When
+	// there are root pins, a fixed-width column of toggle buttons sits to the
+	// left of the canvas, and the canvas shrinks by the same amount so the
+	// overall footprint doesn't change. Everything below that used `width`
+	// keeps meaning "the canvas's width".
+	const SIDEBAR_WIDTH = 120;
+	const SIDEBAR_GAP = 8;
+	let hasRootPins = $derived(rootInputs.length > 0 || rootInouts.length > 0);
+	let width = $derived(hasRootPins ? totalWidth - SIDEBAR_WIDTH - SIDEBAR_GAP : totalWidth);
+
 	// Every CLOCK instance anywhere in the tree, regardless of nesting depth —
 	// recomputed whenever the tree changes so newly-drilled-into clocks (or
 	// ones a future design might add dynamically) are picked up automatically.
@@ -69,9 +135,33 @@
 		return current;
 	}
 
+	function pinValueLabel(v: LogicValue | undefined): string {
+		if (v === LogicValue.HIGH) return '1';
+		if (v === LogicValue.LOW) return '0';
+		if (v === LogicValue.HIGH_Z) return 'Z';
+		return 'X';
+	}
+
+	function pinValueClass(v: LogicValue | undefined): string {
+		if (v === LogicValue.HIGH) return 'high';
+		if (v === LogicValue.LOW) return 'low';
+		if (v === LogicValue.HIGH_Z) return 'floating';
+		return 'unknown';
+	}
+
 	function toggleRootInput(pinId: string) {
 		const current = rootInstance.pinValues[pinId];
-		const next = current === LogicValue.HIGH ? LogicValue.LOW : LogicValue.HIGH;
+		const isInout = rootInouts.some((p) => p.id === pinId);
+		let next: LogicValue;
+		if (isInout) {
+			// Bidirectional pins can be driven low, driven high, or left
+			// floating for the circuit to drive: cycle Z -> 0 -> 1 -> Z.
+			if (current === LogicValue.LOW) next = LogicValue.HIGH;
+			else if (current === LogicValue.HIGH) next = LogicValue.HIGH_Z;
+			else next = LogicValue.LOW;
+		} else {
+			next = current === LogicValue.HIGH ? LogicValue.LOW : LogicValue.HIGH;
+		}
 		const change: PinChange = { ref: { component: 'self', pinId }, value: next };
 		try {
 			// evaluateTick's own functional design means a thrown error here
@@ -389,12 +479,21 @@
 		const ctx = canvasEl.getContext('2d');
 		if (!ctx) return;
 
+		const instance = instanceAtPath(drillPath);
+		const layoutKey = `${instance.definitionId}:${width}x${height}`;
+		if (!preparedLayouts.has(layoutKey)) {
+			// Not routed yet: blank the canvas, show the status, and redraw
+			// (via the effect) once loadingStatus clears.
+			ctx.clearRect(0, 0, width, height);
+			if (!loadingStatus) void prepareLayout(instance.definitionId, layoutKey);
+			return;
+		}
+
 		ctx.save();
 		ctx.clearRect(0, 0, width, height);
 		ctx.translate(view.offsetX, view.offsetY);
 		ctx.scale(view.scale, view.scale);
 
-		const instance = instanceAtPath(drillPath);
 		const layout = computeLayout(library, instance.definitionId, width, height);
 		const isRoot = drillPath.length === 0;
 
@@ -420,6 +519,8 @@
 		drillPath;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		view;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		loadingStatus;
 		draw();
 	});
 
@@ -439,6 +540,7 @@
 				</button>
 			{/each}
 		</div>
+
 		<div class="zoom-controls">
 			<button onclick={() => zoomButton(1 / 1.3)} title="Zoom out">&minus;</button>
 			<span class="zoom-level">{Math.round(view.scale * 100)}%</span>
@@ -457,14 +559,56 @@
 		<div class="error-banner">⚠ {errorMessage}</div>
 	{/if}
 
-	<canvas
-		bind:this={canvasEl}
-		{width}
-		{height}
-		onwheel={handleWheel}
-		onmousedown={handleMouseDown}
-		class:grabbing={dragging}
-	></canvas>
+	<div class="main-row">
+		{#if hasRootPins}
+			<div
+				class="root-pins"
+				role="group"
+				aria-label="Circuit inputs"
+				style="width: {SIDEBAR_WIDTH}px; max-height: {height}px;"
+			>
+				{#each rootInputs as pin (pin.id)}
+					{@const value = rootInstance.pinValues[pin.id]}
+					<button
+						class="pin-toggle {pinValueClass(value)}"
+						onclick={() => toggleRootInput(pin.id)}
+						title="Toggle {pin.name}"
+					>
+						<span class="pin-name">{pin.name}</span>
+						<span class="pin-value">{pinValueLabel(value)}</span>
+					</button>
+				{/each}
+				{#each rootInouts as pin (pin.id)}
+					{@const value = rootInstance.pinValues[pin.id]}
+					<button
+						class="pin-toggle inout {pinValueClass(value)}"
+						onclick={() => toggleRootInput(pin.id)}
+						title="Cycle {pin.name}: floating, 0, 1"
+					>
+						<span class="pin-name">&#9670; {pin.name}</span>
+						<span class="pin-value">{pinValueLabel(value)}</span>
+					</button>
+				{/each}
+			</div>
+		{/if}
+		<div class="canvas-wrap">
+			<canvas
+				bind:this={canvasEl}
+				{width}
+				{height}
+				onwheel={handleWheel}
+				onmousedown={handleMouseDown}
+				class:grabbing={dragging}
+				aria-busy={loadingStatus !== null}
+			></canvas>
+			{#if loadingStatus}
+				<div class="loading-overlay" role="status" aria-live="polite">
+					<span class="spinner"></span>
+					<span>{loadingStatus}</span>
+				</div>
+			{/if}
+		</div>
+	</div>
 
 	{#if clocks.length > 0}
 		<div class="clocks">
@@ -479,7 +623,7 @@
 					>
 					<input
 						type="range"
-						min="20"
+						min="1"
 						max="3000"
 						step="10"
 						value={periodMs}
@@ -502,9 +646,10 @@
 	}
 	.toolbar {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		justify-content: space-between;
-		gap: 12px;
+		gap: 8px 12px;
 	}
 	canvas {
 		background: #1b1e24;
@@ -535,6 +680,68 @@
 		color: #565a63;
 		cursor: default;
 		text-decoration: none;
+	}
+	.main-row {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px; /* keep in sync with SIDEBAR_GAP */
+	}
+	.root-pins {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		flex-shrink: 0;
+		box-sizing: border-box;
+		overflow-y: auto;
+	}
+	.pin-toggle {
+		display: flex;
+		justify-content: space-between;
+		flex-shrink: 0;
+		box-sizing: border-box;
+		width: 100%;
+		align-items: center;
+		gap: 6px;
+		background: #252932;
+		border: 1px solid #3c414d;
+		color: #d8dae0;
+		border-radius: 6px;
+		padding: 2px 8px;
+		height: 24px;
+		font-size: 11px;
+		cursor: pointer;
+	}
+	.pin-toggle:hover {
+		border-color: #565a63;
+	}
+	.pin-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.pin-value {
+		min-width: 12px;
+		text-align: center;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		border-radius: 4px;
+		padding: 0 4px;
+		color: #1b1e24;
+	}
+	.pin-toggle.low .pin-value {
+		background: #4a4e58;
+		color: #d8dae0;
+	}
+	.pin-toggle.high .pin-value {
+		background: #e0a840;
+	}
+	.pin-toggle.floating .pin-value {
+		background: #6a5a8a;
+		color: #d8dae0;
+	}
+	.pin-toggle.unknown .pin-value {
+		background: #d9556b;
+		color: #fff;
 	}
 	.zoom-controls {
 		display: flex;
@@ -567,6 +774,35 @@
 		min-width: 38px;
 		text-align: center;
 		font-variant-numeric: tabular-nums;
+	}
+	.canvas-wrap {
+		position: relative;
+		line-height: 0;
+	}
+	.loading-overlay {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		font-size: 13px;
+		line-height: 1.2;
+		color: #8b8f99;
+		pointer-events: none;
+	}
+	.spinner {
+		width: 14px;
+		height: 14px;
+		border: 2px solid #3c414d;
+		border-top-color: #6ea8ff;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
 	}
 	.error-banner {
 		background: #3a1f24;

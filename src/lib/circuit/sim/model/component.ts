@@ -11,6 +11,9 @@ export enum LogicValue {
 	HIGH_Z = 2, // tri-state / undriven — needed once you add shared buses
 	UNKNOWN = 3, // uninitialized — useful for catching "read before written" bugs
 }
+
+type PinDef = ComponentDefinition['inputs'][number];
+
 export const emptyLibrary: DefinitionLibrary = {};
 
 export function getDefinition(lib: DefinitionLibrary, id: string): ComponentDefinition {
@@ -57,48 +60,31 @@ function wouldCreateCycle(
 	return false;
 }
 
-// export function instantiate(
-// 	lib: DefinitionLibrary,
-// 	definitionId: string,
-// 	instanceId: string,
-// ): ComponentInstance {
-// 	const def = getDefinition(lib, definitionId);
-//
-// 	const initialPinValues: Record<string, LogicValue> = {};
-// 	for (const pin of [...def.inputs, ...def.outputs]) {
-// 		initialPinValues[pin.id] = pin.defaultValue ?? LogicValue.UNKNOWN;
-// 	}
-//
-// 	if (def.kind === 'primitive') {
-// 		const primitiveState = def.initialState();
-// 		if (def.inputs.length === 0) {
-// 			// A source with no inputs (e.g. a tied-off constant) has nothing to
-// 			// ever deliver it an event, so it would sit at UNKNOWN forever under
-// 			// the normal event-driven model. Seed it immediately instead — this
-// 			// matches real hardware, where a tied-off rail is just always at its
-// 			// voltage from power-on, no "first event" required.
-// 			const { outputs, nextState } = def.evaluate([], primitiveState);
-// 			def.outputs.forEach((pin, i) => {
-// 				initialPinValues[pin.id] = outputs?.[i] ?? 0;
-// 			});
-// 			return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
-// 		}
-//
-// 		return {
-// 			instanceId,
-// 			definitionId,
-// 			pinValues: initialPinValues,
-// 			primitiveState: def.initialState(),
-// 		};
-// 	}
-//
-// 	const children: Record<string, ComponentInstance> = {};
-// 	for (const child of def.children) {
-// 		children[child.instanceId] = instantiate(lib, child.definitionId, child.instanceId);
-// 	}
-//
-// 	return { instanceId, definitionId, pinValues: initialPinValues, children };
-// }
+export function inoutPins(def: ComponentDefinition): readonly PinDef[] {
+	return def.inouts ?? [];
+}
+export const evalInputPins = (def: ComponentDefinition) => [...def.inputs, ...inoutPins(def)];
+export const evalOutputPins = (def: ComponentDefinition) => [...def.outputs, ...inoutPins(def)];
+export const allPins = (def: ComponentDefinition) => [
+	...def.inputs,
+	...def.outputs,
+	...inoutPins(def),
+];
+// Net resolution. Undriven (HIGH_Z) drivers are ignored; agreeing drivers win;
+// any disagreement or UNKNOWN driver gives UNKNOWN. `skip` omits one driver,
+// which is how an inout pin gets "everyone but me".
+export function resolveDrivers(values: readonly LogicValue[], skip = -1): LogicValue {
+	let result = LogicValue.HIGH_Z;
+	for (let i = 0; i < values.length; i++) {
+		if (i === skip) continue;
+		const v = values[i];
+		if (v === LogicValue.HIGH_Z) continue;
+		if (v === LogicValue.UNKNOWN) return LogicValue.UNKNOWN;
+		if (result === LogicValue.HIGH_Z) result = v;
+		else if (result !== v) return LogicValue.UNKNOWN; // contention
+	}
+	return result;
+}
 
 // Drill-down navigation as a plain readonly stack.
 export interface DrillPathEntry {

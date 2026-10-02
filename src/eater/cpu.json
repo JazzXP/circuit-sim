@@ -6,22 +6,39 @@
 	"minCanvasHeight": 2000,
 	"inputs": [
 		{ "id": "CLK_STEP", "name": "Clock Step" },
-		{ "id": "PRG", "name": "Program Mode" },
-		{ "id": "RAM1", "name": "RAM1" },
-		{ "id": "RAM2", "name": "RAM2" },
-		{ "id": "RAM3", "name": "RAM3" },
-		{ "id": "RAM4", "name": "RAM4" },
-		{ "id": "SIGNED", "name": "Signed Output" }
+		{ "id": "PROG", "name": "Program Mode" },
+		{ "id": "RAM1", "name": "RAM1 Address" },
+		{ "id": "RAM2", "name": "RAM2 Address" },
+		{ "id": "RAM3", "name": "RAM3 Address" },
+		{ "id": "RAM4", "name": "RAM4 Address" },
+		{ "id": "RAM_SET_0", "name": "RAM Value 0" },
+		{ "id": "RAM_SET_1", "name": "RAM Value 1" },
+		{ "id": "RAM_SET_2", "name": "RAM Value 2" },
+		{ "id": "RAM_SET_3", "name": "RAM Value 3" },
+		{ "id": "RAM_SET_4", "name": "RAM Value 4" },
+		{ "id": "RAM_SET_5", "name": "RAM Value 5" },
+		{ "id": "RAM_SET_6", "name": "RAM Value 6" },
+		{ "id": "RAM_SET_7", "name": "RAM Value 7" },
+		{ "id": "SET", "name": "RAM Set" },
+		{ "id": "SIGNED", "name": "Signed Output" },
+		{ "id": "RESET", "name": "Reset" },
+		{ "id": "LOAD", "name": "Load Program" },
+		{ "id": "PSEL0", "name": "Program Select 0 (bit 0)" },
+		{ "id": "PSEL1", "name": "Program Select 1 (bit 1)" },
+		{ "id": "PSEL2", "name": "Program Select 2 (bit 2)" }
 	],
 
 	"outputs": [],
 	"children": [
+		{ "instanceId": "not_prog", "definitionId": "NOT", "column": 0 },
 		{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 0 },
 		{ "instanceId": "mar", "definitionId": "MAR", "column": 0 },
+		{ "instanceId": "loader", "definitionId": "PROGRAM_LOADER", "column": 0, "name": "Program Loader" },
 		{ "instanceId": "ram", "definitionId": "RAM", "column": 1 },
 		{ "instanceId": "pc", "definitionId": "PC", "column": 3 },
 		{ "instanceId": "regA", "definitionId": "REGISTER", "column": 3, "name": "Register A" },
 		{ "instanceId": "regB", "definitionId": "REGISTER", "column": 3, "name": "Register B" },
+		{ "instanceId": "vcc", "definitionId": "VCC", "column": 3 },
 		{
 			"instanceId": "regI",
 			"definitionId": "INSTRUCTION_REGISTER",
@@ -67,24 +84,20 @@
 				{ "component": "mar", "pinId": "CLK" },
 				{ "component": "ram", "pinId": "CLK" },
 				{ "component": "pc", "pinId": "CLK" },
-				{ "component": "output", "pinId": "CLK" }
+				{ "component": "output", "pinId": "CLK" },
+				{ "component": "loader", "pinId": "CLK" }
 			],
 			"colour": "#408000"
 		},
 		{
 			"from": { "component": "regA", "pinId": "BUS0" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS0_out" },
 				{ "component": "regB", "pinId": "BUS0" },
-				{ "component": "regB", "pinId": "BUS0_out" },
 				{ "component": "regI", "pinId": "BUS0" },
-				{ "component": "regI", "pinId": "BUS0_out" },
 				{ "component": "alu", "pinId": "BUS0" },
 				{ "component": "ram", "pinId": "BUS0" },
-				{ "component": "ram", "pinId": "BUS0_out" },
 				{ "component": "mar", "pinId": "BUS0" },
 				{ "component": "pc", "pinId": "BUS0" },
-				{ "component": "pc", "pinId": "BUS0_out" },
 				{ "component": "output", "pinId": "BUS0" }
 			],
 			"colour": "#008080",
@@ -93,17 +106,12 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS1" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS1_out" },
 				{ "component": "regB", "pinId": "BUS1" },
-				{ "component": "regB", "pinId": "BUS1_out" },
 				{ "component": "regI", "pinId": "BUS1" },
-				{ "component": "regI", "pinId": "BUS1_out" },
 				{ "component": "alu", "pinId": "BUS1" },
 				{ "component": "ram", "pinId": "BUS1" },
-				{ "component": "ram", "pinId": "BUS1_out" },
 				{ "component": "mar", "pinId": "BUS1" },
 				{ "component": "pc", "pinId": "BUS1" },
-				{ "component": "pc", "pinId": "BUS1_out" },
 				{ "component": "output", "pinId": "BUS1" }
 			],
 			"colour": "#008080",
@@ -112,17 +120,12 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS2" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS2_out" },
 				{ "component": "regB", "pinId": "BUS2" },
-				{ "component": "regB", "pinId": "BUS2_out" },
 				{ "component": "regI", "pinId": "BUS2" },
-				{ "component": "regI", "pinId": "BUS2_out" },
 				{ "component": "alu", "pinId": "BUS2" },
 				{ "component": "ram", "pinId": "BUS2" },
-				{ "component": "ram", "pinId": "BUS2_out" },
 				{ "component": "mar", "pinId": "BUS2" },
 				{ "component": "pc", "pinId": "BUS2" },
-				{ "component": "pc", "pinId": "BUS2_out" },
 				{ "component": "output", "pinId": "BUS2" }
 			],
 			"colour": "#008080",
@@ -131,17 +134,12 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS3" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS3_out" },
 				{ "component": "regB", "pinId": "BUS3" },
-				{ "component": "regB", "pinId": "BUS3_out" },
 				{ "component": "regI", "pinId": "BUS3" },
-				{ "component": "regI", "pinId": "BUS3_out" },
 				{ "component": "alu", "pinId": "BUS3" },
 				{ "component": "ram", "pinId": "BUS3" },
-				{ "component": "ram", "pinId": "BUS3_out" },
 				{ "component": "mar", "pinId": "BUS3" },
 				{ "component": "pc", "pinId": "BUS3" },
-				{ "component": "pc", "pinId": "BUS3_out" },
 				{ "component": "output", "pinId": "BUS3" }
 			],
 			"colour": "#008080",
@@ -150,14 +148,10 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS4" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS4_out" },
 				{ "component": "regB", "pinId": "BUS4" },
-				{ "component": "regB", "pinId": "BUS4_out" },
 				{ "component": "regI", "pinId": "BUS4" },
-				{ "component": "regI", "pinId": "BUS4_out" },
 				{ "component": "alu", "pinId": "BUS4" },
 				{ "component": "ram", "pinId": "BUS4" },
-				{ "component": "ram", "pinId": "BUS4_out" },
 				{ "component": "output", "pinId": "BUS4" }
 			],
 			"colour": "#008080",
@@ -166,14 +160,10 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS5" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS5_out" },
 				{ "component": "regB", "pinId": "BUS5" },
-				{ "component": "regB", "pinId": "BUS5_out" },
 				{ "component": "regI", "pinId": "BUS5" },
-				{ "component": "regI", "pinId": "BUS5_out" },
 				{ "component": "alu", "pinId": "BUS5" },
 				{ "component": "ram", "pinId": "BUS5" },
-				{ "component": "ram", "pinId": "BUS5_out" },
 				{ "component": "output", "pinId": "BUS5" }
 			],
 			"colour": "#008080",
@@ -182,14 +172,10 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS6" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS6_out" },
 				{ "component": "regB", "pinId": "BUS6" },
-				{ "component": "regB", "pinId": "BUS6_out" },
 				{ "component": "regI", "pinId": "BUS6" },
-				{ "component": "regI", "pinId": "BUS6_out" },
 				{ "component": "alu", "pinId": "BUS6" },
 				{ "component": "ram", "pinId": "BUS6" },
-				{ "component": "ram", "pinId": "BUS6_out" },
 				{ "component": "output", "pinId": "BUS6" }
 			],
 			"colour": "#008080",
@@ -198,14 +184,10 @@
 		{
 			"from": { "component": "regA", "pinId": "BUS7" },
 			"to": [
-				{ "component": "regA", "pinId": "BUS7_out" },
 				{ "component": "regB", "pinId": "BUS7" },
-				{ "component": "regB", "pinId": "BUS7_out" },
 				{ "component": "regI", "pinId": "BUS7" },
-				{ "component": "regI", "pinId": "BUS7_out" },
 				{ "component": "alu", "pinId": "BUS7" },
 				{ "component": "ram", "pinId": "BUS7" },
-				{ "component": "ram", "pinId": "BUS7_out" },
 				{ "component": "output", "pinId": "BUS7" }
 			],
 			"colour": "#008080",
@@ -329,30 +311,134 @@
 			"to": [{ "component": "ram", "pinId": "A3" }],
 			"groupName": "marAddr"
 		},
+		{
+			"from": { "component": "mar", "pinId": "PROG" },
+			"to": [{ "component": "ram", "pinId": "PROG" }]
+		},
 
 		{
 			"from": { "component": "self", "pinId": "CLK_STEP" },
 			"to": [{ "component": "clock", "pinId": "CLK_STEP" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "PRG" },
-			"to": [{ "component": "mar", "pinId": "PRG" }]
+			"from": { "component": "self", "pinId": "PROG" },
+			"to": [{ "component": "loader", "pinId": "PROG" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "PROG_OUT" },
+			"to": [{ "component": "mar", "pinId": "PROG" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "loader", "pinId": "RAM1" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM1_OUT" },
 			"to": [{ "component": "mar", "pinId": "RAM1" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "loader", "pinId": "RAM2" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM2_OUT" },
 			"to": [{ "component": "mar", "pinId": "RAM2" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "RAM3" },
+			"to": [{ "component": "loader", "pinId": "RAM3" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM3_OUT" },
 			"to": [{ "component": "mar", "pinId": "RAM3" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "RAM4" },
+			"to": [{ "component": "loader", "pinId": "RAM4" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM4_OUT" },
 			"to": [{ "component": "mar", "pinId": "RAM4" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RESET" },
+			"to": [{ "component": "loader", "pinId": "RESET" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RESET_OUT" },
+			"to": [{ "component": "control", "pinId": "RESET" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_0" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_0" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_0_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_0" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_1" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_1" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_1_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_1" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_2" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_2" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_2_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_2" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_3" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_3" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_3_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_3" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_4" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_4" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_4_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_4" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_5" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_5" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_5_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_5" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_6" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_6" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_6_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_6" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_7" },
+			"to": [{ "component": "loader", "pinId": "RAM_SET_7" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "RAM_SET_7_OUT" },
+			"to": [{ "component": "ram", "pinId": "RAM_SET_7" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "SET" },
+			"to": [{ "component": "loader", "pinId": "SET" }]
+		},
+		{
+			"from": { "component": "loader", "pinId": "SET_OUT" },
+			"to": [{ "component": "ram", "pinId": "SET" }]
 		},
 
 		{
@@ -480,10 +566,6 @@
 			"to": [{ "component": "control", "pinId": "ZF" }]
 		},
 		{
-			"from": { "component": "alu", "pinId": "ZF" },
-			"to": [{ "component": "control", "pinId": "ZF" }]
-		},
-		{
 			"from": { "component": "clock", "pinId": "CLK_n" },
 			"to": [{ "component": "control", "pinId": "CLK_n" }]
 		},
@@ -532,7 +614,7 @@
 			"to": [{ "component": "regB", "pinId": "AI_n" }]
 		},
 		{
-			"from": { "component": "control", "pinId": "BO_n" },
+			"from": { "component": "vcc", "pinId": "OUT" },
 			"to": [{ "component": "regB", "pinId": "AO_n" }]
 		},
 		{
@@ -554,6 +636,22 @@
 		{
 			"from": { "component": "control", "pinId": "HLT" },
 			"to": [{ "component": "clock", "pinId": "HLT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "LOAD" },
+			"to": [{ "component": "loader", "pinId": "LOAD" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL0" },
+			"to": [{ "component": "loader", "pinId": "PSEL0" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL1" },
+			"to": [{ "component": "loader", "pinId": "PSEL1" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL2" },
+			"to": [{ "component": "loader", "pinId": "PSEL2" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "SIGNED" },

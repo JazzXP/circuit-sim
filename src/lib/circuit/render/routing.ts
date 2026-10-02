@@ -20,6 +20,7 @@ export interface RoutedWire {
 interface Geometry {
 	readonly selfInputPos: Readonly<Record<string, Point>>;
 	readonly selfOutputPos: Readonly<Record<string, Point>>;
+	readonly selfInoutPos: Readonly<Record<string, Point>>;
 	readonly children: Readonly<Record<string, ChildLayout>>;
 }
 
@@ -247,7 +248,8 @@ function simplify(points: readonly Point[]): Point[] {
 function resolveEndpoint(geometry: Geometry, ref: PinRef): { pin: Point; stub: Point } {
 	if (ref.component === 'self') {
 		const pin = geometry.selfInputPos?.[ref.pinId] ??
-			geometry.selfOutputPos?.[ref.pinId] ?? { x: 0, y: 0 };
+			geometry.selfOutputPos?.[ref.pinId] ??
+			geometry.selfInoutPos?.[ref.pinId] ?? { x: 0, y: 0 };
 		return { pin, stub: pin };
 	}
 	const box = geometry.children[ref.component];
@@ -256,7 +258,9 @@ function resolveEndpoint(geometry: Geometry, ref: PinRef): { pin: Point; stub: P
 		return { pin: fallback, stub: fallback };
 	}
 	const isInput = ref.pinId in box.inputPos;
-	const pin = isInput ? box.inputPos[ref.pinId] : box.outputPos[ref.pinId];
+	const pin = isInput
+		? box.inputPos[ref.pinId]
+		: (box.outputPos[ref.pinId] ?? box.inoutPos[ref.pinId]);
 	const safePin = pin ?? { x: box.x, y: box.y };
 	const stub: Point = isInput
 		? { x: box.x - STUB, y: safePin.y }

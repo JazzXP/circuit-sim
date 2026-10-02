@@ -28,6 +28,7 @@ const primitiveDefinitionSchema = z.object({
 	minCanvasHeight: z.number().optional(),
 	inputs: pinSpecSchema.array().readonly(),
 	outputs: pinSpecSchema.array().readonly(),
+	inouts: pinSpecSchema.array().readonly().optional(),
 
 	evaluate: z
 		.function({
@@ -68,6 +69,7 @@ const compositeDefinitionSchema = z.object({
 	minCanvasHeight: z.number().optional(),
 	inputs: pinSpecSchema.array().readonly(),
 	outputs: pinSpecSchema.array().readonly(),
+	inouts: pinSpecSchema.array().readonly().optional(),
 	children: childSpecSchema.array().readonly(),
 	internalWires: wireSpecSchema.array().readonly(),
 });
@@ -89,6 +91,8 @@ export type ComponentInstance = {
 	readonly children?: Readonly<Record<string, ComponentInstance>>;
 	readonly primitiveState?: Readonly<unknown>;
 	readonly groupName?: string;
+	readonly driveValues?: Record<string, LogicValue>; // what this instance drives outward on each inout
+	readonly netValues?: LogicValue[]; // composites only: resolved value per net (index = netlist order)
 };
 
 export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
@@ -99,6 +103,8 @@ export const componentInstanceSchema: z.ZodType<ComponentInstance> = z.object({
 		return z.record(z.string(), componentInstanceSchema).optional().readonly();
 	},
 	primitiveState: z.unknown().optional().readonly(),
+	driveValues: z.record(z.string(), logicValueSchema).optional().readonly(),
+	netValues: logicValueSchema.array().optional(),
 	groupName: z.string().optional(),
 });
 

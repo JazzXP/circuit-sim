@@ -31,7 +31,6 @@
 		{ "instanceId": "not5", "definitionId": "NOT", "column": 1 },
 
 		{ "instanceId": "not6", "definitionId": "NOT", "column": 2 },
-		{ "instanceId": "not7", "definitionId": "NOT", "column": 2 },
 
 		{ "instanceId": "and3", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "and4", "definitionId": "AND2", "column": 3 },
@@ -94,10 +93,6 @@
 			"from": { "component": "self", "pinId": "CLK" },
 			"to": [{ "component": "not5", "pinId": "A" }],
 			"colour": "#408000"
-		},
-		{
-			"from": { "component": "self", "pinId": "CLR" },
-			"to": [{ "component": "not7", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "and2", "pinId": "OUT" },
@@ -193,7 +188,7 @@
 			"colour": "#408000"
 		},
 		{
-			"from": { "component": "not7", "pinId": "OUT" },
+			"from": { "component": "self", "pinId": "CLR" },
 			"to": [
 				{ "component": "dff1", "pinId": "R" },
 				{ "component": "dff2", "pinId": "R" },
@@ -203,19 +198,31 @@
 		},
 		{
 			"from": { "component": "dff1", "pinId": "Q" },
-			"to": [{ "component": "and3", "pinId": "A" }]
+			"to": [
+				{ "component": "and3", "pinId": "A" },
+				{ "component": "buf0", "pinId": "A" }
+			]
 		},
 		{
 			"from": { "component": "dff2", "pinId": "Q" },
-			"to": [{ "component": "and5", "pinId": "A" }]
+			"to": [
+				{ "component": "and5", "pinId": "A" },
+				{ "component": "buf1", "pinId": "A" }
+			]
 		},
 		{
 			"from": { "component": "dff3", "pinId": "Q" },
-			"to": [{ "component": "and7", "pinId": "A" }]
+			"to": [
+				{ "component": "and7", "pinId": "A" },
+				{ "component": "buf2", "pinId": "A" }
+			]
 		},
 		{
 			"from": { "component": "dff4", "pinId": "Q" },
-			"to": [{ "component": "and9", "pinId": "A" }]
+			"to": [
+				{ "component": "and9", "pinId": "A" },
+				{ "component": "buf3", "pinId": "A" }
+			]
 		},
 		{
 			"from": { "component": "and1", "pinId": "OUT" },
@@ -225,22 +232,6 @@
 				{ "component": "buf2", "pinId": "EN" },
 				{ "component": "buf3", "pinId": "EN" }
 			]
-		},
-		{
-			"from": { "component": "dff1", "pinId": "NQ" },
-			"to": [{ "component": "buf0", "pinId": "A" }]
-		},
-		{
-			"from": { "component": "dff2", "pinId": "NQ" },
-			"to": [{ "component": "buf1", "pinId": "A" }]
-		},
-		{
-			"from": { "component": "dff3", "pinId": "NQ" },
-			"to": [{ "component": "buf2", "pinId": "A" }]
-		},
-		{
-			"from": { "component": "dff4", "pinId": "NQ" },
-			"to": [{ "component": "buf3", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "buf0", "pinId": "OUT" },

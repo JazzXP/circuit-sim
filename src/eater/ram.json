@@ -6,14 +6,6 @@
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "RO_n", "name": "'RO" },
 		{ "id": "RI", "name": "RI" },
-		{ "id": "BUS0", "name": "BUS0" },
-		{ "id": "BUS1", "name": "BUS1" },
-		{ "id": "BUS2", "name": "BUS2" },
-		{ "id": "BUS3", "name": "BUS3" },
-		{ "id": "BUS4", "name": "BUS4" },
-		{ "id": "BUS5", "name": "BUS5" },
-		{ "id": "BUS6", "name": "BUS6" },
-		{ "id": "BUS7", "name": "BUS7" },
 		{ "id": "PROG", "name": "PROG" },
 		{ "id": "SET", "name": "RAM Set" },
 		{ "id": "A0", "name": "A0" },
@@ -29,15 +21,16 @@
 		{ "id": "RAM_SET_6", "name": "RAM_SET_6" },
 		{ "id": "RAM_SET_7", "name": "RAM_SET_7" }
 	],
-	"outputs": [
-		{ "id": "BUS0_out", "name": "BUS0" },
-		{ "id": "BUS1_out", "name": "BUS1" },
-		{ "id": "BUS2_out", "name": "BUS2" },
-		{ "id": "BUS3_out", "name": "BUS3" },
-		{ "id": "BUS4_out", "name": "BUS4" },
-		{ "id": "BUS5_out", "name": "BUS5" },
-		{ "id": "BUS6_out", "name": "BUS6" },
-		{ "id": "BUS7_out", "name": "BUS7" }
+	"outputs": [],
+	"inouts": [
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" },
+		{ "id": "BUS4", "name": "BUS4" },
+		{ "id": "BUS5", "name": "BUS5" },
+		{ "id": "BUS6", "name": "BUS6" },
+		{ "id": "BUS7", "name": "BUS7" }
 	],
 	"children": [
 		{ "instanceId": "ram1", "definitionId": "74189", "column": 0 },
@@ -60,11 +53,17 @@
 		{ "instanceId": "not6", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "not7", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "not8", "definitionId": "NOT", "column": 1 },
-		{ "instanceId": "nand", "definitionId": "NAND2", "column": 2 }
+		{ "instanceId": "not_clk", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "nand", "definitionId": "NAND2", "column": 2 },
+		{ "instanceId": "not_set", "definitionId": "NOT", "column": 4 }
 	],
 	"internalWires": [
 		{
 			"from": { "component": "self", "pinId": "CLK" },
+			"to": [{ "component": "not_clk", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_clk", "pinId": "OUT" },
 			"to": [{ "component": "nand", "pinId": "A" }]
 		},
 		{
@@ -85,6 +84,10 @@
 		},
 		{
 			"from": { "component": "self", "pinId": "SET" },
+			"to": [{ "component": "not_set", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_set", "pinId": "OUT" },
 			"to": [{ "component": "74ls157_1", "pinId": "3A" }]
 		},
 		{
@@ -185,91 +188,91 @@
 		},
 		{
 			"from": { "component": "not1", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A0_in" }]
+			"to": [{ "component": "trns", "pinId": "A0" }]
 		},
 		{
 			"from": { "component": "not2", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A1_in" }]
+			"to": [{ "component": "trns", "pinId": "A1" }]
 		},
 		{
 			"from": { "component": "not3", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A2_in" }]
+			"to": [{ "component": "trns", "pinId": "A2" }]
 		},
 		{
 			"from": { "component": "not4", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A3_in" }]
+			"to": [{ "component": "trns", "pinId": "A3" }]
 		},
 		{
 			"from": { "component": "not5", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A4_in" }]
+			"to": [{ "component": "trns", "pinId": "A4" }]
 		},
 		{
 			"from": { "component": "not6", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A5_in" }]
+			"to": [{ "component": "trns", "pinId": "A5" }]
 		},
 		{
 			"from": { "component": "not7", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A6_in" }]
+			"to": [{ "component": "trns", "pinId": "A6" }]
 		},
 		{
 			"from": { "component": "not8", "pinId": "OUT" },
-			"to": [{ "component": "trns", "pinId": "A7_in" }]
+			"to": [{ "component": "trns", "pinId": "A7" }]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B0_out" },
+			"from": { "component": "trns", "pinId": "B0" },
 			"to": [
 				{ "component": "74ls157_2", "pinId": "1B" },
-				{ "component": "self", "pinId": "BUS0_out" }
+				{ "component": "self", "pinId": "BUS0" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B1_out" },
+			"from": { "component": "trns", "pinId": "B1" },
 			"to": [
 				{ "component": "74ls157_2", "pinId": "2B" },
-				{ "component": "self", "pinId": "BUS1_out" }
+				{ "component": "self", "pinId": "BUS1" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B2_out" },
+			"from": { "component": "trns", "pinId": "B2" },
 			"to": [
 				{ "component": "74ls157_2", "pinId": "3B" },
-				{ "component": "self", "pinId": "BUS2_out" }
+				{ "component": "self", "pinId": "BUS2" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B3_out" },
+			"from": { "component": "trns", "pinId": "B3" },
 			"to": [
 				{ "component": "74ls157_2", "pinId": "4B" },
-				{ "component": "self", "pinId": "BUS3_out" }
+				{ "component": "self", "pinId": "BUS3" }
 			]
 		},
 
 		{
-			"from": { "component": "trns", "pinId": "B4_out" },
+			"from": { "component": "trns", "pinId": "B4" },
 			"to": [
 				{ "component": "74ls157_3", "pinId": "1B" },
-				{ "component": "self", "pinId": "BUS4_out" }
+				{ "component": "self", "pinId": "BUS4" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B5_out" },
+			"from": { "component": "trns", "pinId": "B5" },
 			"to": [
 				{ "component": "74ls157_3", "pinId": "2B" },
-				{ "component": "self", "pinId": "BUS5_out" }
+				{ "component": "self", "pinId": "BUS5" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B6_out" },
+			"from": { "component": "trns", "pinId": "B6" },
 			"to": [
 				{ "component": "74ls157_3", "pinId": "3B" },
-				{ "component": "self", "pinId": "BUS6_out" }
+				{ "component": "self", "pinId": "BUS6" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B7_out" },
+			"from": { "component": "trns", "pinId": "B7" },
 			"to": [
 				{ "component": "74ls157_3", "pinId": "4B" },
-				{ "component": "self", "pinId": "BUS7_out" }
+				{ "component": "self", "pinId": "BUS7" }
 			]
 		},
 		{

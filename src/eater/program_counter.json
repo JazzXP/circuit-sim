@@ -7,17 +7,14 @@
 		{ "id": "CLR_n", "name": "'CLR" },
 		{ "id": "CE", "name": "CE" },
 		{ "id": "J_n", "name": "'J" },
-		{ "id": "CO_n", "name": "'CO" },
+		{ "id": "CO_n", "name": "'CO" }
+	],
+	"outputs": [],
+	"inouts": [
 		{ "id": "BUS0", "name": "BUS0" },
 		{ "id": "BUS1", "name": "BUS1" },
 		{ "id": "BUS2", "name": "BUS2" },
 		{ "id": "BUS3", "name": "BUS3" }
-	],
-	"outputs": [
-		{ "id": "BUS0_out", "name": "BUS0_out" },
-		{ "id": "BUS1_out", "name": "BUS1_out" },
-		{ "id": "BUS2_out", "name": "BUS2_out" },
-		{ "id": "BUS3_out", "name": "BUS3_out" }
 	],
 	"children": [
 		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
@@ -48,32 +45,28 @@
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [
 				{ "component": "74ls161", "pinId": "P0" },
-				{ "component": "self", "pinId": "BUS0_out" },
-				{ "component": "trns", "pinId": "A4_out" }
+				{ "component": "trns", "pinId": "A4" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [
 				{ "component": "74ls161", "pinId": "P1" },
-				{ "component": "self", "pinId": "BUS1_out" },
-				{ "component": "trns", "pinId": "A5_out" }
+				{ "component": "trns", "pinId": "A5" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [
 				{ "component": "74ls161", "pinId": "P2" },
-				{ "component": "self", "pinId": "BUS2_out" },
-				{ "component": "trns", "pinId": "A6_out" }
+				{ "component": "trns", "pinId": "A6" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [
 				{ "component": "74ls161", "pinId": "P3" },
-				{ "component": "self", "pinId": "BUS3_out" },
-				{ "component": "trns", "pinId": "A7_out" }
+				{ "component": "trns", "pinId": "A7" }
 			]
 		},
 		{
@@ -86,19 +79,19 @@
 		},
 		{
 			"from": { "component": "74ls161", "pinId": "Q0" },
-			"to": [{ "component": "trns", "pinId": "B7" }]
+			"to": [{ "component": "trns", "pinId": "B4" }]
 		},
 		{
 			"from": { "component": "74ls161", "pinId": "Q1" },
-			"to": [{ "component": "trns", "pinId": "B6" }]
-		},
-		{
-			"from": { "component": "74ls161", "pinId": "Q2" },
 			"to": [{ "component": "trns", "pinId": "B5" }]
 		},
 		{
+			"from": { "component": "74ls161", "pinId": "Q2" },
+			"to": [{ "component": "trns", "pinId": "B6" }]
+		},
+		{
 			"from": { "component": "74ls161", "pinId": "Q3" },
-			"to": [{ "component": "trns", "pinId": "B4" }]
+			"to": [{ "component": "trns", "pinId": "B7" }]
 		}
 	]
 }

@@ -22,6 +22,7 @@
 		{ "id": "IO_n", "name": "'IO" },
 		{ "id": "II_n", "name": "'II" },
 		{ "id": "AI_n", "name": "'AI" },
+		{ "id": "AO_n", "name": "'AO" },
 		{ "id": "EO_n", "name": "'EO" },
 		{ "id": "SU", "name": "SU" },
 		{ "id": "BI_n", "name": "'BI" },
@@ -35,9 +36,9 @@
 		{ "instanceId": "gnd1", "definitionId": "GND", "column": 1 },
 		{ "instanceId": "gnd2", "definitionId": "GND", "column": 1 },
 		{ "instanceId": "vcc1", "definitionId": "VCC", "column": 1 },
-		{ "instanceId": "vcc2", "definitionId": "VCC", "column": 3 },
 
 		{ "instanceId": "not1", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "hlt_and", "definitionId": "AND2", "column": 5 },
 
 		{ "instanceId": "not2", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "nand", "definitionId": "NAND2", "column": 1 },
@@ -114,7 +115,8 @@
 			"to": [
 				{ "component": "self", "pinId": "CLR_n" },
 				{ "component": "not3", "pinId": "A" },
-				{ "component": "nand", "pinId": "B" }
+				{ "component": "nand", "pinId": "B" },
+				{ "component": "hlt_and", "pinId": "B" }
 			]
 		},
 		{
@@ -138,7 +140,8 @@
 			"to": [
 				{ "component": "74ls161", "pinId": "ENP" },
 				{ "component": "74ls161", "pinId": "ENT" },
-				{ "component": "74ls161", "pinId": "LOAD_n" }
+				{ "component": "74ls161", "pinId": "LOAD_n" },
+				{ "component": "3to8", "pinId": "G1" }
 			]
 		},
 		{
@@ -161,22 +164,28 @@
 			"from": { "component": "74ls161", "pinId": "Q2" },
 			"to": [
 				{ "component": "control_eeprom1", "pinId": "A2" },
-				{ "component": "control_eeprom2", "pinId": "A3" },
+				{ "component": "control_eeprom2", "pinId": "A2" },
 				{ "component": "3to8", "pinId": "C" }
+			]
+		},
+		{
+			"from": { "component": "gnd1", "pinId": "OUT" },
+			"to": [
+				{ "component": "3to8", "pinId": "G2A_n" },
+				{ "component": "3to8", "pinId": "G2B_n" }
 			]
 		},
 		{
 			"from": { "component": "gnd2", "pinId": "OUT" },
 			"to": [
 				{ "component": "control_eeprom1", "pinId": "OE_n" },
-				{ "component": "control_eeprom2", "pinId": "OE_n" }
+				{ "component": "control_eeprom2", "pinId": "OE_n" },
+				{ "component": "control_eeprom1", "pinId": "A7" },
+				{ "component": "control_eeprom2", "pinId": "A7" },
+				{ "component": "control_eeprom1", "pinId": "A10" },
+				{ "component": "control_eeprom2", "pinId": "A10" }
 			]
 		},
-		{
-			"from": { "component": "vcc2", "pinId": "OUT" },
-			"to": [{ "component": "control_eeprom2", "pinId": "A7" }]
-		},
-
 		{
 			"from": { "component": "control_eeprom1", "pinId": "D0" },
 			"to": [{ "component": "not9", "pinId": "A" }]
@@ -207,6 +216,10 @@
 		},
 		{
 			"from": { "component": "control_eeprom1", "pinId": "D7" },
+			"to": [{ "component": "hlt_and", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "hlt_and", "pinId": "OUT" },
 			"to": [{ "component": "self", "pinId": "HLT" }]
 		},
 		{

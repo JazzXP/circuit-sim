@@ -1,0 +1,130 @@
+{
+	"kind": "composite",
+	"id": "TRANSCEIVER_8BIT",
+	"name": "8-Bit Bidirectional Transceiver (74LS245)",
+	"inputs": [
+		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)" },
+		{ "id": "OE_n", "name": "Output Enable (Active Low)" }
+	],
+	"outputs": [],
+	"inouts": [
+		{ "id": "A0", "name": "A0" },
+		{ "id": "A1", "name": "A1" },
+		{ "id": "A2", "name": "A2" },
+		{ "id": "A3", "name": "A3" },
+		{ "id": "A4", "name": "A4" },
+		{ "id": "A5", "name": "A5" },
+		{ "id": "A6", "name": "A6" },
+		{ "id": "A7", "name": "A7" },
+		{ "id": "B0", "name": "B0" },
+		{ "id": "B1", "name": "B1" },
+		{ "id": "B2", "name": "B2" },
+		{ "id": "B3", "name": "B3" },
+		{ "id": "B4", "name": "B4" },
+		{ "id": "B5", "name": "B5" },
+		{ "id": "B6", "name": "B6" },
+		{ "id": "B7", "name": "B7" }
+	],
+	"children": [
+		{ "instanceId": "tx0", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx1", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx2", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx3", "definitionId": "TRANSCEIVER_1BIT", "column": 0 },
+		{ "instanceId": "tx4", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx5", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx6", "definitionId": "TRANSCEIVER_1BIT", "column": 1 },
+		{ "instanceId": "tx7", "definitionId": "TRANSCEIVER_1BIT", "column": 1 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "DIR" },
+			"to": [
+				{ "component": "tx0", "pinId": "DIR" },
+				{ "component": "tx1", "pinId": "DIR" },
+				{ "component": "tx2", "pinId": "DIR" },
+				{ "component": "tx3", "pinId": "DIR" },
+				{ "component": "tx4", "pinId": "DIR" },
+				{ "component": "tx5", "pinId": "DIR" },
+				{ "component": "tx6", "pinId": "DIR" },
+				{ "component": "tx7", "pinId": "DIR" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "OE_n" },
+			"to": [
+				{ "component": "tx0", "pinId": "OE_n" },
+				{ "component": "tx1", "pinId": "OE_n" },
+				{ "component": "tx2", "pinId": "OE_n" },
+				{ "component": "tx3", "pinId": "OE_n" },
+				{ "component": "tx4", "pinId": "OE_n" },
+				{ "component": "tx5", "pinId": "OE_n" },
+				{ "component": "tx6", "pinId": "OE_n" },
+				{ "component": "tx7", "pinId": "OE_n" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "A0" },
+			"to": [{ "component": "tx0", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B0" },
+			"to": [{ "component": "tx0", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A1" },
+			"to": [{ "component": "tx1", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B1" },
+			"to": [{ "component": "tx1", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A2" },
+			"to": [{ "component": "tx2", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B2" },
+			"to": [{ "component": "tx2", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A3" },
+			"to": [{ "component": "tx3", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B3" },
+			"to": [{ "component": "tx3", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A4" },
+			"to": [{ "component": "tx4", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B4" },
+			"to": [{ "component": "tx4", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A5" },
+			"to": [{ "component": "tx5", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B5" },
+			"to": [{ "component": "tx5", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A6" },
+			"to": [{ "component": "tx6", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B6" },
+			"to": [{ "component": "tx6", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "A7" },
+			"to": [{ "component": "tx7", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "B7" },
+			"to": [{ "component": "tx7", "pinId": "B" }]
+		}
+	]
+}

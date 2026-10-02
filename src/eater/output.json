@@ -6,15 +6,7 @@
 		{ "id": "CLK", "name": "CLK" },
 		{ "id": "CLR_n", "name": "'CLR" },
 		{ "id": "OI", "name": "OI" },
-		{ "id": "SIGNED", "name": "SIGNED" },
-		{ "id": "BUS0", "name": "BUS0" },
-		{ "id": "BUS1", "name": "BUS1" },
-		{ "id": "BUS2", "name": "BUS2" },
-		{ "id": "BUS3", "name": "BUS3" },
-		{ "id": "BUS4", "name": "BUS4" },
-		{ "id": "BUS5", "name": "BUS5" },
-		{ "id": "BUS6", "name": "BUS6" },
-		{ "id": "BUS7", "name": "BUS7" }
+		{ "id": "SIGNED", "name": "SIGNED" }
 	],
 	"outputs": [
 		{ "id": "DISP_EN_0", "name": "DISP_EN_0" },
@@ -30,6 +22,16 @@
 		{ "id": "D6", "name": "D6" },
 		{ "id": "D7", "name": "D7" }
 	],
+	"inouts": [
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" },
+		{ "id": "BUS4", "name": "BUS4" },
+		{ "id": "BUS5", "name": "BUS5" },
+		{ "id": "BUS6", "name": "BUS6" },
+		{ "id": "BUS7", "name": "BUS7" }
+	],
 	"children": [
 		{ "instanceId": "gnd", "definitionId": "GND", "column": 2 },
 		{ "instanceId": "vcc", "definitionId": "VCC", "column": 0 },
@@ -37,13 +39,15 @@
 		{ "instanceId": "timer", "definitionId": "OUTPUT_TIMER", "column": 0 },
 		{ "instanceId": "74ls76", "definitionId": "74LS76", "column": 1 },
 		{ "instanceId": "74ls139", "definitionId": "74LS139", "column": 3 },
-		{ "instanceId": "and", "definitionId": "AND2", "column": 0 },
+		{ "instanceId": "not_oi", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "hold", "definitionId": "AND2", "column": 0 },
+		{ "instanceId": "gclk", "definitionId": "OR2", "column": 0 },
 		{ "instanceId": "74ls273", "definitionId": "74LS273", "column": 1 },
 		{ "instanceId": "output_eeprom", "definitionId": "OUTPUT_EEPROM", "column": 2 }
 	],
 	"internalWires": [
 		{
-			"from": { "component": "self", "pinId": "OUT" },
+			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [{ "component": "74ls273", "pinId": "D0" }]
 		},
 		{
@@ -76,18 +80,29 @@
 		},
 		{
 			"from": { "component": "self", "pinId": "OI" },
-			"to": [{ "component": "and", "pinId": "A" }]
+			"to": [{ "component": "not_oi", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_oi", "pinId": "OUT" },
+			"to": [{ "component": "hold", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLK" },
-			"to": [{ "component": "and", "pinId": "B" }]
+			"to": [{ "component": "gclk", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLR_n" },
-			"to": [{ "component": "74ls273", "pinId": "CLR_n" }]
+			"to": [
+				{ "component": "74ls273", "pinId": "CLR_n" },
+				{ "component": "hold", "pinId": "B" }
+			]
 		},
 		{
-			"from": { "component": "and", "pinId": "OUT" },
+			"from": { "component": "hold", "pinId": "OUT" },
+			"to": [{ "component": "gclk", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "gclk", "pinId": "OUT" },
 			"to": [{ "component": "74ls273", "pinId": "CLK" }]
 		},
 		{
@@ -117,21 +132,17 @@
 			"to": [{ "component": "output_eeprom", "pinId": "OE_n" }]
 		},
 		{
-			"from": { "component": "timer", "pinId": "CLK" },
-			"to": [{ "component": "74ls76", "pinId": "1CLK" }]
-		},
-		{
 			"from": { "component": "74ls76", "pinId": "1Q_n" },
 			"to": [
 				{ "component": "74ls76", "pinId": "2CLK" },
-				{ "component": "74ls139", "pinId": "1B" },
+				{ "component": "74ls139", "pinId": "1A" },
 				{ "component": "output_eeprom", "pinId": "A8" }
 			]
 		},
 		{
 			"from": { "component": "74ls76", "pinId": "2Q_n" },
 			"to": [
-				{ "component": "74ls139", "pinId": "1A" },
+				{ "component": "74ls139", "pinId": "1B" },
 				{ "component": "output_eeprom", "pinId": "A9" }
 			]
 		},

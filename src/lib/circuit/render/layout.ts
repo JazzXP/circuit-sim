@@ -25,6 +25,9 @@ export interface ChildLayout {
 	readonly outputPos: Readonly<Record<string, Point>>;
 	readonly inputStubPos: Readonly<Record<string, Point>>;
 	readonly outputStubPos: Readonly<Record<string, Point>>;
+
+	readonly inoutPos: Readonly<Record<string, Point>>;
+	readonly inoutStubPos: Readonly<Record<string, Point>>;
 }
 
 export interface Layout {
@@ -32,6 +35,8 @@ export interface Layout {
 	readonly selfOutputPos: Readonly<Record<string, Point>>;
 	readonly children: Readonly<Record<string, ChildLayout>>;
 	readonly routes: readonly RoutedWire[];
+
+	readonly selfInoutPos: Readonly<Record<string, Point>>;
 }
 
 const BOX_WIDTH = 100;
@@ -83,6 +88,14 @@ export function computeLayoutUncached(
 		selfOutputPos[pin.id] = { x: canvasWidth - BOUNDARY_MARGIN, y: 50 + i * PIN_SPACING * 2 };
 	});
 
+	const selfInoutPos: Record<string, Point> = {};
+	def.inouts?.forEach((pin, i) => {
+		selfInoutPos[pin.id] = {
+			x: canvasWidth - BOUNDARY_MARGIN,
+			y: 50 + (def.outputs.length + i) * PIN_SPACING * 2,
+		};
+	});
+
 	const children: Record<string, ChildLayout> = {};
 	if (def.kind === 'composite') {
 		const usableWidth = Math.max(canvasWidth - 260, BOX_WIDTH);
@@ -110,7 +123,9 @@ export function computeLayoutUncached(
 			const sized = childrenInColumn.map((child) => {
 				const childDef = getDefinition(lib, child.definitionId);
 				const compact = childDef.kind === 'primitive' && isCompactGate(gateShapeFor(childDef.id));
-				const pinCount = Math.max(childDef.inputs.length, childDef.outputs.length, 1);
+
+				const rightCount = childDef.outputs.length + (childDef.inouts?.length ?? 0);
+				const pinCount = Math.max(childDef.inputs.length, rightCount, 1);
 				const w = compact ? 64 : BOX_WIDTH;
 				const h = compact ? pinCount * 20 + 20 : pinCount * PIN_SPACING + 24;
 				return { child, childDef, w, h };
@@ -161,12 +176,18 @@ export function computeLayoutUncached(
 
 				const outputPos: Record<string, Point> = {};
 				const outputStubPos: Record<string, Point> = {};
-				childDef.outputs.forEach((pin, pi) => {
-					const offset = (pi - (childDef.outputs.length - 1) / 2) * PIN_SPACING;
-					outputPos[pin.id] = { x: x + w, y: centerY + offset };
-					// Stagger output stubs further right
+				const inoutPos: Record<string, Point> = {};
+				const inoutStubPos: Record<string, Point> = {};
+				const rightPins = [...childDef.outputs, ...(childDef.inouts ?? [])];
+				rightPins.forEach((pin, pi) => {
+					const offset = (pi - (rightPins.length - 1) / 2) * PIN_SPACING;
 					const stubDepth = STUB + pi * 10;
-					outputStubPos[pin.id] = { x: x + w + stubDepth, y: centerY + offset };
+					const isInout = pi >= childDef.outputs.length;
+					(isInout ? inoutPos : outputPos)[pin.id] = { x: x + w, y: centerY + offset };
+					(isInout ? inoutStubPos : outputStubPos)[pin.id] = {
+						x: x + w + stubDepth,
+						y: centerY + offset,
+					};
 				});
 
 				children[child.instanceId] = {
@@ -180,6 +201,8 @@ export function computeLayoutUncached(
 					outputPos,
 					inputStubPos,
 					outputStubPos,
+					inoutPos,
+					inoutStubPos,
 				};
 
 				y += h + VERTICAL_GAP;
@@ -191,7 +214,7 @@ export function computeLayoutUncached(
 		});
 	}
 
-	const geometry = { selfInputPos, selfOutputPos, children };
+	const geometry = { selfInputPos, selfOutputPos, selfInoutPos, children };
 	const routes = computeRoutes(def, geometry, canvasWidth, canvasHeight);
 	return { ...geometry, routes };
 }

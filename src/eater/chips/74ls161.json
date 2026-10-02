@@ -25,6 +25,8 @@
 		{ "instanceId": "and_cnt_en", "definitionId": "AND2", "column": 0 },
 		{ "instanceId": "not_a_toggle", "definitionId": "NOT", "column": 0 },
 		{ "instanceId": "and_c2", "definitionId": "AND2", "column": 0 },
+		{ "instanceId": "not_clk", "definitionId": "NOT", "column": 0 },
+		{ "instanceId": "not_clr", "definitionId": "NOT", "column": 0 },
 		{ "instanceId": "xor_b_toggle", "definitionId": "XOR2", "column": 1 },
 		{ "instanceId": "and_c3", "definitionId": "AND3", "column": 1 },
 		{ "instanceId": "xor_c_toggle", "definitionId": "XOR2", "column": 2 },
@@ -33,20 +35,16 @@
 		{ "instanceId": "and_rco", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "muxcnt_a", "definitionId": "MUX2_1BIT", "column": 1 },
 		{ "instanceId": "muxload_a", "definitionId": "MUX2_1BIT", "column": 2 },
-		{ "instanceId": "and_d_a", "definitionId": "AND2", "column": 3 },
-		{ "instanceId": "dff_a", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "dff_a", "definitionId": "DFF_GATES", "column": 4 },
 		{ "instanceId": "muxcnt_b", "definitionId": "MUX2_1BIT", "column": 1 },
 		{ "instanceId": "muxload_b", "definitionId": "MUX2_1BIT", "column": 2 },
-		{ "instanceId": "and_d_b", "definitionId": "AND2", "column": 3 },
-		{ "instanceId": "dff_b", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "dff_b", "definitionId": "DFF_GATES", "column": 4 },
 		{ "instanceId": "muxcnt_c", "definitionId": "MUX2_1BIT", "column": 1 },
 		{ "instanceId": "muxload_c", "definitionId": "MUX2_1BIT", "column": 2 },
-		{ "instanceId": "and_d_c", "definitionId": "AND2", "column": 3 },
-		{ "instanceId": "dff_c", "definitionId": "DFF", "column": 4 },
+		{ "instanceId": "dff_c", "definitionId": "DFF_GATES", "column": 4 },
 		{ "instanceId": "muxcnt_d", "definitionId": "MUX2_1BIT", "column": 1 },
 		{ "instanceId": "muxload_d", "definitionId": "MUX2_1BIT", "column": 2 },
-		{ "instanceId": "and_d_d", "definitionId": "AND2", "column": 3 },
-		{ "instanceId": "dff_d", "definitionId": "DFF", "column": 4 }
+		{ "instanceId": "dff_d", "definitionId": "DFF_GATES", "column": 4 }
 	],
 	"internalWires": [
 		{
@@ -84,21 +82,11 @@
 		},
 		{
 			"from": { "component": "self", "pinId": "CLK" },
-			"to": [
-				{ "component": "dff_a", "pinId": "CLK" },
-				{ "component": "dff_b", "pinId": "CLK" },
-				{ "component": "dff_c", "pinId": "CLK" },
-				{ "component": "dff_d", "pinId": "CLK" }
-			]
+			"to": [{ "component": "not_clk", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLR_n" },
-			"to": [
-				{ "component": "and_d_a", "pinId": "A" },
-				{ "component": "and_d_b", "pinId": "A" },
-				{ "component": "and_d_c", "pinId": "A" },
-				{ "component": "and_d_d", "pinId": "A" }
-			]
+			"to": [{ "component": "not_clr", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "dff_a", "pinId": "Q" },
@@ -146,7 +134,7 @@
 		{
 			"from": { "component": "and_c3", "pinId": "OUT" },
 			"to": [
-				{ "component": "xor_d_toggle", "pinId": "A" },
+				{ "component": "xor_d_toggle", "pinId": "B" },
 				{ "component": "and_full", "pinId": "A" }
 			]
 		},
@@ -172,10 +160,6 @@
 		},
 		{
 			"from": { "component": "muxload_a", "pinId": "Y" },
-			"to": [{ "component": "and_d_a", "pinId": "B" }]
-		},
-		{
-			"from": { "component": "and_d_a", "pinId": "OUT" },
 			"to": [{ "component": "dff_a", "pinId": "D" }]
 		},
 		{
@@ -192,10 +176,6 @@
 		},
 		{
 			"from": { "component": "muxload_b", "pinId": "Y" },
-			"to": [{ "component": "and_d_b", "pinId": "B" }]
-		},
-		{
-			"from": { "component": "and_d_b", "pinId": "OUT" },
 			"to": [{ "component": "dff_b", "pinId": "D" }]
 		},
 		{
@@ -212,10 +192,6 @@
 		},
 		{
 			"from": { "component": "muxload_c", "pinId": "Y" },
-			"to": [{ "component": "and_d_c", "pinId": "B" }]
-		},
-		{
-			"from": { "component": "and_d_c", "pinId": "OUT" },
 			"to": [{ "component": "dff_c", "pinId": "D" }]
 		},
 		{
@@ -232,11 +208,25 @@
 		},
 		{
 			"from": { "component": "muxload_d", "pinId": "Y" },
-			"to": [{ "component": "and_d_d", "pinId": "B" }]
+			"to": [{ "component": "dff_d", "pinId": "D" }]
 		},
 		{
-			"from": { "component": "and_d_d", "pinId": "OUT" },
-			"to": [{ "component": "dff_d", "pinId": "D" }]
+			"from": { "component": "not_clk", "pinId": "OUT" },
+			"to": [
+				{ "component": "dff_a", "pinId": "CLK" },
+				{ "component": "dff_b", "pinId": "CLK" },
+				{ "component": "dff_c", "pinId": "CLK" },
+				{ "component": "dff_d", "pinId": "CLK" }
+			]
+		},
+		{
+			"from": { "component": "not_clr", "pinId": "OUT" },
+			"to": [
+				{ "component": "dff_a", "pinId": "R" },
+				{ "component": "dff_b", "pinId": "R" },
+				{ "component": "dff_c", "pinId": "R" },
+				{ "component": "dff_d", "pinId": "R" }
+			]
 		}
 	]
 }

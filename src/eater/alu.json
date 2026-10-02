@@ -27,7 +27,9 @@
 	],
 	"outputs": [
 		{ "id": "CF", "name": "CF" },
-		{ "id": "ZF", "name": "ZF" },
+		{ "id": "ZF", "name": "ZF" }
+	],
+	"inouts": [
 		{ "id": "BUS0", "name": "BUS0" },
 		{ "id": "BUS1", "name": "BUS1" },
 		{ "id": "BUS2", "name": "BUS2" },
@@ -47,23 +49,23 @@
 			"column": 1,
 			"name": "Transceiver"
 		},
-		{ "instanceId": "add1", "definitionId": "74LS283", "column": 5, "name": "Adder" },
-		{ "instanceId": "add2", "definitionId": "74LS283", "column": 5, "name": "Adder" },
-		{ "instanceId": "and1", "definitionId": "AND2", "column": 1 },
+		{ "instanceId": "add1", "definitionId": "74LS283", "column": 6, "name": "Adder" },
+		{ "instanceId": "add2", "definitionId": "74LS283", "column": 6, "name": "Adder" },
+		{ "instanceId": "and1", "definitionId": "AND2", "column": 4 },
 		{ "instanceId": "and2", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "and3", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "nor1", "definitionId": "NOR2", "column": 2 },
 		{ "instanceId": "nor2", "definitionId": "NOR2", "column": 2 },
 		{ "instanceId": "nor3", "definitionId": "NOR2", "column": 2 },
 		{ "instanceId": "nor4", "definitionId": "NOR2", "column": 2 },
-		{ "instanceId": "xnor1", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor2", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor3", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor4", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor5", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor6", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor7", "definitionId": "XNOR2", "column": 6 },
-		{ "instanceId": "xnor8", "definitionId": "XNOR2", "column": 6 }
+		{ "instanceId": "xor1", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor2", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor3", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor4", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor5", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor6", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor7", "definitionId": "XOR2", "column": 5 },
+		{ "instanceId": "xor8", "definitionId": "XOR2", "column": 5 }
 	],
 	"internalWires": [
 		{
@@ -78,15 +80,15 @@
 		{
 			"from": { "component": "self", "pinId": "FI_n" },
 			"to": [
-				{ "component": "reg", "pinId": "M" },
-				{ "component": "reg", "pinId": "N" }
+				{ "component": "reg", "pinId": "G1_n" },
+				{ "component": "reg", "pinId": "G2_n" }
 			]
 		},
 		{
 			"from": { "component": "gnd", "pinId": "OUT" },
 			"to": [
-				{ "component": "reg", "pinId": "G1_n" },
-				{ "component": "reg", "pinId": "G2_n" }
+				{ "component": "reg", "pinId": "M" },
+				{ "component": "reg", "pinId": "N" }
 			]
 		},
 		{
@@ -109,11 +111,11 @@
 			"from": { "component": "add1", "pinId": "S3" },
 			"to": [
 				{ "component": "nor1", "pinId": "A" },
-				{ "component": "trns", "pinId": "A0_in" }
+				{ "component": "trns", "pinId": "A0" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "A1_in" },
+			"from": { "component": "trns", "pinId": "A1" },
 			"to": [
 				{ "component": "nor1", "pinId": "B" },
 				{ "component": "add1", "pinId": "S2" }
@@ -121,14 +123,14 @@
 		},
 
 		{
-			"from": { "component": "trns", "pinId": "A2_in" },
+			"from": { "component": "trns", "pinId": "A2" },
 			"to": [
 				{ "component": "nor2", "pinId": "A" },
 				{ "component": "add1", "pinId": "S1" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "A3_in" },
+			"from": { "component": "trns", "pinId": "A3" },
 			"to": [
 				{ "component": "nor2", "pinId": "B" },
 				{ "component": "add1", "pinId": "S0" }
@@ -144,14 +146,14 @@
 		},
 
 		{
-			"from": { "component": "trns", "pinId": "A4_in" },
+			"from": { "component": "trns", "pinId": "A4" },
 			"to": [
 				{ "component": "nor3", "pinId": "A" },
 				{ "component": "add2", "pinId": "S3" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "A5_in" },
+			"from": { "component": "trns", "pinId": "A5" },
 			"to": [
 				{ "component": "nor3", "pinId": "B" },
 				{ "component": "add2", "pinId": "S2" }
@@ -159,14 +161,14 @@
 		},
 
 		{
-			"from": { "component": "trns", "pinId": "A6_in" },
+			"from": { "component": "trns", "pinId": "A6" },
 			"to": [
 				{ "component": "nor4", "pinId": "A" },
 				{ "component": "add2", "pinId": "S1" }
 			]
 		},
 		{
-			"from": { "component": "trns", "pinId": "A7_in" },
+			"from": { "component": "trns", "pinId": "A7" },
 			"to": [
 				{ "component": "nor4", "pinId": "B" },
 				{ "component": "add2", "pinId": "S0" }
@@ -203,48 +205,48 @@
 		{
 			"from": { "component": "self", "pinId": "SU" },
 			"to": [
-				{ "component": "xnor1", "pinId": "A" },
-				{ "component": "xnor2", "pinId": "A" },
-				{ "component": "xnor3", "pinId": "A" },
-				{ "component": "xnor4", "pinId": "A" },
-				{ "component": "xnor5", "pinId": "A" },
-				{ "component": "xnor6", "pinId": "A" },
-				{ "component": "xnor7", "pinId": "A" },
-				{ "component": "xnor8", "pinId": "A" },
+				{ "component": "xor1", "pinId": "A" },
+				{ "component": "xor2", "pinId": "A" },
+				{ "component": "xor3", "pinId": "A" },
+				{ "component": "xor4", "pinId": "A" },
+				{ "component": "xor5", "pinId": "A" },
+				{ "component": "xor6", "pinId": "A" },
+				{ "component": "xor7", "pinId": "A" },
+				{ "component": "xor8", "pinId": "A" },
 				{ "component": "add2", "pinId": "C_in" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "B7" },
-			"to": [{ "component": "xnor1", "pinId": "B" }]
+			"to": [{ "component": "xor1", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B6" },
-			"to": [{ "component": "xnor2", "pinId": "B" }]
+			"to": [{ "component": "xor2", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B5" },
-			"to": [{ "component": "xnor3", "pinId": "B" }]
+			"to": [{ "component": "xor3", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B4" },
-			"to": [{ "component": "xnor4", "pinId": "B" }]
+			"to": [{ "component": "xor4", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B3" },
-			"to": [{ "component": "xnor5", "pinId": "B" }]
+			"to": [{ "component": "xor5", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B2" },
-			"to": [{ "component": "xnor6", "pinId": "B" }]
+			"to": [{ "component": "xor6", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B1" },
-			"to": [{ "component": "xnor7", "pinId": "B" }]
+			"to": [{ "component": "xor7", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "B0" },
-			"to": [{ "component": "xnor8", "pinId": "B" }]
+			"to": [{ "component": "xor8", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "A7" },
@@ -279,74 +281,74 @@
 			"to": [{ "component": "add2", "pinId": "A0" }]
 		},
 		{
-			"from": { "component": "xnor1", "pinId": "OUT" },
+			"from": { "component": "xor1", "pinId": "OUT" },
 			"to": [{ "component": "add1", "pinId": "B3" }]
 		},
 		{
-			"from": { "component": "xnor2", "pinId": "OUT" },
+			"from": { "component": "xor2", "pinId": "OUT" },
 			"to": [{ "component": "add1", "pinId": "B2" }]
 		},
 		{
-			"from": { "component": "xnor3", "pinId": "OUT" },
+			"from": { "component": "xor3", "pinId": "OUT" },
 			"to": [{ "component": "add1", "pinId": "B1" }]
 		},
 		{
-			"from": { "component": "xnor4", "pinId": "OUT" },
+			"from": { "component": "xor4", "pinId": "OUT" },
 			"to": [{ "component": "add1", "pinId": "B0" }]
 		},
 		{
-			"from": { "component": "xnor5", "pinId": "OUT" },
+			"from": { "component": "xor5", "pinId": "OUT" },
 			"to": [{ "component": "add2", "pinId": "B3" }]
 		},
 		{
-			"from": { "component": "xnor6", "pinId": "OUT" },
+			"from": { "component": "xor6", "pinId": "OUT" },
 			"to": [{ "component": "add2", "pinId": "B2" }]
 		},
 		{
-			"from": { "component": "xnor7", "pinId": "OUT" },
+			"from": { "component": "xor7", "pinId": "OUT" },
 			"to": [{ "component": "add2", "pinId": "B1" }]
 		},
 		{
-			"from": { "component": "xnor7", "pinId": "OUT" },
+			"from": { "component": "xor8", "pinId": "OUT" },
 			"to": [{ "component": "add2", "pinId": "B0" }]
 		},
 		{
-			"from": { "component": "trns", "pinId": "B0_out" },
+			"from": { "component": "trns", "pinId": "B0" },
 			"to": [{ "component": "self", "pinId": "BUS7" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B1_out" },
+			"from": { "component": "trns", "pinId": "B1" },
 			"to": [{ "component": "self", "pinId": "BUS6" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B2_out" },
+			"from": { "component": "trns", "pinId": "B2" },
 			"to": [{ "component": "self", "pinId": "BUS5" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B3_out" },
+			"from": { "component": "trns", "pinId": "B3" },
 			"to": [{ "component": "self", "pinId": "BUS4" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B4_out" },
+			"from": { "component": "trns", "pinId": "B4" },
 			"to": [{ "component": "self", "pinId": "BUS3" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B5_out" },
+			"from": { "component": "trns", "pinId": "B5" },
 			"to": [{ "component": "self", "pinId": "BUS2" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B6_out" },
+			"from": { "component": "trns", "pinId": "B6" },
 			"to": [{ "component": "self", "pinId": "BUS1" }],
 			"colour": "#008080"
 		},
 		{
-			"from": { "component": "trns", "pinId": "B7_out" },
+			"from": { "component": "trns", "pinId": "B7" },
 			"to": [{ "component": "self", "pinId": "BUS0" }],
 			"colour": "#008080"
 		}

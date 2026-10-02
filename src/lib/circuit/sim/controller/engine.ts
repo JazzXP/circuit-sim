@@ -1,6 +1,22 @@
-// Event-driven evaluation engine. Pure functions throughout: every
+// Net-based, event-driven evaluation engine. Pure functions throughout: every
 // evaluate* call takes an instance tree and a set of incoming changes, and
 // returns a brand new tree plus whatever changed on its own boundary.
+//
+// Wires are undirected. Inside a composite, connected pins form a net; the
+// net's value is the resolution of everything driving it (see resolveDrivers).
+// Whenever a net's drivers change, the net is re-resolved and every sink is
+// told its new value.
+//
+// Bidirectional (inout) pins:
+//   - An inout pin is both a driver and a sink on its net.
+//   - It SEES what everyone ELSE on the net is driving (its own drive is
+//     excluded). This is what stops a composite from latching its own output
+//     through the boundary.
+//   - What it DRIVES is stored separately, in instance.driveValues.
+//   - Primitive evaluate() convention: inputs = [...inputs, ...inouts(seen)],
+//     outputs = [...outputs, ...inouts(driven)]. Return HIGH_Z to release.
+//   - PinChange on an inout means: as an *input* change, the value seen from
+//     outside; as an *output* change, the value now being driven outward.
 
 import type {
 	ComponentInstance,
@@ -8,30 +24,20 @@ import type {
 	DefinitionLibrary,
 	PinRef,
 	PrimitiveDefinition,
-	WireSpec,
 } from '$lib/schemas/circuit';
-import { LogicValue, getDefinition } from '../model/component';
-import { v4 as uuid } from 'uuid';
+import {
+	LogicValue,
+	getDefinition,
+	inoutPins,
+	evalInputPins,
+	allPins,
+	resolveDrivers,
+} from '../model/component';
+import { getNetlist, netKey, type NetMember, type Netlist } from '../model/netlist';
 
 export interface PinChange {
 	readonly ref: PinRef; // "self" = this instance's own boundary pin
 	readonly value: LogicValue;
-}
-
-function pinKey(ref: PinRef): string {
-	return `${ref.component}:${ref.pinId}`;
-}
-
-function wiresBySource(def: CompositeDefinition): ReadonlyMap<string, readonly WireSpec[]> {
-	const map = new Map<string, WireSpec[]>();
-	for (const wire of def.internalWires) {
-		wire.id = wire.id ?? uuid();
-		const key = pinKey(wire.from);
-		const list = map.get(key);
-		if (list) list.push(wire);
-		else map.set(key, [wire]);
-	}
-	return map;
 }
 
 export interface EvalResult {
@@ -59,41 +65,104 @@ function evaluatePrimitiveInstance(
 	inputChanges: readonly PinChange[],
 ): EvalResult {
 	const pinValues = { ...instance.pinValues };
+	const driveValues = { ...instance.driveValues };
 	for (const change of inputChanges) pinValues[change.ref.pinId] = change.value;
 
-	const inputArray = def.inputs.map((pin) => pinValues[pin.id]);
+	const inputArray = evalInputPins(def).map((pin) => pinValues[pin.id]);
 	const { outputs, nextState } = def.evaluate(inputArray, instance.primitiveState);
 
 	const outputChanges: PinChange[] = [];
 	def.outputs.forEach((pin, i) => {
-		if (pinValues[pin.id] !== outputs?.[i]) {
-			pinValues[pin.id] = outputs?.[i] ?? 0;
-			outputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: outputs?.[i] ?? 0 });
+		const next = outputs?.[i] ?? LogicValue.LOW;
+		if (pinValues[pin.id] !== next) {
+			pinValues[pin.id] = next;
+			outputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: next });
+		}
+	});
+	inoutPins(def).forEach((pin, j) => {
+		const next = outputs?.[def.outputs.length + j] ?? LogicValue.HIGH_Z;
+		if (driveValues[pin.id] !== next) {
+			driveValues[pin.id] = next;
+			outputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: next });
 		}
 	});
 
-	const nextInstance: ComponentInstance = { ...instance, pinValues, primitiveState: nextState };
+	const nextInstance: ComponentInstance = {
+		...instance,
+		pinValues,
+		driveValues,
+		primitiveState: nextState,
+	};
 	return { instance: nextInstance, outputChanges };
 }
 
 const MAX_PROPAGATION_STEPS = 10_000;
 
-// The reusable propagation core: given a composite's wiring, a seeded queue
-// of events, and mutable working copies of pinValues/children, drains the
-// queue and reports which of the composite's own boundary outputs changed.
-// Both a normal top-down evaluation (evaluateCompositeInstance) and a
-// targeted deep update (updateAtPath, below) funnel through this — the only
-// difference between them is what seeds the queue.
-function drainPropagationQueue(
+// Mutable working copies that a propagation pass reads and writes.
+interface WorkingState {
+	readonly pinValues: Record<string, LogicValue>;
+	readonly driveValues: Record<string, LogicValue>;
+	readonly children: Record<string, ComponentInstance>;
+	readonly netValues: LogicValue[];
+}
+
+function workingCopy(instance: ComponentInstance): WorkingState {
+	return {
+		pinValues: { ...instance.pinValues },
+		driveValues: { ...instance.driveValues },
+		children: { ...(instance.children ?? {}) },
+		netValues: [...(instance.netValues ?? [])],
+	};
+}
+
+function markDirty(netlist: Netlist, ref: PinRef, dirty: Set<number>): void {
+	const net = netlist.netOfPin.get(netKey(ref));
+	if (net !== undefined) dirty.add(net);
+}
+
+// What a net member is currently putting onto its net.
+function readDrive(member: NetMember, state: WorkingState): LogicValue {
+	const { ref } = member;
+	if (ref.component === 'self') {
+		return state.pinValues[ref.pinId] ?? LogicValue.UNKNOWN; // value arriving from outside
+	}
+	const child = state.children[ref.component];
+	return member.kind === 'inout'
+		? (child.driveValues?.[ref.pinId] ?? LogicValue.HIGH_Z)
+		: (child.pinValues[ref.pinId] ?? LogicValue.UNKNOWN);
+}
+
+// The composite's own boundary values that flow OUT to its parent:
+// output pins (pinValues) and inout pins (driveValues).
+function boundaryOutputs(def: CompositeDefinition, state: WorkingState): Map<string, LogicValue> {
+	const out = new Map<string, LogicValue>();
+	for (const pin of def.outputs) out.set(pin.id, state.pinValues[pin.id]);
+	for (const pin of inoutPins(def)) out.set(pin.id, state.driveValues[pin.id]);
+	return out;
+}
+
+// The reusable propagation core. Re-resolves every dirty net, delivers the
+// result to each sink whose view of it changed, and keeps going until nothing
+// is dirty. Returns which of the composite's own boundary outputs ended up
+// different from when it started. Both normal evaluation and targeted deep
+// updates (updateAtPath) funnel through here — they differ only in what
+// seeds the dirty set.
+function drainNets(
 	lib: DefinitionLibrary,
 	def: CompositeDefinition,
-	pinValues: Record<string, LogicValue>,
-	children: Record<string, ComponentInstance>,
-	initialQueue: PinChange[],
-): { boundaryOutputChanges: PinChange[] } {
-	const sourceIndex = wiresBySource(def);
-	const boundaryOutputChanges: PinChange[] = [];
-	const queue = initialQueue;
+	state: WorkingState,
+	dirty: ReadonlySet<number>,
+): PinChange[] {
+	const netlist = getNetlist(lib, def);
+	const before = boundaryOutputs(def, state);
+
+	const queue = [...dirty];
+	const queued = new Set(queue);
+	const enqueue = (net: number | undefined) => {
+		if (net === undefined || queued.has(net)) return;
+		queued.add(net);
+		queue.push(net);
+	};
 
 	let steps = 0;
 	while (queue.length > 0) {
@@ -101,36 +170,47 @@ function drainPropagationQueue(
 			throw new Error(`Signal never settled in "${def.id}" — check for an unstable feedback loop`);
 		}
 
-		const change = queue.shift()!;
-		const wires = sourceIndex.get(pinKey(change.ref)) ?? [];
+		const netIndex = queue.shift()!;
+		queued.delete(netIndex);
+		const members = netlist.nets[netIndex].members;
 
-		for (const wire of wires) {
-			for (const dest of wire.to) {
-				if (dest.component === 'self') {
-					if (pinValues[dest.pinId] !== change.value) {
-						pinValues[dest.pinId] = change.value;
-						boundaryOutputChanges.push({ ref: dest, value: change.value });
-					}
-					continue;
-				}
+		const driven = members.map((m) => (m.drives ? readDrive(m, state) : LogicValue.HIGH_Z));
+		const full = resolveDrivers(driven);
+		state.netValues[netIndex] = full;
 
-				const childInstance = children[dest.component];
-				const result = evaluateInstance(lib, childInstance, [{ ref: dest, value: change.value }]);
+		members.forEach((member, i) => {
+			if (!member.sinks) return;
+			// A pin that both drives and sinks (inout) sees everyone but itself.
+			const value = member.drives ? resolveDrivers(driven, i) : full;
+			const { ref } = member;
 
-				if (result.instance !== childInstance) {
-					children[dest.component] = result.instance;
-				}
-				for (const outChange of result.outputChanges) {
-					queue.push({
-						ref: { component: dest.component, pinId: outChange.ref.pinId },
-						value: outChange.value,
-					});
-				}
+			if (ref.component === 'self') {
+				// self output: exported through pinValues. self inout: exported through driveValues.
+				const store = member.kind === 'inout' ? state.driveValues : state.pinValues;
+				if (store[ref.pinId] !== value) store[ref.pinId] = value;
+				return;
 			}
-		}
+
+			const child = state.children[ref.component];
+			if (child.pinValues[ref.pinId] === value) return; // this sink already knows
+
+			const result = evaluateInstance(lib, child, [{ ref, value }]);
+			state.children[ref.component] = result.instance;
+			for (const outChange of result.outputChanges) {
+				enqueue(
+					netlist.netOfPin.get(netKey({ component: ref.component, pinId: outChange.ref.pinId })),
+				);
+			}
+		});
 	}
 
-	return { boundaryOutputChanges };
+	const changes: PinChange[] = [];
+	for (const [pinId, value] of boundaryOutputs(def, state)) {
+		if (before.get(pinId) !== value) {
+			changes.push({ ref: { component: 'self', pinId }, value });
+		}
+	}
+	return changes;
 }
 
 function evaluateCompositeInstance(
@@ -139,25 +219,17 @@ function evaluateCompositeInstance(
 	instance: ComponentInstance,
 	inputChanges: readonly PinChange[],
 ): EvalResult {
-	const pinValues = { ...instance.pinValues };
-	const children: Record<string, Readonly<ComponentInstance>> = { ...(instance.children ?? {}) };
+	const state = workingCopy(instance);
+	const netlist = getNetlist(lib, def);
 
-	const initialQueue: PinChange[] = [];
+	const dirty = new Set<number>();
 	for (const change of inputChanges) {
-		pinValues[change.ref.pinId] = change.value;
-		initialQueue.push({ ref: { component: 'self', pinId: change.ref.pinId }, value: change.value });
+		state.pinValues[change.ref.pinId] = change.value;
+		markDirty(netlist, { component: 'self', pinId: change.ref.pinId }, dirty);
 	}
 
-	const { boundaryOutputChanges } = drainPropagationQueue(
-		lib,
-		def,
-		pinValues,
-		children,
-		initialQueue,
-	);
-
-	const nextInstance: ComponentInstance = { ...instance, pinValues, children };
-	return { instance: nextInstance, outputChanges: boundaryOutputChanges };
+	const outputChanges = drainNets(lib, def, state, dirty);
+	return { instance: { ...instance, ...state }, outputChanges };
 }
 
 export function evaluateTick(
@@ -183,73 +255,75 @@ function buildRawInstance(
 ): ComponentInstance {
 	const def = getDefinition(lib, definitionId);
 
-	const initialPinValues: Record<string, LogicValue> = {};
-	for (const pin of [...def.inputs, ...def.outputs]) {
-		initialPinValues[pin.id] = LogicValue.UNKNOWN;
+	const pinValues: Record<string, LogicValue> = {};
+	const driveValues: Record<string, LogicValue> = {};
+	for (const pin of [...def.inputs, ...def.outputs]) pinValues[pin.id] = LogicValue.UNKNOWN;
+	// Nobody is driving an inout yet: released, not uninitialised.
+	for (const pin of inoutPins(def)) {
+		pinValues[pin.id] = LogicValue.HIGH_Z;
+		driveValues[pin.id] = LogicValue.HIGH_Z;
 	}
 
 	if (def.kind === 'primitive') {
 		const primitiveState = def.initialState();
-		const defaultInputs = def.inputs.map(() => LogicValue.UNKNOWN);
+		const defaultInputs = [
+			...def.inputs.map(() => LogicValue.UNKNOWN),
+			...inoutPins(def).map(() => LogicValue.HIGH_Z),
+		];
 		const { outputs, nextState } = def.evaluate(defaultInputs, primitiveState);
 		def.outputs.forEach((pin, i) => {
-			initialPinValues[pin.id] = outputs?.[i] ?? 0;
+			pinValues[pin.id] = outputs?.[i] ?? LogicValue.LOW;
 		});
-		return { instanceId, definitionId, pinValues: initialPinValues, primitiveState: nextState };
+		inoutPins(def).forEach((pin, j) => {
+			driveValues[pin.id] = outputs?.[def.outputs.length + j] ?? LogicValue.HIGH_Z;
+		});
+		return { instanceId, definitionId, pinValues, driveValues, primitiveState: nextState };
 	}
 
 	const children: Record<string, ComponentInstance> = {};
 	for (const child of def.children) {
 		children[child.instanceId] = buildRawInstance(lib, child.definitionId, child.instanceId);
 	}
-
-	return { instanceId, definitionId, pinValues: initialPinValues, children };
+	return { instanceId, definitionId, pinValues, driveValues, children, netValues: [] };
 }
 
 function settle(lib: DefinitionLibrary, instance: ComponentInstance): ComponentInstance {
 	const def = getDefinition(lib, instance.definitionId);
 	if (def.kind !== 'composite') return instance;
 
-	const children: Record<string, ComponentInstance> = {};
+	const state = workingCopy(instance);
 	let anyChildChanged = false;
 	for (const child of def.children) {
 		const original = instance.children![child.instanceId];
 		const settledChild = settle(lib, original);
-		children[child.instanceId] = settledChild;
+		state.children[child.instanceId] = settledChild;
 		if (settledChild !== original) anyChildChanged = true;
 	}
 
-	const pinValues = { ...instance.pinValues };
-	const initialQueue: PinChange[] = [];
-	for (const child of def.children) {
-		const childDef = getDefinition(lib, child.definitionId);
-		for (const pin of childDef.outputs) {
-			const value = children[child.instanceId].pinValues[pin.id];
-			if (value !== LogicValue.UNKNOWN) {
-				initialQueue.push({ ref: { component: child.instanceId, pinId: pin.id }, value });
-			}
+	// Any net with something already driving it needs resolving once.
+	const netlist = getNetlist(lib, def);
+	const dirty = new Set<number>();
+	netlist.nets.forEach((net, i) => {
+		if (net.members.some((m) => m.drives && readDrive(m, state) !== LogicValue.UNKNOWN)) {
+			dirty.add(i);
 		}
-	}
+	});
 
-	if (initialQueue.length === 0 && !anyChildChanged) {
+	if (dirty.size === 0 && !anyChildChanged) {
 		return instance; // nothing anywhere in this subtree needs settling
 	}
 
-	drainPropagationQueue(lib, def, pinValues, children, initialQueue);
-
-	return { ...instance, pinValues, children };
+	drainNets(lib, def, state, dirty);
+	return { ...instance, ...state };
 }
 
 // --- Targeted deep updates ---------------------------------------------
 //
-// evaluateTick can only drive the ROOT instance's own boundary pins — fine
-// for switches, since those always live at the top. A component like a
-// clock is different: it can be buried several composites deep, and needs
-// to be pulsed directly rather than through a chain of wires that don't
-// logically exist. evaluateAtPath lets a change be injected at any depth,
-// then correctly re-runs propagation through every ancestor on the way
-// back up to the root, exactly as if the change had arrived by normal wire
-// — it just skips needing an actual wire to get there.
+// evaluateTick can only drive the ROOT instance's own boundary pins. A
+// component like a clock can be buried several composites deep and needs to
+// be pulsed directly. evaluateAtPath injects a change at any depth, then
+// re-runs propagation through every ancestor on the way back up, exactly as
+// if it had arrived by a normal wire.
 
 export function evaluateAtPath(
 	lib: DefinitionLibrary,
@@ -289,9 +363,8 @@ function updateAtPath(
 		childOutputChanges = [...result.outputChanges];
 	} else {
 		updatedChild = updateAtPath(lib, childInstance, rest, changes);
-		// Deeper down, propagation already happened — here we only need to know
-		// which of THIS child's own boundary outputs actually ended up
-		// different, so this level's wires know what to propagate further.
+		// Deeper down, propagation already happened — here we only need which of
+		// THIS child's boundary outputs (and inout drives) ended up different.
 		childOutputChanges = [];
 		for (const pin of childDef.outputs) {
 			if (updatedChild.pinValues[pin.id] !== childInstance.pinValues[pin.id]) {
@@ -301,20 +374,42 @@ function updateAtPath(
 				});
 			}
 		}
+		for (const pin of inoutPins(childDef)) {
+			const next = updatedChild.driveValues?.[pin.id] ?? LogicValue.HIGH_Z;
+			if (next !== (childInstance.driveValues?.[pin.id] ?? LogicValue.HIGH_Z)) {
+				childOutputChanges.push({ ref: { component: 'self', pinId: pin.id }, value: next });
+			}
+		}
 	}
 
 	if (updatedChild === childInstance && childOutputChanges.length === 0) {
 		return instance; // nothing changed anywhere below — reuse as-is
 	}
 
-	const pinValues = { ...instance.pinValues };
-	const children = { ...instance.children, [headId]: updatedChild };
-	const initialQueue: PinChange[] = childOutputChanges.map((c) => ({
-		ref: { component: headId, pinId: c.ref.pinId },
-		value: c.value,
-	}));
+	const state = workingCopy(instance);
+	state.children[headId] = updatedChild;
 
-	drainPropagationQueue(lib, def, pinValues, children, initialQueue);
+	const netlist = getNetlist(lib, def);
+	const dirty = new Set<number>();
+	for (const c of childOutputChanges) {
+		markDirty(netlist, { component: headId, pinId: c.ref.pinId }, dirty);
+	}
 
-	return { ...instance, pinValues, children };
+	drainNets(lib, def, state, dirty);
+	return { ...instance, ...state };
 }
+
+// Handy for the renderer: the resolved value of the net a wire belongs to.
+export function wireValue(
+	lib: DefinitionLibrary,
+	instance: ComponentInstance,
+	wireId: string,
+): LogicValue {
+	const def = getDefinition(lib, instance.definitionId);
+	if (def.kind !== 'composite') return LogicValue.UNKNOWN;
+	const net = getNetlist(lib, def).netOfWire.get(wireId);
+	return net === undefined ? LogicValue.UNKNOWN : (instance.netValues?.[net] ?? LogicValue.UNKNOWN);
+}
+
+// Re-exported so callers can enumerate every pin an instance owns.
+export { allPins };

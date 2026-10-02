@@ -6,7 +6,15 @@
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "CLR", "name": "Clear" },
 		{ "id": "II_n", "name": "'II" },
-		{ "id": "IO_n", "name": "'IO" },
+		{ "id": "IO_n", "name": "'IO" }
+	],
+	"outputs": [
+		{ "id": "IR0", "name": "IR0" },
+		{ "id": "IR1", "name": "IR1" },
+		{ "id": "IR2", "name": "IR2" },
+		{ "id": "IR3", "name": "IR3" }
+	],
+	"inouts": [
 		{ "id": "BUS0", "name": "BUS0" },
 		{ "id": "BUS1", "name": "BUS1" },
 		{ "id": "BUS2", "name": "BUS2" },
@@ -16,22 +24,9 @@
 		{ "id": "BUS6", "name": "BUS6" },
 		{ "id": "BUS7", "name": "BUS7" }
 	],
-	"outputs": [
-		{ "id": "IR0", "name": "IR0" },
-		{ "id": "IR1", "name": "IR1" },
-		{ "id": "IR2", "name": "IR2" },
-		{ "id": "IR3", "name": "IR3" },
-		{ "id": "BUS0_out", "name": "BUS0_out" },
-		{ "id": "BUS1_out", "name": "BUS1_out" },
-		{ "id": "BUS2_out", "name": "BUS2_out" },
-		{ "id": "BUS3_out", "name": "BUS3_out" },
-		{ "id": "BUS4_out", "name": "BUS4_out" },
-		{ "id": "BUS5_out", "name": "BUS5_out" },
-		{ "id": "BUS6_out", "name": "BUS6_out" },
-		{ "id": "BUS7_out", "name": "BUS7_out" }
-	],
 	"children": [
 		{ "instanceId": "trns", "definitionId": "TRANSCEIVER_8BIT", "column": 1 },
+		{ "instanceId": "vcc", "definitionId": "VCC", "column": 1 },
 		{ "instanceId": "reg1", "definitionId": "74LS173", "column": 2 },
 		{ "instanceId": "reg2", "definitionId": "74LS173", "column": 3 },
 		{ "instanceId": "gndA", "definitionId": "GND", "column": 3 }
@@ -55,10 +50,10 @@
 		{
 			"from": { "component": "self", "pinId": "II_n" },
 			"to": [
-				{ "component": "reg1", "pinId": "M" },
-				{ "component": "reg1", "pinId": "N" },
-				{ "component": "reg2", "pinId": "M" },
-				{ "component": "reg2", "pinId": "N" }
+				{ "component": "reg1", "pinId": "G1_n" },
+				{ "component": "reg1", "pinId": "G2_n" },
+				{ "component": "reg2", "pinId": "G1_n" },
+				{ "component": "reg2", "pinId": "G2_n" }
 			]
 		},
 
@@ -68,20 +63,28 @@
 		},
 
 		{
+			"from": { "component": "vcc", "pinId": "OUT" },
+			"to": [{ "component": "trns", "pinId": "DIR" }]
+		},
+
+		{
 			"from": { "component": "gndA", "pinId": "OUT" },
 			"to": [
-				{ "component": "reg1", "pinId": "G1_n" },
-				{ "component": "reg1", "pinId": "G2_n" },
-				{ "component": "reg2", "pinId": "G1_n" },
-				{ "component": "reg2", "pinId": "G2_n" }
+				{ "component": "reg1", "pinId": "M" },
+				{ "component": "reg1", "pinId": "N" },
+				{ "component": "reg2", "pinId": "M" },
+				{ "component": "reg2", "pinId": "N" },
+				{ "component": "trns", "pinId": "A0" },
+				{ "component": "trns", "pinId": "A1" },
+				{ "component": "trns", "pinId": "A2" },
+				{ "component": "trns", "pinId": "A3" }
 			]
 		},
 
 		{
 			"from": { "component": "self", "pinId": "BUS0" },
 			"to": [
-				{ "component": "self", "pinId": "BUS0_out" },
-				{ "component": "trns", "pinId": "B7_out" },
+				{ "component": "trns", "pinId": "B7" },
 				{ "component": "reg2", "pinId": "D3" }
 			],
 			"groupName": "bus"
@@ -89,8 +92,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS1" },
 			"to": [
-				{ "component": "self", "pinId": "BUS1_out" },
-				{ "component": "trns", "pinId": "B6_out" },
+				{ "component": "trns", "pinId": "B6" },
 				{ "component": "reg2", "pinId": "D2" }
 			],
 			"groupName": "bus"
@@ -98,8 +100,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS2" },
 			"to": [
-				{ "component": "self", "pinId": "BUS2_out" },
-				{ "component": "trns", "pinId": "B5_out" },
+				{ "component": "trns", "pinId": "B5" },
 				{ "component": "reg2", "pinId": "D1" }
 			],
 			"groupName": "bus"
@@ -107,8 +108,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS3" },
 			"to": [
-				{ "component": "self", "pinId": "BUS3_out" },
-				{ "component": "trns", "pinId": "B4_out" },
+				{ "component": "trns", "pinId": "B4" },
 				{ "component": "reg2", "pinId": "D0" }
 			],
 			"groupName": "bus"
@@ -116,8 +116,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS4" },
 			"to": [
-				{ "component": "self", "pinId": "BUS4_out" },
-				{ "component": "trns", "pinId": "B3_out" },
+				{ "component": "trns", "pinId": "B3" },
 				{ "component": "reg1", "pinId": "D3" }
 			],
 			"groupName": "bus"
@@ -125,8 +124,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS5" },
 			"to": [
-				{ "component": "self", "pinId": "BUS5_out" },
-				{ "component": "trns", "pinId": "B2_out" },
+				{ "component": "trns", "pinId": "B2" },
 				{ "component": "reg1", "pinId": "D2" }
 			],
 			"groupName": "bus"
@@ -134,8 +132,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS6" },
 			"to": [
-				{ "component": "self", "pinId": "BUS6_out" },
-				{ "component": "trns", "pinId": "B1_out" },
+				{ "component": "trns", "pinId": "B1" },
 				{ "component": "reg1", "pinId": "D1" }
 			],
 			"groupName": "bus"
@@ -143,8 +140,7 @@
 		{
 			"from": { "component": "self", "pinId": "BUS7" },
 			"to": [
-				{ "component": "self", "pinId": "BUS7_out" },
-				{ "component": "trns", "pinId": "B0_out" },
+				{ "component": "trns", "pinId": "B0" },
 				{ "component": "reg1", "pinId": "D0" }
 			],
 			"groupName": "bus"
@@ -152,19 +148,19 @@
 
 		{
 			"from": { "component": "reg2", "pinId": "Q3" },
-			"to": [{ "component": "trns", "pinId": "A7_in" }]
+			"to": [{ "component": "trns", "pinId": "A7" }]
 		},
 		{
 			"from": { "component": "reg2", "pinId": "Q2" },
-			"to": [{ "component": "trns", "pinId": "A6_in" }]
+			"to": [{ "component": "trns", "pinId": "A6" }]
 		},
 		{
 			"from": { "component": "reg2", "pinId": "Q1" },
-			"to": [{ "component": "trns", "pinId": "A5_in" }]
+			"to": [{ "component": "trns", "pinId": "A5" }]
 		},
 		{
 			"from": { "component": "reg2", "pinId": "Q0" },
-			"to": [{ "component": "trns", "pinId": "A4_in" }]
+			"to": [{ "component": "trns", "pinId": "A4" }]
 		},
 
 		{

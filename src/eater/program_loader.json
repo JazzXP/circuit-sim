@@ -1,0 +1,312 @@
+{
+	"kind": "composite",
+	"id": "PROGRAM_LOADER",
+	"name": "Program Loader",
+	"inputs": [
+		{ "id": "CLK", "name": "Clock" },
+		{ "id": "LOAD", "name": "Load" },
+		{ "id": "PSEL0", "name": "PSEL0" },
+		{ "id": "PSEL1", "name": "PSEL1" },
+		{ "id": "PSEL2", "name": "PSEL2" },
+		{ "id": "PROG", "name": "PROG" },
+		{ "id": "RESET", "name": "RESET" },
+		{ "id": "RAM1", "name": "RAM1" },
+		{ "id": "RAM2", "name": "RAM2" },
+		{ "id": "RAM3", "name": "RAM3" },
+		{ "id": "RAM4", "name": "RAM4" },
+		{ "id": "RAM_SET_0", "name": "RAM_SET_0" },
+		{ "id": "RAM_SET_1", "name": "RAM_SET_1" },
+		{ "id": "RAM_SET_2", "name": "RAM_SET_2" },
+		{ "id": "RAM_SET_3", "name": "RAM_SET_3" },
+		{ "id": "RAM_SET_4", "name": "RAM_SET_4" },
+		{ "id": "RAM_SET_5", "name": "RAM_SET_5" },
+		{ "id": "RAM_SET_6", "name": "RAM_SET_6" },
+		{ "id": "RAM_SET_7", "name": "RAM_SET_7" },
+		{ "id": "SET", "name": "SET" }
+	],
+	"outputs": [
+		{ "id": "PROG_OUT", "name": "PROG out" },
+		{ "id": "RESET_OUT", "name": "RESET out" },
+		{ "id": "SET_OUT", "name": "SET out" },
+		{ "id": "RAM1_OUT", "name": "RAM1 out" },
+		{ "id": "RAM2_OUT", "name": "RAM2 out" },
+		{ "id": "RAM3_OUT", "name": "RAM3 out" },
+		{ "id": "RAM4_OUT", "name": "RAM4 out" },
+		{ "id": "RAM_SET_0_OUT", "name": "RAM_SET_0 out" },
+		{ "id": "RAM_SET_1_OUT", "name": "RAM_SET_1 out" },
+		{ "id": "RAM_SET_2_OUT", "name": "RAM_SET_2 out" },
+		{ "id": "RAM_SET_3_OUT", "name": "RAM_SET_3 out" },
+		{ "id": "RAM_SET_4_OUT", "name": "RAM_SET_4 out" },
+		{ "id": "RAM_SET_5_OUT", "name": "RAM_SET_5 out" },
+		{ "id": "RAM_SET_6_OUT", "name": "RAM_SET_6 out" },
+		{ "id": "RAM_SET_7_OUT", "name": "RAM_SET_7 out" }
+	],
+	"children": [
+		{ "instanceId": "vcc", "definitionId": "VCC", "column": 0 },
+		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
+		{ "instanceId": "ctr", "definitionId": "74LS161", "column": 1 },
+		{ "instanceId": "eeprom", "definitionId": "PROGRAM_EEPROM", "column": 2 },
+		{ "instanceId": "muxAddr", "definitionId": "74LS157", "column": 3 },
+		{ "instanceId": "muxLo", "definitionId": "74LS157", "column": 3 },
+		{ "instanceId": "muxHi", "definitionId": "74LS157", "column": 3 },
+		{ "instanceId": "muxSet", "definitionId": "74LS157", "column": 3 },
+		{ "instanceId": "nandStb", "definitionId": "NAND2", "column": 1 },
+		{ "instanceId": "notLoad", "definitionId": "NOT", "column": 1 },
+		{ "instanceId": "andProg", "definitionId": "AND2", "column": 2 },
+		{ "instanceId": "orReset", "definitionId": "OR2", "column": 2 }
+	],
+	"internalWires": [
+		{
+			"from": { "component": "self", "pinId": "CLK" },
+			"to": [
+				{ "component": "ctr", "pinId": "CLK" },
+				{ "component": "nandStb", "pinId": "A" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "LOAD" },
+			"to": [
+				{ "component": "muxAddr", "pinId": "SEL" },
+				{ "component": "muxLo", "pinId": "SEL" },
+				{ "component": "muxHi", "pinId": "SEL" },
+				{ "component": "muxSet", "pinId": "SEL" },
+				{ "component": "nandStb", "pinId": "B" },
+				{ "component": "notLoad", "pinId": "A" },
+				{ "component": "orReset", "pinId": "B" }
+			]
+		},
+		{
+			"from": { "component": "notLoad", "pinId": "OUT" },
+			"to": [{ "component": "andProg", "pinId": "B" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PROG" },
+			"to": [{ "component": "andProg", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "andProg", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "PROG_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RESET" },
+			"to": [{ "component": "orReset", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "orReset", "pinId": "OUT" },
+			"to": [{ "component": "self", "pinId": "RESET_OUT" }]
+		},
+		{
+			"from": { "component": "vcc", "pinId": "OUT" },
+			"to": [
+				{ "component": "ctr", "pinId": "CLR_n" },
+				{ "component": "ctr", "pinId": "ENP" },
+				{ "component": "ctr", "pinId": "ENT" },
+				{ "component": "ctr", "pinId": "LOAD_n" }
+			]
+		},
+		{
+			"from": { "component": "gnd", "pinId": "OUT" },
+			"to": [
+				{ "component": "ctr", "pinId": "P0" },
+				{ "component": "ctr", "pinId": "P1" },
+				{ "component": "ctr", "pinId": "P2" },
+				{ "component": "ctr", "pinId": "P3" },
+				{ "component": "eeprom", "pinId": "OE_n" },
+				{ "component": "eeprom", "pinId": "A7" },
+				{ "component": "eeprom", "pinId": "A8" },
+				{ "component": "eeprom", "pinId": "A9" },
+				{ "component": "eeprom", "pinId": "A10" },
+				{ "component": "muxAddr", "pinId": "G_n" },
+				{ "component": "muxLo", "pinId": "G_n" },
+				{ "component": "muxHi", "pinId": "G_n" },
+				{ "component": "muxSet", "pinId": "G_n" },
+				{ "component": "muxSet", "pinId": "2A" },
+				{ "component": "muxSet", "pinId": "2B" },
+				{ "component": "muxSet", "pinId": "3A" },
+				{ "component": "muxSet", "pinId": "3B" },
+				{ "component": "muxSet", "pinId": "4A" },
+				{ "component": "muxSet", "pinId": "4B" }
+			]
+		},
+		{
+			"from": { "component": "ctr", "pinId": "Q0" },
+			"to": [
+				{ "component": "eeprom", "pinId": "A0" },
+				{ "component": "muxAddr", "pinId": "4B" }
+			]
+		},
+		{
+			"from": { "component": "ctr", "pinId": "Q1" },
+			"to": [
+				{ "component": "eeprom", "pinId": "A1" },
+				{ "component": "muxAddr", "pinId": "3B" }
+			]
+		},
+		{
+			"from": { "component": "ctr", "pinId": "Q2" },
+			"to": [
+				{ "component": "eeprom", "pinId": "A2" },
+				{ "component": "muxAddr", "pinId": "2B" }
+			]
+		},
+		{
+			"from": { "component": "ctr", "pinId": "Q3" },
+			"to": [
+				{ "component": "eeprom", "pinId": "A3" },
+				{ "component": "muxAddr", "pinId": "1B" }
+			]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL0" },
+			"to": [{ "component": "eeprom", "pinId": "A4" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL1" },
+			"to": [{ "component": "eeprom", "pinId": "A5" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "PSEL2" },
+			"to": [{ "component": "eeprom", "pinId": "A6" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM1" },
+			"to": [{ "component": "muxAddr", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "muxAddr", "pinId": "1Y" },
+			"to": [{ "component": "self", "pinId": "RAM1_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM2" },
+			"to": [{ "component": "muxAddr", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "muxAddr", "pinId": "2Y" },
+			"to": [{ "component": "self", "pinId": "RAM2_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM3" },
+			"to": [{ "component": "muxAddr", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "muxAddr", "pinId": "3Y" },
+			"to": [{ "component": "self", "pinId": "RAM3_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM4" },
+			"to": [{ "component": "muxAddr", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "muxAddr", "pinId": "4Y" },
+			"to": [{ "component": "self", "pinId": "RAM4_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_0" },
+			"to": [{ "component": "muxLo", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D0" },
+			"to": [{ "component": "muxLo", "pinId": "1B" }]
+		},
+		{
+			"from": { "component": "muxLo", "pinId": "1Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_0_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_4" },
+			"to": [{ "component": "muxHi", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D4" },
+			"to": [{ "component": "muxHi", "pinId": "1B" }]
+		},
+		{
+			"from": { "component": "muxHi", "pinId": "1Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_4_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_1" },
+			"to": [{ "component": "muxLo", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D1" },
+			"to": [{ "component": "muxLo", "pinId": "2B" }]
+		},
+		{
+			"from": { "component": "muxLo", "pinId": "2Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_1_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_5" },
+			"to": [{ "component": "muxHi", "pinId": "2A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D5" },
+			"to": [{ "component": "muxHi", "pinId": "2B" }]
+		},
+		{
+			"from": { "component": "muxHi", "pinId": "2Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_5_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_2" },
+			"to": [{ "component": "muxLo", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D2" },
+			"to": [{ "component": "muxLo", "pinId": "3B" }]
+		},
+		{
+			"from": { "component": "muxLo", "pinId": "3Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_2_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_6" },
+			"to": [{ "component": "muxHi", "pinId": "3A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D6" },
+			"to": [{ "component": "muxHi", "pinId": "3B" }]
+		},
+		{
+			"from": { "component": "muxHi", "pinId": "3Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_6_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_3" },
+			"to": [{ "component": "muxLo", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D3" },
+			"to": [{ "component": "muxLo", "pinId": "4B" }]
+		},
+		{
+			"from": { "component": "muxLo", "pinId": "4Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_3_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "RAM_SET_7" },
+			"to": [{ "component": "muxHi", "pinId": "4A" }]
+		},
+		{
+			"from": { "component": "eeprom", "pinId": "D7" },
+			"to": [{ "component": "muxHi", "pinId": "4B" }]
+		},
+		{
+			"from": { "component": "muxHi", "pinId": "4Y" },
+			"to": [{ "component": "self", "pinId": "RAM_SET_7_OUT" }]
+		},
+		{
+			"from": { "component": "self", "pinId": "SET" },
+			"to": [{ "component": "muxSet", "pinId": "1A" }]
+		},
+		{
+			"from": { "component": "nandStb", "pinId": "OUT" },
+			"to": [{ "component": "muxSet", "pinId": "1B" }]
+		},
+		{
+			"from": { "component": "muxSet", "pinId": "1Y" },
+			"to": [{ "component": "self", "pinId": "SET_OUT" }]
+		}
+	]
+}

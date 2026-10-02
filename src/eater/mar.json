@@ -5,22 +5,24 @@
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "CLR", "name": "Clear" },
-		{ "id": "MI_n", "name": "'MI" },
-		{ "id": "BUS0", "name": "BUS0" },
-		{ "id": "BUS1", "name": "BUS1" },
-		{ "id": "BUS2", "name": "BUS2" },
-		{ "id": "BUS3", "name": "BUS3" },
-		{ "id": "PRG", "name": "Program Mode" },
-		{ "id": "RAM1", "name": "RAM1" },
-		{ "id": "RAM2", "name": "RAM2" },
-		{ "id": "RAM3", "name": "RAM3" },
-		{ "id": "RAM4", "name": "RAM4" }
+		{ "id": "MI_n", "name": "'MI" }
 	],
 	"outputs": [
 		{ "id": "A0", "name": "A0" },
 		{ "id": "A1", "name": "A1" },
 		{ "id": "A2", "name": "A2" },
 		{ "id": "A3", "name": "A3" }
+	],
+	"inouts": [
+		{ "id": "PROG", "name": "PROG" },
+		{ "id": "BUS0", "name": "BUS0" },
+		{ "id": "BUS1", "name": "BUS1" },
+		{ "id": "BUS2", "name": "BUS2" },
+		{ "id": "BUS3", "name": "BUS3" },
+		{ "id": "RAM1", "name": "RAM1" },
+		{ "id": "RAM2", "name": "RAM2" },
+		{ "id": "RAM3", "name": "RAM3" },
+		{ "id": "RAM4", "name": "RAM4" }
 	],
 	"children": [
 		{ "instanceId": "gnd", "definitionId": "GND", "column": 0 },
@@ -32,8 +34,8 @@
 			"from": { "component": "gnd", "pinId": "OUT" },
 			"to": [
 				{ "component": "74ls157", "pinId": "G_n" },
-				{ "component": "reg", "pinId": "G1_n" },
-				{ "component": "reg", "pinId": "G2_n" }
+				{ "component": "reg", "pinId": "M" },
+				{ "component": "reg", "pinId": "N" }
 			]
 		},
 		{
@@ -45,28 +47,28 @@
 			"to": [{ "component": "74ls157", "pinId": "2A" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "RAM1" },
+			"from": { "component": "self", "pinId": "RAM3" },
 			"to": [{ "component": "74ls157", "pinId": "3A" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "RAM2" },
+			"from": { "component": "self", "pinId": "RAM4" },
 			"to": [{ "component": "74ls157", "pinId": "4A" }]
 		},
 		{
-			"from": { "component": "reg", "pinId": "D3" },
-			"to": [{ "component": "self", "pinId": "BUS0" }]
+			"from": { "component": "self", "pinId": "BUS0" },
+			"to": [{ "component": "reg", "pinId": "D3" }]
 		},
 		{
-			"from": { "component": "reg", "pinId": "D2" },
-			"to": [{ "component": "self", "pinId": "BUS1" }]
+			"from": { "component": "self", "pinId": "BUS1" },
+			"to": [{ "component": "reg", "pinId": "D2" }]
 		},
 		{
-			"from": { "component": "reg", "pinId": "D1" },
-			"to": [{ "component": "self", "pinId": "BUS2" }]
+			"from": { "component": "self", "pinId": "BUS2" },
+			"to": [{ "component": "reg", "pinId": "D1" }]
 		},
 		{
-			"from": { "component": "reg", "pinId": "D0" },
-			"to": [{ "component": "self", "pinId": "BUS3" }]
+			"from": { "component": "self", "pinId": "BUS3" },
+			"to": [{ "component": "reg", "pinId": "D0" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLR" },
@@ -75,8 +77,8 @@
 		{
 			"from": { "component": "self", "pinId": "MI_n" },
 			"to": [
-				{ "component": "reg", "pinId": "M" },
-				{ "component": "reg", "pinId": "N" }
+				{ "component": "reg", "pinId": "G1_n" },
+				{ "component": "reg", "pinId": "G2_n" }
 			]
 		},
 		{
@@ -96,8 +98,11 @@
 			"to": [{ "component": "74ls157", "pinId": "4B" }]
 		},
 		{
-			"from": { "component": "self", "pinId": "PRG" },
-			"to": [{ "component": "74ls157", "pinId": "SEL" }]
+			"from": { "component": "self", "pinId": "PROG" },
+			"to": [
+				{ "component": "74ls157", "pinId": "SEL" },
+				{ "component": "self", "pinId": "PROG" }
+			]
 		},
 		{
 			"from": { "component": "self", "pinId": "CLK" },

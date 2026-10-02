@@ -3,14 +3,13 @@
 	"id": "TRANSCEIVER_1BIT",
 	"name": "1-Bit Bidirectional Transceiver",
 	"inputs": [
-		{ "id": "A_in", "name": "Internal In" },
-		{ "id": "B_in", "name": "Bus In" },
 		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)" },
 		{ "id": "OE_n", "name": "Output Enable (Active Low)" }
 	],
-	"outputs": [
-		{ "id": "A_out", "name": "Internal Out" },
-		{ "id": "B_out", "name": "Bus Out" }
+	"outputs": [],
+	"inouts": [
+		{ "id": "A", "name": "A" },
+		{ "id": "B", "name": "B" }
 	],
 	"children": [
 		{ "instanceId": "notOE", "definitionId": "NOT" },
@@ -57,21 +56,21 @@
 		},
 
 		{
-			"from": { "component": "self", "pinId": "A_in" },
+			"from": { "component": "self", "pinId": "A" },
 			"to": [{ "component": "bufAB", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "bufAB", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "B_out" }]
+			"to": [{ "component": "self", "pinId": "B" }]
 		},
 
 		{
-			"from": { "component": "self", "pinId": "B_in" },
+			"from": { "component": "self", "pinId": "B" },
 			"to": [{ "component": "bufBA", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "bufBA", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "A_out" }]
+			"to": [{ "component": "self", "pinId": "A" }]
 		}
 	]
 }
