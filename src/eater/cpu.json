@@ -33,7 +33,12 @@
 		{ "instanceId": "not_prog", "definitionId": "NOT", "column": 0 },
 		{ "instanceId": "clock", "definitionId": "EATER_CLOCK", "column": 0 },
 		{ "instanceId": "mar", "definitionId": "MAR", "column": 0 },
-		{ "instanceId": "loader", "definitionId": "PROGRAM_LOADER", "column": 0, "name": "Program Loader" },
+		{
+			"instanceId": "loader",
+			"definitionId": "PROGRAM_LOADER",
+			"column": 0,
+			"name": "Program Loader"
+		},
 		{ "instanceId": "ram", "definitionId": "RAM", "column": 1 },
 		{ "instanceId": "pc", "definitionId": "PC", "column": 3 },
 		{ "instanceId": "regA", "definitionId": "REGISTER", "column": 3, "name": "Register A" },
@@ -322,6 +327,10 @@
 		},
 		{
 			"from": { "component": "self", "pinId": "PROG" },
+			"to": [{ "component": "not_prog", "pinId": "A" }]
+		},
+		{
+			"from": { "component": "not_prog", "pinId": "OUT" },
 			"to": [{ "component": "loader", "pinId": "PROG" }]
 		},
 		{

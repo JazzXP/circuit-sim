@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "74LS161",
-	"name": "74LS161",
+	"name": "Synchronous\n4-Bit binary\ncounters\n(74LS161)",
+	"minCanvasWidth": 2000,
+	"minCanvasHeight": 2500,
 	"inputs": [
 		{ "id": "CLR_n", "name": "'CLR" },
 		{ "id": "CLK", "name": "CLK" },

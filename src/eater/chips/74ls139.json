@@ -1,7 +1,7 @@
 {
 	"kind": "composite",
 	"id": "74LS139",
-	"name": "74LS139",
+	"name": "Dual 2-line to\n4-line decoders\n(74LS139)",
 	"inputs": [
 		{ "id": "1G_n", "name": "1'G" },
 		{ "id": "1A", "name": "1A" },

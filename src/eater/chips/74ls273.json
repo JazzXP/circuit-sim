@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "74LS273",
-	"name": "74LS273",
+	"name": "Octal D-Type\nflip-flops\nwith clear\n(74LS273)",
+	"minCanvasWidth": 2000,
+	"minCanvasHeight": 1000,
 	"inputs": [
 		{ "id": "CLK", "name": "CLK" },
 		{ "id": "CLR_n", "name": "'CLR" },

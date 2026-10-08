@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "TRANSCEIVER_1BIT",
-	"name": "1-Bit Bidirectional Transceiver",
+	"name": "1-Bit bidirectional\ntransceiver",
+	"minCanvasWidth": 1200,
+	"minCanvasHeight": 200,
 	"inputs": [
 		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)" },
 		{ "id": "OE_n", "name": "Output Enable (Active Low)" }

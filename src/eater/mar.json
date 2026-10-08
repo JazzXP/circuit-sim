@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "MAR",
 	"name": "MAR",
+	"minCanvasWidth": 1000,
+	"minCanvasHeight": 850,
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "CLR", "name": "Clear" },

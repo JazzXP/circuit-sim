@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "74LS283",
-	"name": "4-Bit Ripple-Carry Adder",
+	"name": "4-Bit ripple\ncarry adder\n(74LS283)",
+	"minCanvasWidth": 1200,
+	"minCanvasHeight": 300,
 	"inputs": [
 		{ "id": "A0", "name": "A0 (LSB)" },
 		{ "id": "A1", "name": "A1" },

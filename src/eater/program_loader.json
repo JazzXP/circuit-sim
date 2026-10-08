@@ -49,30 +49,34 @@
 		{ "instanceId": "muxAddr", "definitionId": "74LS157", "column": 3 },
 		{ "instanceId": "muxLo", "definitionId": "74LS157", "column": 3 },
 		{ "instanceId": "muxHi", "definitionId": "74LS157", "column": 3 },
-		{ "instanceId": "muxSet", "definitionId": "74LS157", "column": 3 },
 		{ "instanceId": "nandStb", "definitionId": "NAND2", "column": 1 },
 		{ "instanceId": "notLoad", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "andProg", "definitionId": "AND2", "column": 2 },
-		{ "instanceId": "orReset", "definitionId": "OR2", "column": 2 }
+    { "instanceId": "orReset", "definitionId": "OR2", "column": 2 },
+    { "instanceId": "notClk", "definitionId": "NOT", "column": 1 },
+    { "instanceId": "ldq", "definitionId": "DFF_GATES", "column": 2 },
+    { "instanceId": "orReset2", "definitionId": "OR2", "column": 3 },
+    { "instanceId": "orSet", "definitionId": "OR2", "column": 3 },
+    { "instanceId": "andSet", "definitionId": "AND2", "column": 4 },
+    { "instanceId": "dly1", "definitionId": "NOT", "column": 2 },
+    { "instanceId": "dly2", "definitionId": "NOT", "column": 2 },
+    { "instanceId": "dly3", "definitionId": "NOT", "column": 2 },
+    { "instanceId": "dly4", "definitionId": "NOT", "column": 2 },
+    { "instanceId": "dly5", "definitionId": "NOT", "column": 2 }
 	],
 	"internalWires": [
 		{
 			"from": { "component": "self", "pinId": "CLK" },
 			"to": [
-				{ "component": "ctr", "pinId": "CLK" },
-				{ "component": "nandStb", "pinId": "A" }
+        { "component": "nandStb", "pinId": "A" },
+        { "component": "notClk", "pinId": "A" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "LOAD" },
 			"to": [
-				{ "component": "muxAddr", "pinId": "SEL" },
-				{ "component": "muxLo", "pinId": "SEL" },
-				{ "component": "muxHi", "pinId": "SEL" },
-				{ "component": "muxSet", "pinId": "SEL" },
-				{ "component": "nandStb", "pinId": "B" },
-				{ "component": "notLoad", "pinId": "A" },
-				{ "component": "orReset", "pinId": "B" }
+        { "component": "orReset", "pinId": "B" },
+        { "component": "ldq", "pinId": "D" }
 			]
 		},
 		{
@@ -93,7 +97,7 @@
 		},
 		{
 			"from": { "component": "orReset", "pinId": "OUT" },
-			"to": [{ "component": "self", "pinId": "RESET_OUT" }]
+      "to": [{ "component": "orReset2", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "vcc", "pinId": "OUT" },
@@ -119,13 +123,7 @@
 				{ "component": "muxAddr", "pinId": "G_n" },
 				{ "component": "muxLo", "pinId": "G_n" },
 				{ "component": "muxHi", "pinId": "G_n" },
-				{ "component": "muxSet", "pinId": "G_n" },
-				{ "component": "muxSet", "pinId": "2A" },
-				{ "component": "muxSet", "pinId": "2B" },
-				{ "component": "muxSet", "pinId": "3A" },
-				{ "component": "muxSet", "pinId": "3B" },
-				{ "component": "muxSet", "pinId": "4A" },
-				{ "component": "muxSet", "pinId": "4B" }
+        { "component": "ldq", "pinId": "R" }
 			]
 		},
 		{
@@ -297,16 +295,63 @@
 			"to": [{ "component": "self", "pinId": "RAM_SET_7_OUT" }]
 		},
 		{
+      "from": { "component": "notClk", "pinId": "OUT" },
+      "to": [{ "component": "ldq", "pinId": "CLK" }]
+    },
+    {
+      "from": { "component": "ldq", "pinId": "Q" },
+      "to": [
+        { "component": "muxAddr", "pinId": "SEL" },
+        { "component": "muxLo", "pinId": "SEL" },
+        { "component": "muxHi", "pinId": "SEL" },
+        { "component": "nandStb", "pinId": "B" },
+        { "component": "notLoad", "pinId": "A" },
+        { "component": "orReset2", "pinId": "B" },
+        { "component": "orSet", "pinId": "B" }
+      ]
+    },
+    {
+      "from": { "component": "orReset2", "pinId": "OUT" },
+      "to": [{ "component": "self", "pinId": "RESET_OUT" }]
+    },
+    {
 			"from": { "component": "self", "pinId": "SET" },
-			"to": [{ "component": "muxSet", "pinId": "1A" }]
+      "to": [{ "component": "orSet", "pinId": "A" }]
 		},
 		{
+      "from": { "component": "orSet", "pinId": "OUT" },
+      "to": [{ "component": "andSet", "pinId": "A" }]
+    },
+    {
 			"from": { "component": "nandStb", "pinId": "OUT" },
-			"to": [{ "component": "muxSet", "pinId": "1B" }]
+      "to": [
+        { "component": "andSet", "pinId": "B" },
+        { "component": "dly1", "pinId": "A" }
+      ]
 		},
 		{
-			"from": { "component": "muxSet", "pinId": "1Y" },
+      "from": { "component": "andSet", "pinId": "OUT" },
 			"to": [{ "component": "self", "pinId": "SET_OUT" }]
+    },
+    {
+      "from": { "component": "dly1", "pinId": "OUT" },
+      "to": [{ "component": "dly2", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "dly2", "pinId": "OUT" },
+      "to": [{ "component": "dly3", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "dly3", "pinId": "OUT" },
+      "to": [{ "component": "dly4", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "dly4", "pinId": "OUT" },
+      "to": [{ "component": "dly5", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "dly5", "pinId": "OUT" },
+      "to": [{ "component": "ctr", "pinId": "CLK" }]
 		}
 	]
 }

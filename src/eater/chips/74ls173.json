@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "74LS173",
-	"name": "74LS173",
+	"name": "4-Bit D-type\nregisters with\n3-State outputs\n(74LS173)",
+	"minCanvasWidth": 1200,
+	"minCanvasHeight": 900,
 	"inputs": [
 		{ "id": "M", "name": "M" },
 		{ "id": "N", "name": "N" },

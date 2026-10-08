@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "TRANSCEIVER_8BIT",
-	"name": "8-Bit Bidirectional Transceiver (74LS245)",
+	"name": "8-Bit Bidirectional\nTransceiver\n(74LS245)",
+	"minCanvasWidth": 700,
+	"minCanvasHeight": 800,
 	"inputs": [
 		{ "id": "DIR", "name": "Direction (1=A->B, 0=B->A)" },
 		{ "id": "OE_n", "name": "Output Enable (Active Low)" }

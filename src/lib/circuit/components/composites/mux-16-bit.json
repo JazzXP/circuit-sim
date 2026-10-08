@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "MUX16_1BIT",
 	"name": "MUX16_1BIT",
+	"minCanvasWidth": 2000,
+	"minCanvasHeight": 2500,
 	"inputs": [
 		{ "id": "W0", "name": "W0" },
 		{ "id": "W1", "name": "W1" },

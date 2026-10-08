@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "DECODER_3_8",
-	"name": "DECODER_3_8",
+	"name": "3-Line to\n8-Line Decoders/\nDemultiplexers\n(74LS138)",
+	"minCanvasWidth": 1000,
+	"minCanvasHeight": 1000,
 	"inputs": [
 		{ "id": "A", "name": "A" },
 		{ "id": "B", "name": "B" },
@@ -39,33 +41,23 @@
 	"internalWires": [
 		{
 			"from": { "component": "self", "pinId": "G1" },
-			"to": [
-				{ "component": "and", "pinId": "A" }
-			]
+			"to": [{ "component": "and", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "G2A_n" },
-			"to": [
-				{ "component": "not1", "pinId": "A" }
-			]
+			"to": [{ "component": "not1", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "not1", "pinId": "OUT" },
-			"to": [
-				{ "component": "and", "pinId": "B" }
-			]
+			"to": [{ "component": "and", "pinId": "B" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "G2B_n" },
-			"to": [
-				{ "component": "not2", "pinId": "A" }
-			]
+			"to": [{ "component": "not2", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "not2", "pinId": "OUT" },
-			"to": [
-				{ "component": "and", "pinId": "C" }
-			]
+			"to": [{ "component": "and", "pinId": "C" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "A" },
@@ -139,51 +131,35 @@
 		},
 		{
 			"from": { "component": "nand1", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y0" }
-			]
+			"to": [{ "component": "self", "pinId": "Y0" }]
 		},
 		{
 			"from": { "component": "nand2", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y1" }
-			]
+			"to": [{ "component": "self", "pinId": "Y1" }]
 		},
 		{
 			"from": { "component": "nand3", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y2" }
-			]
+			"to": [{ "component": "self", "pinId": "Y2" }]
 		},
 		{
 			"from": { "component": "nand4", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y3" }
-			]
+			"to": [{ "component": "self", "pinId": "Y3" }]
 		},
 		{
 			"from": { "component": "nand5", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y4" }
-			]
+			"to": [{ "component": "self", "pinId": "Y4" }]
 		},
 		{
 			"from": { "component": "nand6", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y5" }
-			]
+			"to": [{ "component": "self", "pinId": "Y5" }]
 		},
 		{
 			"from": { "component": "nand7", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y6" }
-			]
+			"to": [{ "component": "self", "pinId": "Y6" }]
 		},
 		{
 			"from": { "component": "nand8", "pinId": "OUT" },
-			"to": [
-				{ "component": "self", "pinId": "Y7" }
-			]
+			"to": [{ "component": "self", "pinId": "Y7" }]
 		}
 	]
 }

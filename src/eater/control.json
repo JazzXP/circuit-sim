@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "CONTROL_MODULE",
 	"name": "Control",
+	"minCanvasWidth": 1700,
+	"minCanvasHeight": 850,
 	"inputs": [
 		{ "id": "CLK_n", "name": "'CLK" },
 		{ "id": "CF", "name": "CF" },
@@ -60,8 +62,7 @@
 		{ "instanceId": "not11", "definitionId": "NOT", "column": 4 },
 		{ "instanceId": "not12", "definitionId": "NOT", "column": 4 },
 		{ "instanceId": "not13", "definitionId": "NOT", "column": 4 },
-		{ "instanceId": "not14", "definitionId": "NOT", "column": 4 },
-		{ "instanceId": "not15", "definitionId": "NOT", "column": 4 }
+		{ "instanceId": "not14", "definitionId": "NOT", "column": 4 }
 	],
 	"internalWires": [
 		{

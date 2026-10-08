@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "FULL_ADDER",
 	"name": "1-Bit Full Adder",
+	"minCanvasWidth": 700,
+	"minCanvasHeight": 200,
 	"inputs": [
 		{ "id": "A", "name": "A" },
 		{ "id": "B", "name": "B" },

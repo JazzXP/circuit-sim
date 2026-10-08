@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "RAM",
 	"name": "RAM",
+	"minCanvasWidth": 2000,
+	"minCanvasHeight": 1000,
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "RO_n", "name": "'RO" },
@@ -36,8 +38,6 @@
 		{ "instanceId": "ram1", "definitionId": "74189", "column": 0 },
 		{ "instanceId": "gnd1", "definitionId": "GND", "column": 0 },
 		{ "instanceId": "ram2", "definitionId": "74189", "column": 3 },
-		{ "instanceId": "74ls157_1", "definitionId": "74LS157", "column": 0 },
-		{ "instanceId": "gnd3", "definitionId": "GND", "column": 0 },
 		{ "instanceId": "74ls157_2", "definitionId": "74LS157", "column": 4 },
 		{ "instanceId": "gnd4", "definitionId": "GND", "column": 4 },
 		{ "instanceId": "74ls157_3", "definitionId": "74LS157", "column": 5 },
@@ -53,18 +53,17 @@
 		{ "instanceId": "not6", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "not7", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "not8", "definitionId": "NOT", "column": 1 },
+    { "instanceId": "nand", "definitionId": "NAND2", "column": 2 },
 		{ "instanceId": "not_clk", "definitionId": "NOT", "column": 1 },
-		{ "instanceId": "nand", "definitionId": "NAND2", "column": 2 },
-		{ "instanceId": "not_set", "definitionId": "NOT", "column": 4 }
+    { "instanceId": "or_set", "definitionId": "OR2", "column": 1 },
+    { "instanceId": "not_prog", "definitionId": "NOT", "column": 1 },
+    { "instanceId": "or_run", "definitionId": "OR2", "column": 2 },
+    { "instanceId": "and_we", "definitionId": "AND2", "column": 3 }
 	],
 	"internalWires": [
 		{
 			"from": { "component": "self", "pinId": "CLK" },
 			"to": [{ "component": "not_clk", "pinId": "A" }]
-		},
-		{
-			"from": { "component": "not_clk", "pinId": "OUT" },
-			"to": [{ "component": "nand", "pinId": "A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "RI" },
@@ -73,22 +72,15 @@
 		{
 			"from": { "component": "self", "pinId": "PROG" },
 			"to": [
-				{ "component": "74ls157_1", "pinId": "SEL" },
 				{ "component": "74ls157_2", "pinId": "SEL" },
-				{ "component": "74ls157_3", "pinId": "SEL" }
+        { "component": "74ls157_3", "pinId": "SEL" },
+        { "component": "or_set", "pinId": "B" },
+        { "component": "not_prog", "pinId": "A" }
 			]
 		},
 		{
 			"from": { "component": "self", "pinId": "RO_n" },
 			"to": [{ "component": "trns", "pinId": "OE_n" }]
-		},
-		{
-			"from": { "component": "self", "pinId": "SET" },
-			"to": [{ "component": "not_set", "pinId": "A" }]
-		},
-		{
-			"from": { "component": "not_set", "pinId": "OUT" },
-			"to": [{ "component": "74ls157_1", "pinId": "3A" }]
 		},
 		{
 			"from": { "component": "self", "pinId": "A0" },
@@ -289,27 +281,12 @@
 		},
 
 		{
-			"from": { "component": "74ls157_1", "pinId": "3Y" },
-			"to": [
-				{ "component": "ram1", "pinId": "WE_n" },
-				{ "component": "ram2", "pinId": "WE_n" }
-			]
-		},
-		{
-			"from": { "component": "gnd3", "pinId": "OUT" },
-			"to": [{ "component": "74ls157_1", "pinId": "G_n" }]
-		},
-		{
 			"from": { "component": "gnd4", "pinId": "OUT" },
 			"to": [{ "component": "74ls157_2", "pinId": "G_n" }]
 		},
 		{
 			"from": { "component": "gnd5", "pinId": "OUT" },
 			"to": [{ "component": "74ls157_3", "pinId": "G_n" }]
-		},
-		{
-			"from": { "component": "nand", "pinId": "OUT" },
-			"to": [{ "component": "74ls157_1", "pinId": "3B" }]
 		},
 		{
 			"from": { "component": "74ls157_2", "pinId": "1Y" },
@@ -350,6 +327,37 @@
 			"from": { "component": "74ls157_3", "pinId": "4Y" },
 			"to": [{ "component": "ram2", "pinId": "D3" }],
 			"groupName": "ram2data"
+    },
+    {
+      "from": { "component": "not_clk", "pinId": "OUT" },
+      "to": [{ "component": "nand", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "self", "pinId": "SET" },
+      "to": [{ "component": "or_set", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "nand", "pinId": "OUT" },
+      "to": [{ "component": "or_run", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "not_prog", "pinId": "OUT" },
+      "to": [{ "component": "or_run", "pinId": "B" }]
+    },
+    {
+      "from": { "component": "or_set", "pinId": "OUT" },
+      "to": [{ "component": "and_we", "pinId": "A" }]
+    },
+    {
+      "from": { "component": "or_run", "pinId": "OUT" },
+      "to": [{ "component": "and_we", "pinId": "B" }]
+    },
+    {
+      "from": { "component": "and_we", "pinId": "OUT" },
+      "to": [
+        { "component": "ram1", "pinId": "WE_n" },
+        { "component": "ram2", "pinId": "WE_n" }
+      ]
 		}
 	]
 }

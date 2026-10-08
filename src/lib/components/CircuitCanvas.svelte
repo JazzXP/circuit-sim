@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 	import { findInstancesByDefinition, updateInstanceStateAtPath } from '#sim/model/tree';
 	import { findStateProblems } from '#sim/model/diagnostics';
 	import {
@@ -11,6 +11,7 @@
 	import type { TimerState } from '#components/primitives/timer';
 	import { computeLayout } from '#render/layout';
 	import { renderComposite, type ClickRegion } from '#render/canvasRenderer';
+	import type { SevenSegmentFade } from '#render/sevenSegment';
 	import {
 		DEFAULT_VIEW_TRANSFORM,
 		screenToWorld,
@@ -19,8 +20,9 @@
 		type ViewTransform,
 	} from '#render/viewTransform';
 	import { LogicValue, getDefinition, inoutPins } from '#circuit/sim/model/component';
-	import type { DefinitionLibrary, ComponentInstance } from '$lib/schemas/circuit';
+	import type { DefinitionLibrary, ComponentInstance, PinRef } from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 
 	interface Props {
 		library: DefinitionLibrary;
@@ -32,6 +34,21 @@
 	let { library, rootDefinitionId, width: totalWidth = 720, height = 320 }: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
+
+	// Fit once per drill level / canvas size, after its layout has been routed.
+	// zoomToFit() reads rootInstance (which pollClocks replaces every POLL_MS
+	// while any clock exists), so it MUST run untracked and be guarded by a key —
+	// otherwise every clock tick re-fits and throws away the user's zoom/pan.
+	let lastFitKey = '';
+	$effect(() => {
+		const key = `${drillPath.join('.')}|${layoutKey}`;
+		if (loadingStatus !== null) return;
+		if (!preparedLayouts.has(layoutKey)) return;
+		if (key === lastFitKey) return;
+		lastFitKey = key;
+		untrack(() => zoomToFit());
+	});
+
 	// Root inputs start LOW rather than UNKNOWN. Routing this through
 	// evaluateTick means everything downstream settles from those values.
 	// Root inouts are left floating (HIGH_Z) so they aren't forced to drive.
@@ -48,8 +65,8 @@
 		);
 	}
 
-	let rootInstance = $state<ComponentInstance>(createRootInstance());
-	let errorMessage = $state<string | null>(checkForProblems(rootInstance));
+	let rootInstance = $state.raw<ComponentInstance>(createRootInstance());
+	let errorMessage = $derived<string | null>(checkForProblems(rootInstance));
 
 	function describeError(e: unknown): string {
 		return e instanceof Error ? e.message : String(e);
@@ -80,7 +97,7 @@
 	// status message actually paint before that blocking work starts, the
 	// work is deferred by a frame and the canvas shows an overlay meanwhile.
 	let loadingStatus = $state<string | null>(null);
-	const preparedLayouts = new Set<string>();
+	const preparedLayouts = new SvelteSet<string>();
 
 	// Resolves only AFTER the browser has actually painted the current DOM.
 	// requestAnimationFrame alone isn't enough: its callback runs *before*
@@ -92,6 +109,7 @@
 	}
 
 	async function prepareLayout(definitionId: string, layoutKey: string) {
+		if (width <= 0 || height <= 0) return;
 		loadingStatus = 'Routing wires…';
 		await waitForPaint();
 		try {
@@ -183,6 +201,72 @@
 		view = DEFAULT_VIEW_TRANSFORM;
 		errorMessage = checkForProblems(rootInstance);
 	}
+	function zoomToFit() {
+		const instance = instanceAtPath(drillPath);
+		const key = `${instance.definitionId}:${width}x${height}`;
+		if (!preparedLayouts.has(key)) return; // Don't compute synchronously!
+		const layout = computeLayout(library, instance.definitionId, width, height);
+
+		// Collect all coordinate points we want to enclose
+		let minX = Infinity;
+		let minY = Infinity;
+		let maxX = -Infinity;
+		let maxY = -Infinity;
+
+		const consider = (x: number, y: number) => {
+			if (x < minX) minX = x;
+			if (y < minY) minY = y;
+			if (x > maxX) maxX = x;
+			if (y > maxY) maxY = y;
+		};
+
+		// 1. Consider child component bounding boxes
+		for (const box of Object.values(layout.children)) {
+			consider(box.x, box.y);
+			consider(box.x + box.w, box.y + box.h);
+		}
+
+		// 2. Consider self input/output pin positions
+		for (const p of Object.values(layout.selfInputPos)) consider(p.x, p.y);
+		for (const p of Object.values(layout.selfOutputPos)) consider(p.x, p.y);
+		for (const p of Object.values(layout.selfInoutPos)) consider(p.x, p.y);
+
+		// 3. Consider wire route points
+		for (const route of layout.routes) {
+			for (const p of route.points) {
+				consider(p.x, p.y);
+			}
+		}
+
+		// Fallback if the layout is completely empty
+		if (minX === Infinity || minY === Infinity) {
+			resetView();
+			return;
+		}
+
+		const contentWidth = maxX - minX;
+		const contentHeight = maxY - minY;
+
+		if (contentWidth === 0 || contentHeight === 0) {
+			resetView();
+			return;
+		}
+
+		// Add padding around the edges (e.g., 40px padding)
+		const padding = 40;
+		const availableWidth = Math.max(width - padding * 2, 10);
+		const availableHeight = Math.max(height - padding * 2, 10);
+
+		const scaleX = availableWidth / contentWidth;
+		const scaleY = availableHeight / contentHeight;
+		const scale = Math.min(scaleX, scaleY, 2); // Cap max zoom-to-fit scale at 2x
+
+		// Center the content in the canvas viewport
+		const offsetX = width / 2 - scale * (minX + contentWidth / 2);
+		const offsetY = height / 2 - scale * (minY + contentHeight / 2);
+
+		view = { scale, offsetX, offsetY };
+	}
 
 	function drillInto(childId: string) {
 		drillPath = [...drillPath, childId];
@@ -263,6 +347,7 @@
 	});
 	onDestroy(() => {
 		if (pollHandle) clearInterval(pollHandle);
+		if (fadeRaf !== null) cancelAnimationFrame(fadeRaf);
 		if (browser) {
 			window.removeEventListener('mousemove', handleWindowMouseMove);
 			window.removeEventListener('mouseup', handleWindowMouseUp);
@@ -474,6 +559,11 @@
 
 	// --- Rendering -------------------------------------------------------
 
+	// Per-display 7-segment fade state, keyed by drill path + instance id. The
+	// renderer is stateless, so it lives here and survives across frames.
+	const fadeStates = new Map<string, SevenSegmentFade>();
+	let fadeRaf: number | null = null;
+
 	function draw() {
 		if (!canvasEl) return;
 		const ctx = canvasEl.getContext('2d');
@@ -494,15 +584,38 @@
 		ctx.translate(view.offsetX, view.offsetY);
 		ctx.scale(view.scale, view.scale);
 
-		const layout = computeLayout(library, instance.definitionId, width, height);
-		const isRoot = drillPath.length === 0;
+		let fading = false;
+		try {
+			const layout = computeLayout(library, instance.definitionId, width, height);
+			const isRoot = drillPath.length === 0;
 
-		clickRegions = renderComposite(ctx, library, instance, layout, {
-			interactive: isRoot,
-			onToggleInput: toggleRootInput,
-			onDrillInto: drillInto,
-		});
-		ctx.restore();
+			clickRegions = renderComposite(ctx, library, instance, layout, {
+				interactive: isRoot,
+				onToggleInput: toggleRootInput,
+				onDrillInto: drillInto,
+				fadeStates,
+				pathKey: drillPath.join('.'),
+				now: performance.now(),
+				onAnimating: () => {
+					fading = true;
+				},
+				onProbePin: toggleProbe,
+				isProbed: (ref) => traces.has(probeKey(ref)),
+			});
+		} finally {
+			// Always rebalance save(), even if rendering throws, so one bad
+			// frame can't leave the context transform stuck.
+			ctx.restore();
+		}
+
+		// Segments keep fading after the last pin change, but nothing else
+		// triggers a redraw then, so keep drawing frames until they settle.
+		if (fading && fadeRaf === null) {
+			fadeRaf = requestAnimationFrame(() => {
+				fadeRaf = null;
+				draw();
+			});
+		}
 	}
 
 	// Redraw whenever the instance tree, drilled-into path, or view
@@ -525,6 +638,108 @@
 	});
 
 	onMount(draw);
+
+	import { drawScope } from '#render/scope';
+	import { inoutDisplayValue } from '#render/canvasRenderer';
+
+	interface Probe {
+		key: string;
+		label: string;
+		path: string[];
+		pinId: string;
+	}
+	interface Sample {
+		t: number;
+		v: LogicValue;
+	}
+
+	const SCOPE_WINDOW_MS = 4000;
+	const LANE_H = 44;
+
+	let probes = $state.raw<Probe[]>([]);
+	const traces = new SvelteMap<string, Sample[]>(); // plain Map: no reactivity cost
+
+	function probePath(ref: PinRef): string[] {
+		return ref.component === 'self' ? [...drillPath] : [...drillPath, ref.component];
+	}
+	const probeKey = (ref: PinRef) => `${probePath(ref).join('.')}:${ref.pinId}`;
+
+	function readProbe(p: Probe): LogicValue {
+		const inst = instanceAtPath(p.path);
+		const isInout = inoutPins(getDefinition(library, inst.definitionId)).some(
+			(x) => x.id === p.pinId,
+		);
+		return isInout ? inoutDisplayValue(inst, p.pinId) : inst.pinValues[p.pinId];
+	}
+
+	function toggleProbe(ref: PinRef) {
+		const key = probeKey(ref);
+		if (traces.has(key)) {
+			traces.delete(key);
+			probes = probes.filter((p) => p.key !== key);
+			return;
+		}
+		const path = probePath(ref);
+		const label = [...path, ref.pinId].join('.') || ref.pinId;
+		traces.set(key, []);
+		probes = [...probes, { key, label, path, pinId: ref.pinId }];
+		sampleProbes();
+	}
+
+	// Store changes only (like a VCD file); the trace is extended to "now" when drawn.
+	function sampleProbes() {
+		const now = performance.now();
+		for (const p of probes) {
+			let v: LogicValue;
+			try {
+				v = readProbe(p);
+			} catch {
+				continue;
+			}
+			const tr = traces.get(p.key)!;
+			if (tr.length === 0 || tr[tr.length - 1].v !== v) tr.push({ t: now, v });
+			while (tr.length > 2 && tr[1].t < now - SCOPE_WINDOW_MS) tr.shift();
+		}
+	}
+	let scopeEl = $state<HTMLCanvasElement>();
+	let scopeRaf: number | null = null;
+
+	function scopeFrame() {
+		scopeRaf = null;
+		const ctx = scopeEl?.getContext('2d');
+		if (ctx && scopeEl) {
+			sampleProbes(); // also prunes
+			drawScope(
+				ctx,
+				scopeEl.width,
+				scopeEl.height,
+				probes.map((p) => ({ label: p.label, samples: traces.get(p.key) ?? [] })),
+				performance.now(),
+				SCOPE_WINDOW_MS,
+			);
+		}
+		if (probes.length > 0) scopeRaf = requestAnimationFrame(scopeFrame);
+	}
+
+	$effect(() => {
+		if (probes.length > 0 && scopeRaf === null) scopeRaf = requestAnimationFrame(scopeFrame);
+	});
+
+	// Every settled state (user toggle or clock poll) produces a new rootInstance.
+	$effect(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		rootInstance;
+		sampleProbes();
+	});
+	let layoutKey = $derived(`${instanceAtPath(drillPath).definitionId}:${width}x${height}`);
+
+	$effect(() => {
+		const key = layoutKey;
+		const instance = instanceAtPath(drillPath);
+		if (width > 0 && height > 0 && !preparedLayouts.has(key) && !loadingStatus) {
+			void prepareLayout(instance.definitionId, key);
+		}
+	});
 </script>
 
 <div class="circuit-canvas">
@@ -545,6 +760,7 @@
 			<button onclick={() => zoomButton(1 / 1.3)} title="Zoom out">&minus;</button>
 			<span class="zoom-level">{Math.round(view.scale * 100)}%</span>
 			<button onclick={() => zoomButton(1.3)} title="Zoom in">&plus;</button>
+			<button onclick={zoomToFit} title="Zoom to fit">Fit</button>
 			<button
 				onclick={resetView}
 				title="Reset view"
@@ -601,6 +817,14 @@
 				class:grabbing={dragging}
 				aria-busy={loadingStatus !== null}
 			></canvas>
+			{#if probes.length > 0}
+				<canvas
+					class="scope"
+					bind:this={scopeEl}
+					{width}
+					height={Math.min(probes.length * LANE_H, height)}
+				></canvas>
+			{/if}
 			{#if loadingStatus}
 				<div class="loading-overlay" role="status" aria-live="polite">
 					<span class="spinner"></span>
@@ -849,5 +1073,12 @@
 	}
 	input[type='range'] {
 		flex: 1;
+	}
+	.scope {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		pointer-events: none;
+		border-radius: 0 0 8px 8px;
 	}
 </style>

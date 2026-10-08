@@ -34,7 +34,7 @@ for (let i = -128; i <= 127; i++) {
 
 export const OUTPUT_EEPROM = createEeprom({
 	id: 'OUTPUT_EEPROM',
-	name: 'OUTPUT_EEPROM',
+	name: 'Output EEPROM\n(28C16)',
 	addressBits: 11,
 	dataBits: 8,
 	data: DATA,

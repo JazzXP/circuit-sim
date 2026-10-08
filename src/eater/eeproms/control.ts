@@ -71,7 +71,7 @@ function controlWord(address: number): number {
 
 export const CONTROL_EEPROM_1 = createEeprom({
 	id: 'CONTROL_EEPROM_1',
-	name: 'Control ROM (high)',
+	name: 'Control\nEEPROM - high\n(28C16)',
 	addressBits: 11,
 	dataBits: 8,
 	compute: (addr) => (controlWord(addr) >> 8) & 0xff,
@@ -79,7 +79,7 @@ export const CONTROL_EEPROM_1 = createEeprom({
 
 export const CONTROL_EEPROM_2 = createEeprom({
 	id: 'CONTROL_EEPROM_2',
-	name: 'Control ROM (low)',
+	name: 'Control\nEEPROM - low\n(28C16)',
 	addressBits: 11,
 	dataBits: 8,
 	compute: (addr) => controlWord(addr) & 0xff,

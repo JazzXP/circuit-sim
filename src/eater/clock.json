@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "EATER_CLOCK",
 	"name": "Counter Module",
+	"minCanvasWidth": 1200,
+	"minCanvasHeight": 400,
 	"inputs": [
 		{ "id": "CLK_STEP", "name": "Clock Step" },
 		{ "id": "HLT", "name": "Halt" }
@@ -15,7 +17,9 @@
 		{ "instanceId": "c_or", "definitionId": "OR2", "column": 1 },
 		{ "instanceId": "h_not", "definitionId": "NOT", "column": 1 },
 		{ "instanceId": "h_and", "definitionId": "AND2", "column": 2 },
-		{ "instanceId": "c_not", "definitionId": "NOT", "column": 3 }
+    { "instanceId": "c_not", "definitionId": "NOT", "column": 3 },
+    { "instanceId": "hlt_latch", "definitionId": "D_LATCH", "column": 3 },
+    { "instanceId": "raw_n", "definitionId": "NOT", "column": 2 }
 	],
 	"internalWires": [
 		{
@@ -28,7 +32,7 @@
 		},
 		{
 			"from": { "component": "h_not", "pinId": "OUT" },
-			"to": [{ "component": "h_and", "pinId": "B" }]
+      "to": [{ "component": "hlt_latch", "pinId": "D" }]
 		},
 		{
 			"from": { "component": "clock", "pinId": "CLK" },
@@ -37,7 +41,10 @@
 		},
 		{
 			"from": { "component": "c_or", "pinId": "OUT" },
-			"to": [{ "component": "h_and", "pinId": "A" }]
+      "to": [
+        { "component": "h_and", "pinId": "A" },
+        { "component": "raw_n", "pinId": "A" }
+      ]
 		},
 		{
 			"from": { "component": "h_and", "pinId": "OUT" },
@@ -51,6 +58,14 @@
 		{
 			"from": { "component": "c_not", "pinId": "OUT" },
 			"to": [{ "component": "self", "pinId": "CLK_n" }]
+    },
+    {
+      "from": { "component": "raw_n", "pinId": "OUT" },
+      "to": [{ "component": "hlt_latch", "pinId": "EN" }]
+    },
+    {
+      "from": { "component": "hlt_latch", "pinId": "Q" },
+      "to": [{ "component": "h_and", "pinId": "B" }]
 		}
 	]
 }

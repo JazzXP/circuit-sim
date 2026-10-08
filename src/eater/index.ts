@@ -25,5 +25,5 @@ export const EATER_COMPUTER = [
 	RAM,
 	REGISTER,
 
-	createTimer({ id: 'OUTPUT_TIMER', name: 'output_timer', time: 1.5 }),
+	createTimer({ id: 'OUTPUT_TIMER', name: 'Output Timer', time: 1.5 }),
 ].map((c) => componentDefinitionSchema.parse(c));

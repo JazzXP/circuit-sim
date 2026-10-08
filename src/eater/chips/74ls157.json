@@ -1,7 +1,9 @@
 {
 	"kind": "composite",
 	"id": "74LS157",
-	"name": "74LS157",
+	"name": "Quadruple 2-Line\nto 1-Line data\nselectors/multiplexers\n(74LS157)",
+	"minCanvasWidth": 1000,
+	"minCanvasHeight": 1000,
 	"inputs": [
 		{ "id": "1A", "name": "1A" },
 		{ "id": "1B", "name": "1B" },

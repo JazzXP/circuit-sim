@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "ALU",
 	"name": "ALU",
+	"minCanvasWidth": 1500,
+	"minCanvasHeight": 850,
 	"inputs": [
 		{ "id": "CLK", "name": "Clock" },
 		{ "id": "CLR", "name": "Clear" },
@@ -49,8 +51,8 @@
 			"column": 1,
 			"name": "Transceiver"
 		},
-		{ "instanceId": "add1", "definitionId": "74LS283", "column": 6, "name": "Adder" },
-		{ "instanceId": "add2", "definitionId": "74LS283", "column": 6, "name": "Adder" },
+		{ "instanceId": "add1", "definitionId": "74LS283", "column": 6 },
+		{ "instanceId": "add2", "definitionId": "74LS283", "column": 6 },
 		{ "instanceId": "and1", "definitionId": "AND2", "column": 4 },
 		{ "instanceId": "and2", "definitionId": "AND2", "column": 3 },
 		{ "instanceId": "and3", "definitionId": "AND2", "column": 3 },

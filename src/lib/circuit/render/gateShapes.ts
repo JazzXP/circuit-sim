@@ -2,16 +2,24 @@
 // distinct shape; composites and unclassified primitives (like the DFF)
 // keep the generic labeled-rectangle treatment in canvas-renderer.ts.
 
-export type GateShapeKind = 'AND' | 'OR' | 'NOT' | 'NAND' | 'NOR' | 'XOR' | 'XNOR' | 'GENERIC';
+export type GateShapeKind =
+	'AND' | 'OR' | 'NOT' | 'NAND' | 'NOR' | 'XOR' | 'XNOR' | 'TRI_BUFFER' | 'VCC' | 'GND' | 'GENERIC';
 
 const SHAPE_BY_DEFINITION_ID: Readonly<Record<string, GateShapeKind>> = {
 	AND2: 'AND',
+	AND3: 'AND',
+	AND4: 'AND',
 	OR2: 'OR',
 	NOT: 'NOT',
 	NAND2: 'NAND',
+	NAND3: 'NAND',
+	NAND4: 'NAND',
+	TRI_BUFFER: 'TRI_BUFFER',
 	NOR2: 'NOR',
 	XOR2: 'XOR',
 	XNOR2: 'XNOR',
+	VCC: 'VCC',
+	GND: 'GND',
 };
 
 export function gateShapeFor(definitionId: string): GateShapeKind {
@@ -23,6 +31,23 @@ export function isCompactGate(kind: GateShapeKind): boolean {
 }
 
 const BUBBLE_RADIUS = 4;
+
+function drawSymbolLabel(
+	ctx: CanvasRenderingContext2D,
+	text: string,
+	cx: number,
+	y: number,
+	baseline: CanvasTextBaseline,
+	color: string,
+): void {
+	ctx.save();
+	ctx.fillStyle = color;
+	ctx.font = '11px sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = baseline;
+	ctx.fillText(text, cx, y);
+	ctx.restore();
+}
 
 export function drawGateShape(
 	ctx: CanvasRenderingContext2D,
@@ -164,6 +189,64 @@ export function drawGateShape(
 			ctx.arc(x + bodyW + BUBBLE_RADIUS, y + h / 2, BUBBLE_RADIUS, 0, Math.PI * 2);
 			ctx.fill();
 			ctx.stroke();
+			return;
+		}
+		case 'TRI_BUFFER': {
+			// Buffer triangle (a NOT without the output bubble). The enable pin
+			// attaches to the top/bottom of the box, so the triangle's apex
+			// stays on the output pin at the right-centre.
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+			ctx.lineTo(x, y + h);
+			ctx.lineTo(x + w, y + h / 2);
+			ctx.closePath();
+			ctx.fill();
+			ctx.stroke();
+			return;
+		}
+		case 'VCC': {
+			// Power rail symbol: the output pin is at the right-centre of the box.
+			// A lead runs left from the pin to the box centre, then a stem rises
+			// to a horizontal bar at the top.
+			const cx = x + w / 2;
+			const cy = y + h / 2;
+			ctx.beginPath();
+			ctx.moveTo(x + w, cy);
+			ctx.lineTo(cx, cy);
+			ctx.lineTo(cx, y);
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo(x + w * 0.1, y);
+			ctx.lineTo(x + w * 0.9, y);
+			ctx.lineWidth = 3;
+			ctx.stroke();
+			drawSymbolLabel(ctx, 'VCC', cx, y - 4, 'bottom', stroke);
+			return;
+		}
+		case 'GND': {
+			// Ground symbol: the output pin is at the right-centre of the box. A
+			// lead runs left from the pin to the box centre, then a stem drops to
+			// three horizontal bars of decreasing width.
+			const cx = x + w / 2;
+			const cy = y + h / 2;
+			const stemEnd = cy + h * 0.1;
+			ctx.beginPath();
+			ctx.moveTo(x + w, cy);
+			ctx.lineTo(cx, cy);
+			ctx.lineTo(cx, stemEnd);
+			ctx.stroke();
+			const bars = [1, 0.66, 0.33];
+			const gap = (y + h - stemEnd) / bars.length;
+			for (let i = 0; i < bars.length; i++) {
+				const half = (w / 2) * bars[i];
+				const by = stemEnd + gap * i;
+				ctx.beginPath();
+				ctx.moveTo(cx - half, by);
+				ctx.lineTo(cx + half, by);
+				ctx.stroke();
+			}
+			const lastBarY = stemEnd + gap * (bars.length - 1);
+			drawSymbolLabel(ctx, 'GND', cx, lastBarY + 4, 'top', stroke);
 			return;
 		}
 		case 'GENERIC':

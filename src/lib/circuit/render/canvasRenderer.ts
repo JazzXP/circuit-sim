@@ -2,8 +2,13 @@ import { LogicValue, getDefinition, inoutPins, resolveDrivers } from '#sim/model
 import { wireValue } from '#sim/controller/engine';
 import type { Layout, Point } from './layout';
 import { gateShapeFor, drawGateShape } from './gateShapes';
-import { isSevenSegmentDisplay, drawSevenSegmentDisplay } from './sevenSegment';
-import type { ComponentInstance, DefinitionLibrary } from '$lib/schemas/circuit';
+import {
+	isSevenSegmentDisplay,
+	drawSevenSegmentDisplay,
+	createSevenSegmentFade,
+	type SevenSegmentFade,
+} from './sevenSegment';
+import type { ComponentInstance, DefinitionLibrary, PinRef } from '$lib/schemas/circuit';
 import type { RoutedWire } from './routing';
 
 export interface ClickRegion {
@@ -18,7 +23,19 @@ export interface RenderOptions {
 	readonly interactive: boolean; // only the root level exposes switches
 	readonly onToggleInput: (pinId: string) => void;
 	readonly onDrillInto: (childInstanceId: string) => void;
+	// Optional 7-segment fade support. The renderer itself is stateless, so the
+	// caller owns the per-display fade state (keyed by drill path + instance id)
+	// and is told via onAnimating when another frame is needed to finish a fade.
+	readonly fadeStates?: Map<string, SevenSegmentFade>;
+	readonly pathKey?: string; // identifies which level is being rendered
+	readonly now?: number; // timestamp in ms (defaults to performance.now())
+	readonly onAnimating?: () => void;
+
+	readonly onProbePin?: (ref: PinRef) => void;
+	readonly isProbed?: (ref: PinRef) => boolean;
 }
+
+export { wireColor, inoutDisplayValue };
 
 const COLOR = {
 	wireLow: '#4a4e58',
@@ -150,6 +167,25 @@ export function renderComposite(
 ): ClickRegion[] {
 	const def = getDefinition(lib, instance.definitionId);
 	const clickRegions: ClickRegion[] = [];
+
+	const addPinRegion = (p: Point, ref: PinRef) => {
+		if (!options.onProbePin) return;
+		if (options.isProbed?.(ref)) {
+			ctx.strokeStyle = COLOR.boxStrokeComposite;
+			ctx.lineWidth = 1.5;
+			ctx.beginPath();
+			ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+			ctx.stroke();
+		}
+		clickRegions.push({
+			x: p.x - 7,
+			y: p.y - 7,
+			w: 14,
+			h: 14,
+			onClick: () => options.onProbePin!(ref),
+		});
+	};
+
 	if (def.kind !== 'composite') return clickRegions; // leaf — nothing further to draw
 
 	// Wires are undirected, so a wire's colour is the resolved value of the
@@ -208,6 +244,7 @@ export function renderComposite(
 			ctx.fill();
 			clickRegions.push({ ...sw, onClick: () => options.onToggleInput(pin.id) });
 		}
+		addPinRegion(p, { component: 'self', pinId: pin.id });
 	});
 
 	// Boundary outputs, drawn as LEDs.
@@ -227,6 +264,7 @@ export function renderComposite(
 		ctx.font = '11px sans-serif';
 		ctx.textAlign = 'right';
 		ctx.fillText(pin.name, p.x - 12, p.y - 8);
+		addPinRegion(p, { component: 'self', pinId: pin.id });
 	});
 
 	// Boundary inouts: a diamond LED that shows the combined state of the
@@ -259,6 +297,7 @@ export function renderComposite(
 			ctx.fill();
 			clickRegions.push({ ...sw, onClick: () => options.onToggleInput(pin.id) });
 		}
+		addPinRegion(p, { component: 'self', pinId: pin.id });
 	});
 
 	// Child boxes — a proper gate symbol for classified primitives, a
@@ -272,7 +311,26 @@ export function renderComposite(
 		const shape = childDef.kind === 'primitive' ? gateShapeFor(childDef.id) : 'GENERIC';
 
 		if (isDisplay) {
-			drawSevenSegmentDisplay(ctx, box.x, box.y, box.w, box.h, childInstance.pinValues);
+			let fade: SevenSegmentFade | undefined;
+			if (options.fadeStates) {
+				const key = `${options.pathKey ?? ''}/${child.instanceId}`;
+				fade = options.fadeStates.get(key);
+				if (!fade) {
+					fade = createSevenSegmentFade();
+					options.fadeStates.set(key, fade);
+				}
+			}
+			const stillFading = drawSevenSegmentDisplay(
+				ctx,
+				box.x,
+				box.y,
+				box.w,
+				box.h,
+				childInstance.pinValues,
+				fade,
+				options.now,
+			);
+			if (stillFading) options.onAnimating?.();
 		} else if (shape !== 'GENERIC') {
 			drawGateShape(ctx, shape, box.x, box.y, box.w, box.h, COLOR.boxFill, COLOR.boxStroke);
 		} else {
@@ -285,7 +343,14 @@ export function renderComposite(
 			ctx.fillStyle = COLOR.text;
 			ctx.font = '500 12px sans-serif';
 			ctx.textAlign = 'center';
-			ctx.fillText(child.name ?? childDef.name, box.x + box.w / 2, box.y + box.h / 2 + 4);
+			// Names may span multiple lines (real newlines or a literal "\n").
+			const lines = (child.name ?? childDef.name).split(/\r?\n|\\n/);
+			const lineHeight = 14;
+			const firstLineY = box.y + box.h / 2 - ((lines.length - 1) * lineHeight) / 2 + 4;
+			const centreX = box.x + box.w / 2;
+			lines.forEach((line, i) => {
+				ctx.fillText(line, centreX, firstLineY + i * lineHeight);
+			});
 		}
 
 		childDef.inputs.forEach((pin) => {
@@ -296,6 +361,7 @@ export function renderComposite(
 			ctx.font = '9px sans-serif';
 			ctx.textAlign = 'right';
 			ctx.fillText(pin.name, p.x - 6, p.y + 3);
+			addPinRegion(p, { component: child.instanceId, pinId: pin.id });
 		});
 		childDef.outputs.forEach((pin) => {
 			const p = box.outputPos[pin.id];
@@ -304,6 +370,7 @@ export function renderComposite(
 			ctx.font = '9px sans-serif';
 			ctx.textAlign = 'left';
 			ctx.fillText(pin.name, p.x + 6, p.y + 3);
+			addPinRegion(p, { component: child.instanceId, pinId: pin.id });
 		});
 		inoutPins(childDef).forEach((pin) => {
 			const p = box.inoutPos[pin.id];
@@ -313,6 +380,7 @@ export function renderComposite(
 			ctx.font = '9px sans-serif';
 			ctx.textAlign = 'left';
 			ctx.fillText(pin.name, p.x + 8, p.y + 3);
+			addPinRegion(p, { component: child.instanceId, pinId: pin.id });
 		});
 
 		if (isComposite) {
