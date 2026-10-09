@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "OUTPUT_MODULE",
 	"name": "Output Register",
+	"minCanvasWidth": 2000,
+	"minCanvasHeight": 300,
 	"inputs": [
 		{ "id": "CLK", "name": "CLK" },
 		{ "id": "CLR_n", "name": "'CLR" },

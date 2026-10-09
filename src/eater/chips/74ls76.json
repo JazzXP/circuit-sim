@@ -2,6 +2,8 @@
 	"kind": "composite",
 	"id": "74LS76",
 	"name": "Dual J-K\nflip-flops\nwith preset\nand clear\n(74LS76)",
+	"minCanvasWidth": 400,
+	"minCanvasHeight": 300,
 	"inputs": [
 		{ "id": "1J", "name": "1J" },
 		{ "id": "1K", "name": "1K" },
