@@ -1,27 +1,11 @@
 <script lang="ts">
 	import CircuitCanvas from '$lib/components/CircuitCanvas.svelte';
-	import { emptyLibrary, registerDefinition } from '$lib/circuit/sim/model/component';
-
-	import { type DefinitionLibrary } from '$lib/schemas/circuit';
 	import { browser } from '$app/env';
-	import { PRIMITIVE_DEFS } from '#circuit/components/primitives/index';
-	import { COMPOSITE_DEFS } from '#circuit/components/composites/index';
-	import { EATER_EEPROMS } from '../../eater/eeproms';
-	import { CHIPS } from '../../eater/chips';
-	import { EATER_COMPUTER } from '../../eater';
 	import { page } from '$app/state';
+	import { getDefinitionLibraryContext } from '#circuit/render/cacheContext';
 
-	// svelte-ignore non_reactive_update
-	let library: DefinitionLibrary = emptyLibrary;
-	for (const def of [
-		...PRIMITIVE_DEFS,
-		...COMPOSITE_DEFS,
-		...EATER_EEPROMS,
-		...CHIPS,
-		...EATER_COMPUTER,
-	]) {
-		library = registerDefinition(library, def);
-	}
+	const library = getDefinitionLibraryContext();
+
 	let wrapperW = $state(0);
 	let wrapperH = $state(0);
 
@@ -33,12 +17,14 @@
 		alu: 'ALU',
 		control: 'CONTROL_MODULE',
 		pc: 'PC',
+		output: 'CUSTOM_OUTPUT',
 	};
 	const titlesFromPage = {
 		clock: 'a computer clock',
 		alu: 'an ALU',
 		control: 'a control module',
 		pc: 'a program counter',
+		output: 'an ouput register',
 	};
 	const getComponent = (comp?: string) => {
 		if (!Object.keys(pageToComponent).find((c) => c === comp)) return '';

@@ -5,39 +5,11 @@
 
 import { getDefinition, getSizeForDefinition } from '#sim/model/component';
 import type { DefinitionLibrary } from '$lib/schemas/circuit';
+import { SvelteMap } from 'svelte/reactivity';
 import { gateShapeFor, isCompactGate } from './gateShapes';
-import type { RoutedWire } from './routing';
 import { computeRoutes } from './routing';
-
-export interface Point {
-	readonly x: number;
-	readonly y: number;
-}
-
-export interface ChildLayout {
-	readonly instanceId: string;
-	readonly definitionId: string;
-	readonly x: number;
-	readonly y: number;
-	readonly w: number;
-	readonly h: number;
-	readonly inputPos: Readonly<Record<string, Point>>;
-	readonly outputPos: Readonly<Record<string, Point>>;
-	readonly inputStubPos: Readonly<Record<string, Point>>;
-	readonly outputStubPos: Readonly<Record<string, Point>>;
-
-	readonly inoutPos: Readonly<Record<string, Point>>;
-	readonly inoutStubPos: Readonly<Record<string, Point>>;
-}
-
-export interface Layout {
-	readonly selfInputPos: Readonly<Record<string, Point>>;
-	readonly selfOutputPos: Readonly<Record<string, Point>>;
-	readonly children: Readonly<Record<string, ChildLayout>>;
-	readonly routes: readonly RoutedWire[];
-
-	readonly selfInoutPos: Readonly<Record<string, Point>>;
-}
+import type { ChildLayout, Layout, Point } from './types';
+import type { LibraryCache } from './cacheContext';
 
 const BOX_WIDTH = 100;
 const PIN_SPACING = 20;
@@ -45,13 +17,12 @@ const BOUNDARY_MARGIN = 40;
 const STUB = 40;
 const HORIZONTAL_GROUP_GAP = 150;
 
-const layoutCache = new WeakMap<DefinitionLibrary, Map<string, Layout>>();
-
 export function computeLayout(
 	lib: DefinitionLibrary,
 	definitionId: string,
 	canvasWidth: number,
 	canvasHeight: number,
+	layoutCache: LibraryCache,
 ): Layout {
 	const minCanvasSize = getSizeForDefinition(lib, definitionId);
 	const width = Math.max(minCanvasSize.minCanvasWidth ?? 0, canvasWidth);
@@ -59,8 +30,9 @@ export function computeLayout(
 	const cacheKey = `${definitionId}:${width}x${height}`;
 	let libCache = layoutCache.get(lib);
 	if (!libCache) {
-		libCache = new Map();
+		libCache = new SvelteMap();
 		layoutCache.set(lib, libCache);
+		console.log('new cache entry', cacheKey, layoutCache);
 	}
 	const cached = libCache.get(cacheKey);
 	if (cached) return cached;
@@ -105,7 +77,7 @@ export function computeLayoutUncached(
 		// to its own declaration index — meaning "no column specified anywhere"
 		// produces exactly one child per column, in original order, which is
 		// byte-identical to the layout before columns existed.
-		const columns = new Map<number, (typeof def.children)[number][]>();
+		const columns = new SvelteMap<number, (typeof def.children)[number][]>();
 		def.children.forEach((child, i) => {
 			const col = child.column ?? i;
 			const list = columns.get(col);

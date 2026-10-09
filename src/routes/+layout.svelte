@@ -1,7 +1,18 @@
 <script lang="ts">
+	import { setCacheContext, setDefinitionLibraryContext } from '#circuit/render/cacheContext';
+	import type { Layout } from '#circuit/render/types';
+	import { emptyLibrary, registerDefinition } from '#circuit/sim/model/component';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
+	import type { DefinitionLibrary } from '$lib/schemas/circuit';
+
+	import { PRIMITIVE_DEFS } from '#circuit/components/primitives/index';
+	import { COMPOSITE_DEFS } from '#circuit/components/composites/index';
+	import { EATER_EEPROMS } from '../eater/eeproms';
+	import { CHIPS } from '../eater/chips';
+	import { EATER_COMPUTER } from '../eater';
+	import { buildCustomOutput } from '$lib/customOutput';
 
 	let { children } = $props();
 	const links = [
@@ -17,6 +28,21 @@
 	] as const;
 	const isActive = (href: string) =>
 		href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
+
+	setCacheContext(new WeakMap<DefinitionLibrary, Map<string, Layout>>());
+	let library = setDefinitionLibraryContext(emptyLibrary);
+	if (Object.keys(library).length === 0) {
+		for (const def of [
+			...PRIMITIVE_DEFS,
+			...COMPOSITE_DEFS,
+			...EATER_EEPROMS,
+			...CHIPS,
+			...EATER_COMPUTER,
+			buildCustomOutput(),
+		]) {
+			library = setDefinitionLibraryContext(registerDefinition(library, def));
+		}
+	}
 </script>
 
 <svelte:head>
@@ -139,6 +165,7 @@
 		justify-content: stretch;
 		color: var(--primary-colour);
 		font-size: 0.9rem;
+		overflow-x: auto;
 	}
 	/* Creating a glowing background blur behind the element */
 	li::before {
@@ -153,6 +180,7 @@
 	}
 	li {
 		position: relative;
+		flex: 0 1 auto;
 		z-index: 1;
 		border-right: 2px solid var(--primary-colour);
 		flex: 1;
@@ -201,6 +229,7 @@
 		text-decoration: none;
 		text-align: center;
 		color: var(--primary-colour);
+		white-space: nowrap;
 		text-shadow:
 			0 0 5px var(--secondary-colour),
 			0 0 10px var(--secondary-colour),

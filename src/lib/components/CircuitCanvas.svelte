@@ -9,7 +9,7 @@
 		type PinChange,
 	} from '#sim/controller/engine';
 	import type { TimerState } from '#components/primitives/timer';
-	import { computeLayout } from '#render/layout';
+	import { computeLayout } from '#render/layout.svelte';
 	import { renderComposite, type ClickRegion } from '#render/canvasRenderer';
 	import type { SevenSegmentFade } from '#render/sevenSegment';
 	import {
@@ -108,12 +108,16 @@
 		return new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
 	}
 
-	async function prepareLayout(definitionId: string, layoutKey: string) {
+	async function prepareLayout(
+		definitionId: string,
+		layoutKey: string,
+		cache: WeakMap<DefinitionLibrary, Map<string, Layout>>,
+	) {
 		if (width <= 0 || height <= 0) return;
 		loadingStatus = 'Routing wires…';
 		await waitForPaint();
 		try {
-			computeLayout(library, definitionId, width, height);
+			computeLayout(library, definitionId, width, height, cache);
 			preparedLayouts.add(layoutKey);
 		} catch (e) {
 			errorMessage = describeError(e);
@@ -205,7 +209,8 @@
 		const instance = instanceAtPath(drillPath);
 		const key = `${instance.definitionId}:${width}x${height}`;
 		if (!preparedLayouts.has(key)) return; // Don't compute synchronously!
-		const layout = computeLayout(library, instance.definitionId, width, height);
+		const layoutCache = getCacheContext();
+		const layout = computeLayout(library, instance.definitionId, width, height, layoutCache);
 
 		// Collect all coordinate points we want to enclose
 		let minX = Infinity;
@@ -563,8 +568,9 @@
 	// renderer is stateless, so it lives here and survives across frames.
 	const fadeStates = new Map<string, SevenSegmentFade>();
 	let fadeRaf: number | null = null;
+	const layoutCache = getCacheContext();
 
-	function draw() {
+	function draw(layoutCache: WeakMap<DefinitionLibrary, Map<string, Layout>>) {
 		if (!canvasEl) return;
 		const ctx = canvasEl.getContext('2d');
 		if (!ctx) return;
@@ -575,7 +581,7 @@
 			// Not routed yet: blank the canvas, show the status, and redraw
 			// (via the effect) once loadingStatus clears.
 			ctx.clearRect(0, 0, width, height);
-			if (!loadingStatus) void prepareLayout(instance.definitionId, layoutKey);
+			if (!loadingStatus) void prepareLayout(instance.definitionId, layoutKey, layoutCache);
 			return;
 		}
 
@@ -586,7 +592,7 @@
 
 		let fading = false;
 		try {
-			const layout = computeLayout(library, instance.definitionId, width, height);
+			const layout = computeLayout(library, instance.definitionId, width, height, layoutCache);
 			const isRoot = drillPath.length === 0;
 
 			clickRegions = renderComposite(ctx, library, instance, layout, {
@@ -613,7 +619,7 @@
 		if (fading && fadeRaf === null) {
 			fadeRaf = requestAnimationFrame(() => {
 				fadeRaf = null;
-				draw();
+				draw(layoutCache);
 			});
 		}
 	}
@@ -634,13 +640,15 @@
 		view;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		loadingStatus;
-		draw();
+		draw(layoutCache);
 	});
 
-	onMount(draw);
+	onMount(() => draw(layoutCache));
 
 	import { drawScope } from '#render/scope';
 	import { inoutDisplayValue } from '#render/canvasRenderer';
+	import { getCacheContext } from '#circuit/render/cacheContext';
+	import type { Layout } from '#circuit/render/types';
 
 	interface Probe {
 		key: string;
@@ -737,7 +745,7 @@
 		const key = layoutKey;
 		const instance = instanceAtPath(drillPath);
 		if (width > 0 && height > 0 && !preparedLayouts.has(key) && !loadingStatus) {
-			void prepareLayout(instance.definitionId, key);
+			void prepareLayout(instance.definitionId, key, layoutCache);
 		}
 	});
 </script>
