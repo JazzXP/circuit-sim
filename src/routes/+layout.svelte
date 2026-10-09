@@ -1,8 +1,22 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import favicon from '$lib/assets/favicon.svg';
 
 	let { children } = $props();
+	const links = [
+		{ href: '/', label: 'Home' },
+		{ href: '/clock', label: 'Clock' },
+		{ href: '/registers', label: 'Registers' },
+		{ href: '/alu', label: 'Arithmetic logic unit' },
+		{ href: '/ram', label: 'Random Access Memory' },
+		{ href: '/pc', label: 'Program Counter' },
+		{ href: '/output', label: 'Output register' },
+		{ href: '/control', label: 'Control logic' },
+		{ href: '/cpu', label: 'Full CPU' },
+	] as const;
+	const isActive = (href: string) =>
+		href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
 </script>
 
 <svelte:head>
@@ -14,15 +28,15 @@
 
 <nav>
 	<ul>
-		<li><a href={resolve('/')}>Home</a></li>
-		<li><a href={resolve('/clock')}>Clock</a></li>
-		<li><a href={resolve('/registers')}>Registers</a></li>
-		<li><a href={resolve('/alu')}>Arithmetic logic unit</a></li>
-		<li><a href={resolve('/ram')}>Random Access Memory</a></li>
-		<li><a href={resolve('/pc')}>Program Counter</a></li>
-		<li><a href={resolve('/output')}>Output register</a></li>
-		<li><a href={resolve('/control')}>Control logic</a></li>
-		<li><a href={resolve('/cpu')}>Full CPU</a></li>
+		{#each links as { href, label } (href)}
+			<li class:active={isActive(href)}>
+				{#if isActive(href)}
+					<span aria-current="page">{label}</span>
+				{:else}
+					<a href={resolve(href)}>{label}</a>
+				{/if}
+			</li>
+		{/each}
 	</ul>
 </nav>
 <main>
@@ -148,7 +162,8 @@
 		color: var(--primary-colour);
 		background: var(--secondary-colour);
 		transition: all 0.2s ease-in-out;
-		&:hover {
+		&:hover,
+		&.active {
 			color: var(--secondary-colour);
 			opacity: 1;
 			background: var(--primary-colour);
@@ -157,11 +172,24 @@
 				filter: blur(4px);
 			}
 		}
+		&.active {
+			--glow-colour: oklch(from var(--primary-colour) 1 c calc(h+128));
+			a,
+			span {
+				color: oklch(from var(--primary-colour) 0.9 c calc(h + 128));
+				text-shadow:
+					0 0 5px var(--glow-colour),
+					0 0 10px var(--glow-colour),
+					0 0 20px var(--glow-colour),
+					0 0 40px var(--glow-colour);
+			}
+		}
 	}
 	li:last-child {
 		border-right: none;
 	}
-	a {
+	a,
+	span {
 		position: relative;
 		display: block;
 		padding: 8px;
@@ -172,6 +200,7 @@
 		font-style: normal;
 		text-decoration: none;
 		text-align: center;
+		color: var(--primary-colour);
 		text-shadow:
 			0 0 5px var(--secondary-colour),
 			0 0 10px var(--secondary-colour),
