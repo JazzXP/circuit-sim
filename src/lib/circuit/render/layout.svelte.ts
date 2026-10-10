@@ -32,7 +32,6 @@ export function computeLayout(
 	if (!libCache) {
 		libCache = new SvelteMap();
 		layoutCache.set(lib, libCache);
-		console.log('new cache entry', cacheKey, layoutCache);
 	}
 	const cached = libCache.get(cacheKey);
 	if (cached) return cached;
