@@ -29,9 +29,17 @@
 		rootDefinitionId: string;
 		width?: number;
 		height?: number;
+		clocks?: number;
 	}
 
-	let { library, rootDefinitionId, width: totalWidth = 720, height = 320 }: Props = $props();
+	let {
+		library,
+		rootDefinitionId,
+		width: totalWidth = 720,
+		height = 320,
+		// eslint-disable-next-line no-useless-assignment
+		clocks: clocksBind = $bindable(),
+	}: Props = $props();
 
 	let canvasEl: HTMLCanvasElement;
 
@@ -150,6 +158,9 @@
 		...findInstancesByDefinition(rootInstance, 'CLOCK'),
 		...findInstancesByDefinition(rootInstance, 'OUTPUT_TIMER'),
 	]);
+	$effect(() => {
+		clocksBind = clocks.length;
+	});
 
 	function instanceAtPath(path: string[]): ComponentInstance {
 		let current = rootInstance;

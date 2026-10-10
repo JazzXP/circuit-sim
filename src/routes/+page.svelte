@@ -2,7 +2,7 @@
 	import CLOCK from '../eater/clock.json';
 </script>
 
-<div>
+<div class="max-w-[65ch] overflow-auto mx-auto">
 	<h1>Ben Eater style CPU</h1>
 	<p>
 		Based on Ben Eater's <a
@@ -44,11 +44,3 @@
 		reduces the flashing and makes them easier to read.
 	</p>
 </div>
-
-<style>
-	div {
-		overflow: auto;
-		max-width: 960px;
-		margin-inline: auto;
-	}
-</style>
