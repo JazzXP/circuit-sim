@@ -1,42 +1,103 @@
-# sv
+# ⚡ Digital Sim
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+- _Digital Sim_* is a modern, web-based digital logic circuit simulator built
+  with SvelteKit, TypeScript, and DaisyUI. It allows users to design, simulate,
+  and interact with digital logic components directly in the browser, featuring
+  robust schema validation using Zod for circuit configuration parsing and serialization.
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+## ✨ Features
 
-```sh
-# create a new project
-npx sv create my-app
+- **Interactive Circuit Simulation:** Construct, inspect, and evaluate digital logic
+  circuits in real time.
+- **Schema Validation & Storage:** Leverages [Zod](https://zod.dev/) to safely parse,
+  validate, and serialize circuit states and objects for export/import.
+- **Modern UI / UX:** Built with Tailwind CSS and [DaisyUI](https://daisyui.com/)
+  for a sleek, responsive, and accessible interface.
+- **Edge Deployment:** Configured out-of-the-box for serverless edge deployment
+  on Cloudflare Workers.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** [SvelteKit](https://svelte.dev/) (TypeScript)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) + [DaisyUI](https://daisyui.com/)
+- **Validation:** [Zod](https://zod.dev/)
+- **Package Manager & Runtime:** [Bun](https://bun.sh/)
+- **Testing:** [Vitest](https://vitest.dev/)
+- **Deployment Adapter:** `@sveltejs/adapter-cloudflare` (Cloudflare Workers)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have [Bun](https://bun.sh/) installed on your machine.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://git.sdickinson.com/sdickinson/digital-sim.git
+cd digital-sim
 ```
 
-To recreate this project with the same configuration:
+### 2. Install Dependencies
 
-```sh
-# recreate this project
-pnpm dlx sv@0.17.0 create --template minimal --types ts --add prettier eslint vitest="usages:unit,component" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" --install pnpm circuit-sim
+```bash
+bun install
 ```
 
-## Developing
+### 3. Run Development Server
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```bash
+bun run dev
 
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Or start the server and open automatically in your browser:
+bun run dev -- --open
 ```
 
-## Building
+---
 
-To create a production version of your app:
+## 🧪 Testing
 
-```sh
-npm run build
+To run the unit and component test suite powered by Vitest:
+
+```bash
+bun run test
 ```
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## 📦 Building & Deployment
+
+### Production Build
+
+Create an optimized production build:
+
+```bash
+bun run build
+```
+
+Preview the production build locally:
+
+```bash
+bun run preview
+```
+
+### Cloudflare Workers Deployment
+
+This project uses `@sveltejs/adapter-cloudflare` and Wrangler for deployment.
+Ensure you are authenticated with Cloudflare via Wrangler, then run:
+
+```bash
+bun run deploy
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
