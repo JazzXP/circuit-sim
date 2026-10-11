@@ -1,6 +1,6 @@
 # ⚡ Digital Sim
 
-- _Digital Sim_* is a modern, web-based digital logic circuit simulator built
+- _Digital Sim_ is a modern, web-based digital logic circuit simulator built
   with SvelteKit, TypeScript, and DaisyUI. It allows users to design, simulate,
   and interact with digital logic components directly in the browser, featuring
   robust schema validation using Zod for circuit configuration parsing and serialization.
